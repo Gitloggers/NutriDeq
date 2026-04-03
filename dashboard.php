@@ -1185,22 +1185,23 @@ $pdo = $database->getConnection();
                         </div>
                     </div>
                 </div>
-            </div>
-            
             <!-- NEW: PERFORMANCE OVERVIEW (WOW FACTOR) -->
-            <div class="performance-overview">
-                <!-- Macro Snapshot (SVG Rings) -->
+            <div class="performance-overview" style="grid-template-columns: 1fr;">
+                <!-- Macro Snapshot (SVG Rings) - FIXED FOR MOBILE -->
                 <div class="macro-snap-card">
-                    <div class="section-header" style="margin-bottom: 20px;">
-                        <h2><i class="fas fa-bullseye"></i> Nutritional Snap <i class="fas fa-info-circle" title="Your progress toward your daily macro goals. Ring fills up as you log food."></i></h2>
+                    <div class="section-header" style="margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center;">
+                        <h2 style="margin:0;"><i class="fas fa-bullseye"></i> Nutritional Snap <i class="fas fa-info-circle" title="Your progress toward your daily macro goals. Ring fills up as you log food."></i></h2>
+                        <button class="btn btn-primary" onclick="generateClinicalReport('.page-container', 'NutriDeq-Weekly-Overview.pdf')" style="padding: 6px 12px; font-size: 0.8rem;">
+                            <i class="fas fa-file-pdf"></i> Download Report
+                        </button>
                     </div>
                     <div class="macro-rings-container">
                         <!-- Protein Ring -->
                         <div class="macro-ring-group">
                             <div class="macro-ring" id="proteinRing">
-                                <svg class="macro-svg">
-                                    <circle class="bg" cx="40" cy="40" r="34"></circle>
-                                    <circle class="bar" id="p_bar" cx="40" cy="40" r="34" stroke="#4facfe" stroke-dasharray="213" stroke-dashoffset="213"></circle>
+                                <svg class="macro-svg" viewBox="0 0 100 100" style="overflow: visible;">
+                                    <circle class="bg" cx="50" cy="50" r="40" stroke-width="8"></circle>
+                                    <circle class="bar" id="p_bar" cx="50" cy="50" r="40" stroke="#4facfe" stroke-width="8" stroke-dasharray="251" stroke-dashoffset="251"></circle>
                                 </svg>
                             </div>
                             <div class="macro-label">
@@ -1211,9 +1212,9 @@ $pdo = $database->getConnection();
                         <!-- Carbs Ring -->
                         <div class="macro-ring-group">
                             <div class="macro-ring" id="carbsRing">
-                                <svg class="macro-svg">
-                                    <circle class="bg" cx="40" cy="40" r="34"></circle>
-                                    <circle class="bar" id="c_bar" cx="40" cy="40" r="34" stroke="#43e97b" stroke-dasharray="213" stroke-dashoffset="213"></circle>
+                                <svg class="macro-svg" viewBox="0 0 100 100" style="overflow: visible;">
+                                    <circle class="bg" cx="50" cy="50" r="40" stroke-width="8"></circle>
+                                    <circle class="bar" id="c_bar" cx="50" cy="50" r="40" stroke="#43e97b" stroke-width="8" stroke-dasharray="251" stroke-dashoffset="251"></circle>
                                 </svg>
                             </div>
                             <div class="macro-label">
@@ -1224,9 +1225,9 @@ $pdo = $database->getConnection();
                         <!-- Fats Ring -->
                         <div class="macro-ring-group">
                             <div class="macro-ring" id="fatsRing">
-                                <svg class="macro-svg">
-                                    <circle class="bg" cx="40" cy="40" r="34"></circle>
-                                    <circle class="bar" id="f_bar" cx="40" cy="40" r="34" stroke="#f5576c" stroke-dasharray="213" stroke-dashoffset="213"></circle>
+                                <svg class="macro-svg" viewBox="0 0 100 100" style="overflow: visible;">
+                                    <circle class="bg" cx="50" cy="50" r="40" stroke-width="8"></circle>
+                                    <circle class="bar" id="f_bar" cx="50" cy="50" r="40" stroke="#f5576c" stroke-width="8" stroke-dasharray="251" stroke-dashoffset="251"></circle>
                                 </svg>
                             </div>
                             <div class="macro-label">
@@ -1234,19 +1235,6 @@ $pdo = $database->getConnection();
                                 <div class="macro-val" id="f_val">0 / 0g</div>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Weekly Pulse Card -->
-                <div class="progress-trend-card" id="reportableSection">
-                    <div class="section-header" style="margin-bottom: 20px;">
-                        <h2><i class="fas fa-chart-line"></i> Weekly Pulse</h2>
-                        <button class="btn btn-primary" onclick="generateClinicalReport('.page-container', 'NutriDeq-Weekly-Overview.pdf')" title="Generate clinical PDF report of your progress">
-                            <i class="fas fa-file-pdf"></i> Weekly Report
-                        </button>
-                    </div>
-                    <div class="pulse-chart-container">
-                        <canvas id="userTrendChart" height="150"></canvas>
                     </div>
                 </div>
             </div>
