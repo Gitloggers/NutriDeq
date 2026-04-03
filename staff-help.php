@@ -130,7 +130,7 @@ if ($selected_thread_id) {
                 <div class="msg-sidebar">
                     <div class="msg-sidebar-header">
                         <h2>Help Center</h2>
-                        <button class="new-thread-btn" onclick="document.getElementById('newThreadModal').style.display='flex';">
+                        <button class="new-thread-btn" onclick="openNewThreadModal()">
                             <i class="fas fa-plus"></i> New Conversation
                         </button>
                     </div>
@@ -227,7 +227,10 @@ if ($selected_thread_id) {
             <script>
                 function openNewThreadModal() { 
                     const m = document.getElementById('newThreadModal');
-                    if (m) { m.style.display = 'flex'; m.style.opacity = '1'; }
+                    if (m) { 
+                        m.style.display = 'flex';
+                        setTimeout(() => m.style.opacity = '1', 10);
+                    }
                 }
                 function closeNewThreadModal() { 
                     const m = document.getElementById('newThreadModal');
