@@ -114,12 +114,12 @@ if ($selected_thread_id) {
     <title>Support Hub | NutriDeq</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/sidebar.css">
-    <link rel="stylesheet" href="css/modern-messages.css">
-    <link rel="stylesheet" href="css/responsive.css">
-    <link rel="stylesheet" href="css/mobile-style.css">
-    <link rel="stylesheet" href="css/logout-modal.css">
+    <link rel="stylesheet" href="css/base.css?v=101">
+    <link rel="stylesheet" href="css/sidebar.css?v=101">
+    <link rel="stylesheet" href="css/modern-messages.css?v=101">
+    <link rel="stylesheet" href="css/responsive.css?v=101">
+    <link rel="stylesheet" href="css/mobile-style.css?v=101">
+    <link rel="stylesheet" href="css/logout-modal.css?v=101">
 </head>
 
 <body>
@@ -130,7 +130,7 @@ if ($selected_thread_id) {
                 <div class="msg-sidebar">
                     <div class="msg-sidebar-header">
                         <h2>Help Center</h2>
-                        <button class="new-thread-btn" onclick="openNewThreadModal()">
+                        <button class="new-thread-btn" onclick="document.getElementById('newThreadModal').style.display='flex';">
                             <i class="fas fa-plus"></i> New Conversation
                         </button>
                     </div>
@@ -223,10 +223,16 @@ if ($selected_thread_id) {
             </div>
 
             <script>const BASE_URL = '<?= rtrim(dirname($_SERVER['PHP_SELF']), '/') ?>/';</script>
-            <script src="scripts/internal-chat-controller.js"></script>
+            <script src="scripts/internal-chat-controller.js?v=101"></script>
             <script>
-                function openNewThreadModal() { document.getElementById('newThreadModal').style.display='flex'; }
-                function closeNewThreadModal() { document.getElementById('newThreadModal').style.display='none'; }
+                function openNewThreadModal() { 
+                    const m = document.getElementById('newThreadModal');
+                    if (m) { m.style.display = 'flex'; m.style.opacity = '1'; }
+                }
+                function closeNewThreadModal() { 
+                    const m = document.getElementById('newThreadModal');
+                    if (m) m.style.display = 'none'; 
+                }
                 document.addEventListener('DOMContentLoaded', () => {
                     <?php if ($selected_thread_id): ?>
                     window._chat = new ChatController(<?= $staff_id ?>, 'staff', <?= $selected_thread_id ?>);
