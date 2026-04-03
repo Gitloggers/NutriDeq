@@ -13,11 +13,22 @@ class ChatController {
 
     init() {
         this.bindUI();
+        this.initForm();
         if (this.currentThreadId) {
             this.fetchMessages();
             this.startPolling();
         }
         this.initLightbox();
+    }
+
+    initForm() {
+        const form = document.getElementById('messageForm');
+        if (form) {
+            form.onsubmit = (e) => {
+                e.preventDefault();
+                this.sendMessage();
+            };
+        }
     }
 
     bindUI() {
@@ -46,7 +57,8 @@ class ChatController {
     async fetchMessages() {
         if (!this.currentThreadId) return;
         try {
-            const res = await fetch(`${BASE_URL}handlers/get_internal_messages.php?thread_id=${this.currentThreadId}`);
+            const endpoint = `${window.location.origin}${window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'))}/handlers/get_internal_messages.php?thread_id=${this.currentThreadId}`;
+            const res = await fetch(endpoint);
             const data = await res.json();
             if (data.success) { this.renderMessages(data.messages); }
         } catch (e) {}
@@ -100,7 +112,8 @@ class ChatController {
         if (this.fileInput) this.fileInput.value = '';
 
         try {
-            const res = await fetch(`${BASE_URL}handlers/send_internal_message.php`, { method: 'POST', body: formData });
+            const endpoint = `${window.location.origin}${window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'))}/handlers/send_internal_message.php`;
+            const res = await fetch(endpoint, { method: 'POST', body: formData });
             const data = await res.json();
             if (data.success) { this.renderMessages([data.message]); }
         } catch (e) { alert("Communication Error."); }
