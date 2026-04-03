@@ -96,6 +96,7 @@ $nav_links = getNavigationLinks($_SESSION['user_role'], 'staff-client-diary.php'
     <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="css/mobile-style.css">
     <link rel="stylesheet" href="css/logout-modal.css">
+    <link rel="stylesheet" href="css/staff-diary-premium.css">
     <script src="scripts/dashboard.js" defer></script>
     <style>
         .split-layout {

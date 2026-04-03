@@ -1,0 +1,165 @@
+/* 
+    NutriDeq - Staff Client Diary Premium Styles
+    Glassmorphism, Spring Animations, and Modern Aesthetics
+*/
+
+:root {
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.3);
+    --primary-gradient: linear-gradient(135deg, var(--primary), #2dce89);
+    --shadow-premium: 0 10px 30px rgba(0, 0, 0, 0.08);
+    --spring-easing: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Page Entrance */
+@keyframes fadeInUpExpo {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.split-layout {
+    animation: fadeInUpExpo 0.8s var(--spring-easing) forwards;
+}
+
+/* Glassmorphism Containers */
+.client-list-sidebar, .diary-brief, .feedback-container {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid var(--glass-border) !important;
+    box-shadow: var(--shadow-premium) !important;
+    transition: all 0.4s var(--spring-easing) !important;
+    border-radius: 24px !important;
+}
+
+/* Client Items Bouncy Hover */
+.client-item {
+    transition: all 0.3s var(--spring-easing) !important;
+    border-left: 0px solid var(--primary) !important;
+    margin: 8px 12px !important;
+    border-radius: 16px !important;
+    position: relative;
+    overflow: hidden;
+    background: transparent !important;
+}
+
+.client-item:hover {
+    background: rgba(46, 204, 113, 0.05) !important;
+    transform: translateX(5px) scale(1.03);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+}
+
+.client-item.active {
+    background: #ffffff !important;
+    border-left: 5px solid var(--primary) !important;
+    transform: scale(1.02);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+}
+
+.client-avatar {
+    transition: all 0.3s var(--spring-easing) !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.client-item:hover .client-avatar {
+    transform: rotate(10deg) scale(1.1);
+    background: var(--primary) !important;
+    color: white !important;
+}
+
+/* Mini Cards Polishing */
+.summary-mini {
+    gap: 20px !important;
+}
+
+.mini-card {
+    background: rgba(255, 255, 255, 0.6) !important;
+    border: 1px solid var(--glass-border) !important;
+    transition: all 0.3s var(--spring-easing) !important;
+    cursor: default;
+    border-radius: 18px !important;
+}
+
+.mini-card:hover {
+    transform: translateY(-10px);
+    background: #ffffff !important;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.08) !important;
+}
+
+/* Meal Rows with "Haptic" Feel */
+.meal-row {
+    background: rgba(255, 255, 255, 0.4) !important;
+    border: 1px solid rgba(0,0,0,0.02) !important;
+    padding: 15px 20px !important;
+    border-radius: 14px !important;
+    transition: all 0.3s var(--spring-easing) !important;
+    margin-bottom: 8px;
+}
+
+.meal-row:hover {
+    background: #ffffff !important;
+    transform: scale(1.01);
+    padding-left: 25px !important;
+    border-left: 4px solid var(--primary) !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+}
+
+/* Feedback Cards */
+.feedback-card {
+    background: #ffffff !important;
+    border: 1px solid rgba(0,0,0,0.05) !important;
+    padding: 20px !important;
+    border-radius: 20px !important;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02) !important;
+    animation: fadeInUpExpo 0.5s var(--spring-easing) backwards;
+}
+
+.feedback-card:nth-child(2) { animation-delay: 0.1s; }
+.feedback-card:nth-child(3) { animation-delay: 0.2s; }
+.feedback-card-content {
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* Input Area Polishing */
+.input-pill-container {
+    transition: all 0.4s var(--spring-easing) !important;
+    border: 2px solid #f0f0f0 !important;
+    background: white !important;
+}
+
+.input-pill-container:focus-within {
+    transform: translateY(-2px) scale(1.01);
+    border-color: var(--primary) !important;
+    box-shadow: 0 10px 40px rgba(46, 204, 113, 0.15) !important;
+}
+
+.send-btn {
+    transition: all 0.3s var(--spring-easing) !important;
+}
+
+.send-btn:hover {
+    transform: rotate(-10deg) scale(1.15);
+    background: #27ae60 !important;
+}
+
+/* Custom Scrollbar */
+.client-items::-webkit-scrollbar, .chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.client-items::-webkit-scrollbar-thumb, .chat-messages::-webkit-scrollbar-thumb {
+    background: rgba(46, 204, 113, 0.1);
+    border-radius: 10px;
+}
+
+.client-items::-webkit-scrollbar-thumb:hover, .chat-messages::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+}
