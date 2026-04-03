@@ -313,9 +313,21 @@ $nav_links = getNavigationLinks($_SESSION['user_role'], 'staff-client-diary.php'
                 <section class="monitor-content">
                     <?php if ($selected_client): ?>
                         <div class="diary-brief">
-                            <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px;">
+                            <style>
+                                @media screen and (max-width: 768px) {
+                                  .mobile-diary-header {
+                                    flex-direction: column !important;
+                                    align-items: flex-start !important;
+                                  }
+                                  .mobile-diary-header button {
+                                    width: 100%;
+                                    margin-top: 10px;
+                                  }
+                                }
+                            </style>
+                            <div class="mobile-diary-header" style="display: flex; justify-content: space-between; align-items: center; gap: 15px; margin-bottom: 20px;">
                                 <h2 style="font-size: 1.25rem; margin: 0;"><i class="fas fa-book-medical"></i> Food Diary: <?php echo htmlspecialchars($selected_client['name']); ?></h2>
-                                <button class="btn btn-primary" onclick="generateClinicalReport('.monitor-content', 'Patient-Journal-Report.pdf')" style="padding: 8px 16px; font-size: 0.85rem;">
+                                <button class="btn btn-primary" onclick="generateClinicalReport('.monitor-content', 'Patient-Journal-Report.pdf')" style="padding: 8px 16px; font-size: 0.85rem; white-space: nowrap;">
                                     <i class="fas fa-file-pdf"></i> Download Report
                                 </button>
                             </div>

@@ -98,16 +98,52 @@
     animation-delay: 0.2s;
 }
 
-/* Mobile Responsiveness */
+/* Mobile & Premium Tweaks */
 @media screen and (max-width: 768px) {
     .performance-overview {
         grid-template-columns: 1fr;
+        gap: 15px;
     }
     .macro-rings-container {
-        gap: 20px;
+        padding: 10px;
+        flex-wrap: wrap; /* Prevent overflow on small mobiles */
+        gap: 15px;
+        justify-content: center;
+    }
+    .macro-ring-group {
+        flex: 1 1 30%; /* 3-per-row or 2-per-row depending on width */
+        min-width: 90px;
     }
     .macro-svg {
-        width: 100px;
-        height: 100px;
+        width: 70px;
+        height: 70px;
     }
+    .macro-name {
+        font-size: 0.75rem;
+    }
+    .macro-val {
+        font-size: 0.8rem;
+    }
+}
+
+/* Premium Glow Effect (WOW Factor) */
+.macro-snap-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.macro-snap-card::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 70% 30%, rgba(46, 204, 113, 0.05), transparent 50%);
+    pointer-events: none;
+}
+
+.pulse-chart-container {
+    height: 180px; /* Locked height for mobile stability */
+    position: relative;
 }
