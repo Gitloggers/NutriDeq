@@ -1,0 +1,172 @@
+/* Logout modal - compiled for Dashboard (solid card, non-transparent) */
+
+.logout-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    /* top:0; right:0; bottom:0; left:0; */
+    background: rgba(0, 0, 0, 0.35);
+    /* overlay */
+    z-index: 1100;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    -webkit-font-smoothing: antialiased;
+    transition: opacity 0.22s ease, visibility 0.22s ease;
+    visibility: hidden;
+    opacity: 0;
+}
+
+.logout-modal.active {
+    display: flex;
+    visibility: visible;
+    opacity: 1;
+}
+
+
+/* Modal card */
+
+.logout-modal-content {
+    background: #ffffff !important;
+    /* solid white card */
+    border-radius: 12px;
+    padding: 36px 32px;
+    width: 420px;
+    max-width: calc(100% - 48px);
+    box-shadow: 0 10px 30px rgba(11, 22, 34, 0.12);
+    text-align: center;
+    position: relative;
+    transform: translateY(0);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+
+/* subtle lift when active */
+
+.logout-modal.active .logout-modal-content {
+    transform: translateY(-6px);
+}
+
+
+/* circular icon */
+
+.logout-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 18px;
+    font-size: 30px;
+    color: #fff;
+    background: linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%);
+    box-shadow: 0 6px 18px rgba(255, 82, 82, 0.16);
+}
+
+
+/* title and description */
+
+.logout-modal-content h3 {
+    margin: 0 0 8px 0;
+    font-size: 22px;
+    font-weight: 600;
+    color: #172b4d;
+    /* dark slate */
+    font-family: 'Poppins', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+.logout-modal-content p {
+    margin: 0 0 22px 0;
+    font-size: 14px;
+    color: #6b7280;
+    /* muted gray */
+    line-height: 1.5;
+}
+
+
+/* action buttons */
+
+.logout-modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* base button */
+
+.logout-modal-actions .btn {
+    min-width: 120px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease;
+    font-family: 'Poppins', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+
+/* secondary (cancel) */
+
+.logout-modal-actions .btn-secondary {
+    background: #eef2f6;
+    color: #1f2937;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.04);
+}
+
+.logout-modal-actions .btn-secondary:hover,
+.logout-modal-actions .btn-secondary:focus {
+    transform: translateY(-2px);
+    background: #e6eef7;
+    outline: none;
+}
+
+
+/* primary (confirm logout) */
+
+.logout-modal-actions .btn-primary {
+    background: #27ae60;
+    color: #ffffff;
+    box-shadow: 0 6px 18px rgba(39, 174, 96, 0.14);
+}
+
+.logout-modal-actions .btn-primary:hover,
+.logout-modal-actions .btn-primary:focus {
+    transform: translateY(-2px);
+    background: #219150;
+    outline: none;
+}
+
+
+/* accessibility focus */
+
+.logout-modal .btn:focus {
+    box-shadow: 0 0 0 4px rgba(37, 150, 90, 0.12);
+}
+
+
+/* small screens */
+
+@media (max-width: 480px) {
+    .logout-modal-content {
+        padding: 28px 18px;
+    }
+    .logout-icon {
+        width: 62px;
+        height: 62px;
+        font-size: 26px;
+        margin-bottom: 14px;
+    }
+    .logout-modal-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .logout-modal-actions .btn {
+        width: 100%;
+        min-width: 0;
+    }
+}

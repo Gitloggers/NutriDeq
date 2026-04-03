@@ -1,0 +1,161 @@
+.sidebar {
+    width: 260px;
+    background: #ffffff;
+    backdrop-filter: none;
+    box-shadow: var(--shadow);
+    padding: 30px 0;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    overflow-y: auto;
+    z-index: 1002;
+    /* Raised to overlay mobile header */
+    transition: transform 0.3s ease-in-out, var(--transition);
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--glass-border);
+}
+
+.logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0 20px 20px;
+    border-bottom: 1px solid rgba(46, 139, 87, 0.2);
+    margin-bottom: 15px;
+}
+
+.logo-img {
+    height: 45px;
+    width: auto;
+    border-radius: 6px;
+    margin-right: 0px;
+    vertical-align: middle;
+}
+
+.nav-links {
+    list-style: none;
+    padding: 0 15px;
+    flex: 1;
+}
+
+.nav-links li {
+    margin-bottom: 8px;
+}
+
+.nav-links a {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    text-decoration: none;
+    color: #4b5563;
+    /* Ant Design sleek dark gray */
+    border-radius: 8px;
+    /* Tighter radius */
+    transition: all 0.2s ease;
+    position: relative;
+    font-weight: 500;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: #2D8A56;
+    /* Core Theme Forest Green */
+    background-color: rgba(45, 138, 86, 0.08);
+    /* Light green background */
+}
+
+.nav-links a.active::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 60%;
+    width: 3px;
+    background-color: #2D8A56;
+    border-radius: 4px 0 0 4px;
+}
+
+.nav-links a i {
+    margin-right: 12px;
+    font-size: 20px;
+    width: 24px;
+    text-align: center;
+}
+
+.user-profile {
+    padding: 15px 20px;
+    border-top: 1px solid rgba(46, 139, 87, 0.2);
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    transition: var(--transition);
+}
+
+.user-profile:hover {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 16px;
+    margin-right: 12px;
+    box-shadow: 0 3px 10px rgba(46, 139, 87, 0.3);
+}
+
+.user-info h4 {
+    font-size: 14px;
+    margin-bottom: 3px;
+}
+
+.user-info p {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.logout-section {
+    padding: 10px 20px;
+    border-top: 1px solid rgba(46, 139, 87, 0.2);
+}
+
+.logout-btn {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    text-decoration: none;
+    color: var(--accent);
+    border-radius: 8px;
+    transition: var(--transition);
+    cursor: pointer;
+    border: none;
+    background: none;
+    width: 100%;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+}
+
+.logout-btn:hover {
+    background: rgba(255, 107, 107, 0.1);
+    transform: translateX(3px);
+}
+
+.logout-btn i {
+    margin-right: 10px;
+    font-size: 18px;
+    width: 20px;
+    text-align: center;
+}

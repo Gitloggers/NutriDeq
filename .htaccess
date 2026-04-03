@@ -1,0 +1,11 @@
+RewriteEngine On
+
+# Prevent directory listing
+Options -Indexes
+
+# Allow existing files and directories to be loaded directly
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Optionally forward all other requests to a router (index.php) if you use front-controller pattern:
+# RewriteRule ^(.*)$ index.php [QSA,L]

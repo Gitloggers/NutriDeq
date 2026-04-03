@@ -1,0 +1,1146 @@
+/* ==========================================================================
+   NUTRIDEQ — mobile-style.css  (clean, de-duplicated)
+   ========================================================================== */
+
+* { box-sizing: border-box !important; }
+
+html { scroll-behavior: smooth; }
+
+body {
+    overflow-x: hidden;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ------------------------------------------------------------------
+   MOBILE HEADER BAR (hidden on desktop)
+   ------------------------------------------------------------------ */
+.mobile-header {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: calc(64px + env(safe-area-inset-top));
+    background: #ffffff;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    box-shadow: 0 1px 1px rgba(0,0,0,0.02);
+    z-index: 10001;
+    align-items: center;
+    padding: env(safe-area-inset-top) 20px 0;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.header-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-logo span {
+    font-weight: 700;
+    font-family: 'Playfair Display', serif;
+    color: var(--primary, #2E8B57);
+    font-size: 1.4rem;
+    letter-spacing: -0.5px;
+}
+
+/* ------------------------------------------------------------------
+   HAMBURGER BUTTON
+   ------------------------------------------------------------------ */
+.mobile-nav-toggle {
+    display: none;
+    width: 44px;
+    height: 44px;
+    background: #f8fafc;
+    color: var(--primary, #2E8B57);
+    border: 1px solid rgba(46, 139, 87, 0.15);
+    border-radius: 12px;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 1.3rem;
+    flex-shrink: 0;
+    z-index: 10002;
+}
+
+.mobile-nav-toggle i {
+    pointer-events: none; /* Let clicks pass through to the button */
+}
+
+.mobile-nav-toggle:active {
+    background: #f3f4f6;
+    transform: scale(0.95);
+}
+
+.mobile-nav-toggle:hover,
+.mobile-nav-toggle:focus {
+    background: var(--primary, #2E8B57);
+    color: white;
+    outline: none;
+}
+
+/* ------------------------------------------------------------------
+   SIDEBAR — slide-in on mobile
+   ------------------------------------------------------------------ */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 10000;
+    backdrop-filter: blur(2px);
+}
+
+/* ------------------------------------------------------------------
+   TABLET ≤ 1024px — show burger, hide desktop sidebar
+   ------------------------------------------------------------------ */
+@media screen and (max-width: 1024px) {
+
+    .mobile-header     { display: flex !important; }
+    .mobile-nav-toggle { display: flex !important; }
+
+    body { 
+        display: block !important; 
+        overflow-x: hidden !important;
+    }
+
+    .main-layout { display: block !important; }
+
+    .main-content {
+        padding-top: 75px !important; /* Header (60px) + 15px Gap */
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+        margin-left: 0 !important;
+        width: 100% !important;
+        transition: none !important; /* Remove desktop transition */
+    }
+
+    .sidebar {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        height: 100vh !important;
+        transform: translateX(-100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        z-index: 10002 !important;
+        width: 280px !important;
+        max-width: 85vw !important;
+        display: flex !important;
+        box-shadow: 20px 0 50px rgba(0,0,0,0.2) !important;
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .sidebar-overlay.active {
+        display: block !important;
+        opacity: 1 !important;
+    }
+
+    /* Support for Tall Screens (iPhone 16 Pro Max, S24 Ultra, etc.) */
+    @media (min-height: 800px) {
+        .main-content {
+            min-height: calc(100vh - (64px + env(safe-area-inset-top)));
+            padding-bottom: calc(40px + env(safe-area-inset-bottom)) !important;
+        }
+        
+        .page-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+    }
+
+    /* Health Tracker / Food Diary Mobile Overhaul - Premium Aesthetic */
+    .tabs-container {
+        margin-top: 15px !important;
+    }
+
+    .btn-back {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        padding: 10px 18px !important;
+        background: #f1f2f6 !important;
+        color: #2f3542 !important;
+        border-radius: 10px !important;
+        text-decoration: none !important;
+        font-size: 0.9rem !important;
+        font-weight: 600 !important;
+        border: 1px solid rgba(0,0,0,0.05) !important;
+        margin-bottom: 20px !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .btn-back i {
+        font-size: 0.8rem !important;
+    }
+
+    .tabs-header {
+        display: flex !important;
+        flex-direction: row !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        gap: 10px !important;
+        padding: 12px 16px !important;
+        background: #ffffff !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        border-bottom: 1px solid rgba(0,0,0,0.05) !important;
+        scrollbar-width: none !important;
+        margin: 0 !important;
+        position: sticky !important;
+        top: 60px !important;
+        z-index: 100 !important;
+    }
+
+    .tab {
+        flex: 0 0 auto !important;
+        padding: 10px 18px !important;
+        border-radius: 14px !important;
+        font-size: 0.85rem !important;
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 8px !important;
+        background: #f1f5f9 !important;
+        border: 1px solid transparent !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        color: #64748b !important;
+        font-weight: 600 !important;
+    }
+
+    .tab.active {
+        background: var(--primary) !important;
+        color: white !important;
+        box-shadow: 0 4px 12px rgba(46, 139, 87, 0.25) !important;
+        transform: translateY(-1px) !important;
+    }
+
+    .tab-icon {
+        font-size: 1rem !important;
+        margin: 0 !important;
+    }
+
+    .tab span {
+        font-size: 0.8rem !important;
+    }
+
+    /* Food Entries Modern Cards */
+    .food-entries {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px !important;
+        padding: 0 5px 20px 5px !important;
+    }
+
+    .food-entry {
+        display: grid !important;
+        grid-template-columns: 56px 1fr auto !important;
+        grid-template-areas: 
+            "icon info info"
+            "icon macros macros"
+            "actions actions calories" !important;
+        padding: 16px !important;
+        background: var(--bg-surface) !important;
+        border-radius: 20px !important;
+        border: 1px solid rgba(0,0,0,0.04) !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.03) !important;
+        gap: 8px 12px !important;
+        align-items: center !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .food-icon {
+        grid-area: icon !important;
+        background: linear-gradient(135deg, rgba(46, 139, 87, 0.1) 0%, rgba(46, 139, 87, 0.05) 100%) !important;
+        border-radius: 15px !important;
+        width: 60px !important;
+        height: 60px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 1.5rem !important;
+    }
+
+    .food-details {
+        grid-area: info !important;
+        margin: 0 !important;
+    }
+
+    .food-name {
+        font-size: 1.1rem !important;
+        font-weight: 700 !important;
+        color: #1e272e !important;
+        margin-bottom: 2px !important;
+    }
+
+    .food-macros {
+        grid-area: macros !important;
+        font-size: 0.8rem !important;
+        color: #7f8c8d !important;
+        background: #f1f2f6 !important;
+        padding: 6px 12px !important;
+        border-radius: 10px !important;
+        display: inline-flex !important;
+        gap: 8px !important;
+        width: fit-content !important;
+        font-weight: 500 !important;
+    }
+
+    .food-calories {
+        grid-area: calories !important;
+        font-size: 1.3rem !important;
+        font-weight: 900 !important;
+        color: var(--primary) !important;
+        text-align: right !important;
+        background: linear-gradient(to right, var(--primary), #27ae60);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .food-actions {
+        grid-area: actions !important;
+        display: flex !important;
+        gap: 10px !important;
+    }
+
+    .food-actions button {
+        padding: 10px 16px !important;
+        background: var(--bg-surface)5f5 !important;
+        color: #ff4d4d !important;
+        border-radius: 12px !important;
+        border: 1px solid rgba(255, 77, 77, 0.1) !important;
+        font-size: 0.85rem !important;
+        font-weight: 600 !important;
+        box-shadow: 0 4px 10px rgba(255, 77, 77, 0.1) !important;
+    }
+
+    /* Stats Grid fix */
+    .stats-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 15px !important;
+        margin-top: 10px !important;
+    }
+
+    .stat-card {
+        padding: 20px !important;
+        border-radius: 18px !important;
+        background: var(--bg-surface) !important;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.04) !important;
+        border: 1px solid rgba(0,0,0,0.02) !important;
+    }
+
+    .stat-value { 
+        font-size: 1.6rem !important; 
+        font-weight: 800 !important; 
+        margin-bottom: 4px !important;
+    }
+
+    .stat-label {
+        font-size: 0.75rem !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.5px !important;
+        font-weight: 600 !important;
+        color: #a4b0be !important;
+    }
+
+    .main-content { padding: 15px !important; padding-top: 80px !important; }
+    .page-container { padding: 0 !important; }
+
+    /* Dashboard Specific Enhancements */
+    .dashboard-grid .stat-card,
+    .admin-grid .stat-card {
+        padding: 22px !important;
+        background: linear-gradient(145deg, #ffffff, #f9f9f9) !important;
+        border-radius: 20px !important;
+        border: 1px solid rgba(0,0,0,0.03) !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.04) !important;
+        flex-direction: row !important; /* Keep icon and text side by side */
+        justify-content: flex-start !important;
+        gap: 15px !important;
+        min-height: auto !important;
+    }
+
+    .dashboard-grid .stat-icon,
+    .admin-grid .stat-icon {
+        width: 55px !important;
+        height: 55px !important;
+        margin: 0 !important;
+        border-radius: 12px !important;
+        font-size: 1.4rem !important;
+    }
+
+    .dashboard-grid .stat-info h3,
+    .admin-grid .stat-info h3 {
+        font-size: 1.5rem !important;
+        margin-bottom: 2px !important;
+    }
+
+    .dashboard-grid .stat-info p,
+    .admin-grid .stat-info p {
+        font-size: 0.8rem !important;
+    }
+
+    /* Sidebar: slide from left */
+    .sidebar {
+        position: fixed;
+        top: 0; left: 0;
+        height: 100vh;
+        width: 280px;
+        max-width: 85vw;
+        z-index: 10002;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        background: var(--bg-surface);
+        overflow-y: auto;
+        box-shadow: 4px 0 30px rgba(0,0,0,0.15);
+    }
+
+    .sidebar.active {
+        transform: translateX(0) !important;
+        visibility: visible !important;
+        display: flex !important;
+        background: #ffffff !important;
+        backdrop-filter: none !important;
+    }
+
+    .sidebar span,
+    .sidebar h4,
+    .sidebar p {
+        display: inline-block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+
+    .sidebar .nav-links span { margin-left: 10px; }
+
+    .sidebar-overlay.active { display: block; }
+}
+
+/* Desktop: keep sidebar visible, hide mobile bits */
+@media screen and (min-width: 1025px) {
+    .mobile-header     { display: none !important; }
+    .mobile-nav-toggle { display: none !important; }
+    .sidebar-overlay   { display: none !important; }
+}
+
+/* ------------------------------------------------------------------
+   TABLET & MOBILE: general layout fixes
+   ------------------------------------------------------------------ */
+@media screen and (max-width: 1024px) {
+    .container,
+    .main-content,
+    .messaging-wrapper,
+    .card,
+    .tabs-container {
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+    }
+}
+
+/* ------------------------------------------------------------------
+   MOBILE ≤ 768px — comprehensive layout stacking
+   ------------------------------------------------------------------ */
+@media screen and (max-width: 768px) {
+
+    /* Main content spacing - top matches mobile-header height */
+    .main-content {
+        padding: 76px 14px 24px !important;
+    }
+
+    /* FAB (Floating Action Button) for ADD actions on mobile */
+    .header-actions .btn-primary.btn-add-fab,
+    .btn-create-item {
+        position: fixed !important;
+        bottom: 24px !important;
+        right: 24px !important;
+        width: 60px !important;
+        height: 60px !important;
+        border-radius: 50% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        z-index: 9997 !important;
+        box-shadow: 0 5px 20px rgba(46, 139, 87, 0.4) !important;
+        padding: 0 !important;
+        font-size: 0 !important; /* Hide text */
+    }
+
+    .header-actions .btn-primary i {
+        font-size: 1.5rem !important;
+        margin: 0 !important;
+    }
+
+    .card, .section, .stat-card {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        border-radius: 12px !important;
+    }
+
+    /* Headers */
+    .header,
+    .section-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+    }
+
+    .page-title h1 {
+        font-size: 1.5rem !important;
+        line-height: 1.3 !important;
+        white-space: normal !important;
+        word-wrap: break-word !important;
+    }
+
+    .header-actions,
+    .section-header .header-actions {
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 10px !important;
+        justify-content: space-between !important;
+        margin-top: 15px !important;
+    }
+
+    .ant-controls-group {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        width: 100% !important;
+    }
+
+    .ant-space-compact {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        width: 100% !important;
+        align-items: stretch !important;
+    }
+
+    .header-actions .btn:not(.btn-add-fab) {
+        flex: 0 0 48px !important;
+        width: 48px !important;
+        height: 48px !important;
+        border-radius: 12px !important;
+        background: var(--primary) !important;
+        color: white !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-shadow: 0 4px 12px rgba(46, 139, 87, 0.2) !important;
+        border: none !important;
+    }
+
+    #staffFilter {
+        flex: 1 !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        height: 48px !important;
+        border-radius: 12px !important;
+        border: 2px solid #f1f2f6 !important;
+        background: #fdfdfd !important;
+        padding: 0 15px !important;
+    }
+
+    .search-box input,
+    .ant-input-wrapper,
+    .choices__inner {
+        border-radius: 12px !important;
+        height: 50px !important;
+        border: 1px solid rgba(0,0,0,0.1) !important;
+    }
+
+    .ant-space-compact .ant-input-wrapper {
+        border-radius: 12px !important; /* Stacked vertical, so all corners rounded */
+        margin-bottom: -1px; /* Subtle overlap */
+    }
+
+    .ant-space-compact .choices {
+        width: 100% !important;
+    }
+
+    .ant-space-compact .choices__inner {
+        border-radius: 12px !important;
+    }
+
+    /* Grids → vertical stack */
+    .input-grid,
+    .results-grid,
+    .nutrient-grid,
+    .form-grid,
+    .stats-grid,
+    .dashboard-grid,
+    .admin-grid,
+    .charts-section,
+    .nutrition-facts-section,
+    .macronutrient-grid,
+    .distribution-grid,
+    .calculation-visual {
+        grid-template-columns: 1fr !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px !important;
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    #staffDeltaList {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 10px !important;
+        width: 100% !important;
+    }
+
+    #staffDeltaList > div {
+        flex: none !important;
+        width: 100% !important;
+        justify-content: space-between !important;
+        padding: 8px 12px !important;
+        font-size: 0.8rem !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+    }
+
+    #staffDeltaList > div span:first-child {
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+        max-width: 60% !important;
+    }
+
+    .nutrient-item,
+    .form-group,
+    .macronutrient-card,
+    .distribution-card,
+    .calculation-step,
+    .value-card {
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding: 12px !important;
+    }
+
+    .nutrient-input { width: 85px !important; min-width: 85px !important; }
+    .form-group.full-width { width: 100% !important; grid-column: 1 !important; }
+
+    /* Tab content padding */
+    .nutrition-card,
+    .tab-content {
+        padding: 15px !important;
+        margin-bottom: 20px !important;
+    }
+
+    /* Prevent iOS zoom on inputs */
+    input, select, textarea { font-size: 16px !important; }
+
+    /* Modals */
+    .modal-overlay {
+        align-items: center;
+        justify-content: center;
+        z-index: 10000 !important;
+    }
+
+    .modal-container {
+        width: 95% !important;
+        max-width: 95% !important;
+        margin: 10px auto !important;
+        height: auto !important;
+        max-height: 90vh !important;
+        border-radius: 15px !important;
+        overflow-y: auto;
+    }
+
+    /* Charts */
+    canvas { max-height: 280px !important; }
+
+    /* Premium Summary Cards (Mobile Only) */
+    .summary-cards, .stats-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px !important;
+        padding: 0 5px !important;
+    }
+
+    .summary-card, .stat-card {
+        padding: 16px !important;
+        border-radius: 20px !important;
+        background: var(--bg-surface) !important;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.05) !important;
+        border: 1px solid rgba(0,0,0,0.03) !important;
+        height: auto !important;
+        min-height: 100px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        text-align: center !important;
+        margin: 0 !important;
+    }
+
+    /* Food Diary Mobile Enhancements */
+    .meal-section {
+        background: transparent !important;
+        box-shadow: none !important;
+        border: none !important;
+        margin-bottom: 25px !important;
+    }
+
+    .meal-header {
+        background: transparent !important;
+        padding: 10px 5px !important;
+        border: none !important;
+    }
+
+    .meal-content {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+    }
+
+    .food-item {
+        background: var(--bg-surface) !important;
+        border-radius: 20px !important;
+        padding: 18px !important;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.04) !important;
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        border: 1px solid rgba(0,0,0,0.02) !important;
+    }
+
+    .food-info h4 { font-size: 1rem !important; }
+    .food-macros { text-align: right !important; }
+
+    /* Management Tab Navigation to Pills */
+    .tab-navigation {
+        display: flex !important;
+        overflow-x: auto !important;
+        gap: 10px !important;
+        padding: 15px 5px !important;
+        border-bottom: none !important;
+        scrollbar-width: none !important;
+    }
+
+    .tab-navigation::-webkit-scrollbar { display: none !important; }
+
+    .tab-btn {
+        flex: 0 0 auto !important;
+        padding: 10px 20px !important;
+        background: var(--bg-surface) !important;
+        color: #636E72 !important;
+        border-radius: 30px !important;
+        border: 1px solid var(--border-color) !important;
+        white-space: nowrap !important;
+    }
+
+    .tab-btn.active {
+        background: var(--primary) !important;
+        color: white !important;
+        border-color: var(--primary) !important;
+        box-shadow: 0 4px 12px rgba(46, 139, 87, 0.2) !important;
+    }
+
+    /* Remarks Cards */
+    .remark-card {
+        border-radius: 20px !important;
+        padding: 18px !important;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.03) !important;
+        background: var(--bg-surface) !important;
+        margin-bottom: 15px !important;
+        border: 1px solid rgba(0,0,0,0.02) !important;
+    }
+
+    /* Sidebar z-index handled in main media query */
+}
+
+/* ------------------------------------------------------------------
+   FCT LIBRARY — Card-style stacking on mobile
+   ------------------------------------------------------------------ */
+@media screen and (max-width: 768px) {
+
+    /* Hide the real column headers */
+    .fct-table thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    /* Each row becomes a card */
+    .fct-table,
+    .fct-table thead,
+    .fct-table tbody,
+    .fct-table th,
+    .fct-table td,
+    .fct-table tr,
+    .food-exchange-table,
+    .food-exchange-table thead,
+    .food-exchange-table tbody,
+    .food-exchange-table th,
+    .food-exchange-table td,
+    .food-exchange-table tr,
+    .user-table,
+    .user-table thead,
+    .user-table tbody,
+    .user-table th,
+    .user-table td,
+    .user-table tr,
+    .client-table,
+    .client-table thead,
+    .client-table tbody,
+    .client-table th,
+    .client-table td,
+    .client-table tr,
+    .staff-table,
+    .staff-table thead,
+    .staff-table tbody,
+    .staff-table th,
+    .staff-table td,
+    .staff-table tr,
+    .delete-history-table,
+    .delete-history-table thead,
+    .delete-history-table tbody,
+    .delete-history-table th,
+    .delete-history-table td,
+    .delete-history-table tr {
+        display: block !important;
+    }
+
+    .fct-table thead,
+    .food-exchange-table thead,
+    .user-table thead,
+    .client-table thead,
+    .staff-table thead,
+    .delete-history-table thead {
+        display: none !important;
+    }
+
+    .fct-table tr,
+    .food-exchange-table tr,
+    .user-table tr,
+    .client-table tr,
+    .staff-table tr,
+    .delete-history-table tr {
+        background: var(--bg-surface);
+        border-radius: 14px;
+        margin-bottom: 16px;
+        padding: 14px 16px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        border: 1px solid #f0f0f0;
+    }
+
+    /* Each cell: label on the left, value on the right */
+    .fct-table td,
+    .food-exchange-table td,
+    .user-table td,
+    .client-table td,
+    .staff-table td,
+    .delete-history-table td {
+        border: none !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 12px 6px !important;
+        min-height: 45px !important;
+        gap: 12px !important;
+        white-space: normal !important; /* Allow wrapping */
+        overflow: visible !important;   /* Don't clip content */
+        text-align: right !important;
+        width: 100% !important;
+    }
+
+    .user-table td > *, 
+    .staff-table td > *, 
+    .client-table td > * {
+        flex-shrink: 1 !important;
+        min-width: 0 !important;
+        text-align: right !important;
+    }
+
+    .fct-table td::before,
+    .food-exchange-table td::before,
+    .user-table td::before,
+    .client-table td::before,
+    .staff-table td::before,
+    .delete-history-table td::before {
+        content: attr(data-label);
+        font-weight: 700;
+        color: #94a3b8;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+        flex-shrink: 0;
+        min-width: 90px;
+        text-align: left !important;
+    }
+
+    /* Food ID cell */
+    .fct-table td[data-label="Food ID"] span {
+        font-size: 0.85rem;
+    }
+
+    /* Name cell — icon + name side by side */
+    .fct-table td[data-label="Name"] {
+        padding: 10px 4px !important;
+    }
+
+    .fct-table td[data-label="Name"] > div {
+        flex: 1;
+        justify-content: flex-end;
+    }
+
+    .fct-table td[data-label="Actions"]::before,
+    .user-table td[data-label="Actions"]::before,
+    .client-table td[data-label="Actions"]::before,
+    .staff-table td[data-label="Actions"]::before,
+    .delete-history-table td[data-label="Actions"]::before {
+        display: none !important;
+    }
+
+    .fct-table td[data-label="Actions"],
+    .user-table td[data-label="Actions"],
+    .client-table td[data-label="Actions"],
+    .staff-table td[data-label="Actions"],
+    .delete-history-table td[data-label="Actions"] {
+        justify-content: center !important;
+        border-top: 1px solid #f0f0f0 !important;
+        margin-top: 8px !important;
+        padding-top: 15px !important;
+        gap: 15px !important;
+        flex-wrap: wrap !important;
+    }
+
+    /* Info cells - Name + Avatar info alignment */
+    .user-info-cell {
+        justify-content: flex-end !important;
+        width: 100% !important;
+        gap: 10px !important;
+    }
+
+    .user-details {
+        text-align: right !important;
+        align-items: flex-end !important;
+        overflow: visible !important;
+    }
+
+    /* Table container */
+    .fct-table-container,
+    .table-container {
+        border: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+    }
+
+    /* Scrollable tables (for other pages) */
+    .table-responsive {
+        width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        margin-bottom: 20px !important;
+        border-radius: 12px !important;
+    }
+
+    .table-responsive::-webkit-scrollbar { height: 5px !important; }
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: #e5e7eb !important;
+        border-radius: 10px !important;
+    }
+
+    /* Modal inner container */
+    .input-pill-container { flex-wrap: wrap; }
+
+
+/* ------------------------------------------------------------------
+   TOUCH MIN-SIZE
+   ------------------------------------------------------------------ */
+.touch-ready {
+    min-height: 48px !important;
+    font-size: 16px !important;
+    padding: 10px 15px !important;
+}
+
+#staffFilter {
+    height: 48px !important;
+    font-size: 16px !important;
+}
+
+/* ------------------------------------------------------------------
+   FADE-IN UTILITY
+   ------------------------------------------------------------------ */
+.fade-in { animation: fadeInUp 0.5s ease forwards; }
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0);    }
+}
+
+#clientSelect {
+    width: 100% !important;
+    height: 52px !important;
+    border-radius: 12px !important;
+    font-size: 1rem !important;
+    padding: 0 15px !important;
+    background: #1e272e !important;
+    color: white !important;
+    border: none !important;
+    margin-top: 10px !important;
+}
+
+.management-section {
+    padding: 15px !important;
+    border-radius: 16px !important;
+}
+
+    /* ------------------------------------------------------------------
+       NUTRITION CALCULATOR & BODY STATS MOBILE REFINEMENTS
+       ------------------------------------------------------------------ */
+    .calculator-container {
+        grid-template-columns: 1fr !important;
+        gap: 15px !important;
+    }
+
+    .calculator-card {
+        padding: 20px 15px !important;
+        border-radius: 20px !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+        border: 1px solid rgba(0, 0, 0, 0.04) !important;
+        margin-bottom: 20px !important;
+    }
+
+    .card-header h2 {
+        font-size: 1.3rem !important;
+        margin-bottom: 15px !important;
+    }
+
+    .card-header {
+        margin-bottom: 15px !important;
+        padding-bottom: 10px !important;
+    }
+
+    .input-grid {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+    }
+
+    .select-group {
+        flex-direction: column !important;
+        gap: 8px !important;
+    }
+
+    .select-group input,
+    .select-group select {
+        width: 100% !important;
+        min-height: 48px !important;
+    }
+
+    .results-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px !important;
+    }
+
+    .result-card {
+        padding: 15px 10px !important;
+        border-radius: 16px !important;
+        background: #f8fafc !important;
+    }
+
+    .result-value {
+        font-size: 1.4rem !important;
+        color: var(--primary, #2E8B57) !important;
+    }
+
+    .result-label {
+        font-size: 0.75rem !important;
+        font-weight: 500 !important;
+        letter-spacing: -0.2px !important;
+    }
+
+    .method-options {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+    }
+
+    .method-option {
+        padding: 14px 8px !important;
+        font-size: 0.8rem !important;
+        border-radius: 12px !important;
+        background: #f1f5f9 !important;
+    }
+
+    .calculate-btn {
+        padding: 16px !important;
+        font-size: 1rem !important;
+        font-weight: 600 !important;
+        border-radius: 16px !important;
+        background: linear-gradient(135deg, var(--primary, #2E8B57) 0%, #22c55e 100%) !important;
+        box-shadow: 0 8px 16px rgba(46, 139, 87, 0.25) !important;
+        color: #fff !important;
+        margin-top: 20px !important;
+    }
+
+    .reset-btn {
+        padding: 12px !important;
+        font-size: 0.9rem !important;
+        border-radius: 12px !important;
+    }
+
+    /* Anthropometric Forms Mobile Grid */
+    .form-grid {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+    }
+
+    .form-group.full-width {
+        grid-column: span 1 !important;
+    }
+
+    /* Client Selector Premium Look */
+    .client-selector {
+        background: var(--bg-surface) !important;
+        border-radius: 20px !important;
+        padding: 20px !important;
+        margin: 15px 0 25px !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+        border: 1px solid rgba(0,0,0,0.02) !important;
+    }
+
+    .client-selector label {
+        font-size: 0.85rem !important;
+        font-weight: 600 !important;
+        color: #64748b !important;
+        margin-bottom: 10px !important;
+    }
+
+    #clientSelect {
+        margin-top: 0 !important; /* Resetting previous override */
+        height: 50px !important;
+        background: #f8fafc !important;
+        color: #1e293b !important;
+        border: 1.5px solid #e2e8f0 !important;
+    }
+
+    /* Disclaimer box tweaks */
+    .disclaimer-box {
+        padding: 20px !important;
+        border-radius: 20px !important;
+        margin-top: 25px !important;
+    }
+
+} /* End Media Query */
+

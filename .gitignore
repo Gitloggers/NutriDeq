@@ -1,0 +1,19 @@
+# Dependency directories
+vendor/
+
+# Environment variables
+.env
+.env.*
+
+# Logs and databases
+*.log
+*.sqlite
+*.sqlite3
+*.db
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Exclude sensitive config overrides if you create them
+config.local.php
