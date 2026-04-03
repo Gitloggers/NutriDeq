@@ -279,8 +279,13 @@ class ChatController {
             if (data.success) {
                 this.renderMessages([data.message]);
                 this.scrollToBottom();
+            } else {
+                alert("Message failed: " + (data.error || "Unknown error"));
             }
-        } catch (e) { }
+        } catch (e) {
+            console.error("Chat Error:", e);
+            alert("Connection error. Please try again.");
+        }
     }
 
     async toggleAISuggestions() {

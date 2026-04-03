@@ -83,7 +83,8 @@ try {
                 WHEN wm.sender_type = 'staff' THEN u.name
                 WHEN wm.sender_type = 'ai' THEN 'NutriDeq AI'
                 ELSE 'Unknown'
-            END as sender_name
+            END as sender_name,
+            wm.attachment_path, wm.message_type
             FROM wellness_messages wm
             LEFT JOIN clients c ON wm.sender_type = 'client' AND wm.sender_id = c.user_id 
             LEFT JOIN users u ON wm.sender_type = 'staff' AND wm.sender_id = u.id
@@ -133,6 +134,9 @@ try {
                 'type' => $is_me ? 'sent' : 'received',
                 'pretty_time' => date('g:i A', strtotime($row['created_at'])),
                 'read' => !is_null($row['read_at']),
+                'attachment_path' => $row['attachment_path'],
+                'message_type' => $row['message_type'] ?? 'text',
+                'file_name' => 'NutriDeq-Clinical-Report.pdf',
                 'date_separator' => $separator
             ];
         }
