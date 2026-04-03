@@ -7,6 +7,9 @@ RUN apt-get update && apt-get install -y nginx && \
 # Copy nginx config
 COPY nginx.conf /etc/nginx/nginx.conf
 
+# Copy PHP config
+COPY php.ini /usr/local/etc/php/php.ini
+
 # Copy app files
 COPY . /var/www/html/
 RUN chown -R www-data:www-data /var/www/html && \
