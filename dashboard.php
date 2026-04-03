@@ -95,6 +95,7 @@ $pdo = $database->getConnection();
     <?php endif; ?>
     <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="css/mobile-style.css">
+    <link rel="stylesheet" href="css/user-premium.css">
     <style>
         /* Dashboard-specific refined mobile metrics */
         @media screen and (max-width: 768px) {
@@ -1181,6 +1182,70 @@ $pdo = $database->getConnection();
                     </div>
                 </div>
             </div>
+            
+            <!-- NEW: PERFORMANCE OVERVIEW (WOW FACTOR) -->
+            <div class="performance-overview">
+                <!-- Macro Snapshot (SVG Rings) -->
+                <div class="macro-snap-card">
+                    <div class="section-header" style="margin-bottom: 20px;">
+                        <h2><i class="fas fa-bullseye"></i> Nutritional Snap <i class="fas fa-info-circle" title="Your progress toward your daily macro goals. Ring fills up as you log food."></i></h2>
+                    </div>
+                    <div class="macro-rings-container">
+                        <!-- Protein Ring -->
+                        <div class="macro-ring-group">
+                            <div class="macro-ring" id="proteinRing">
+                                <svg class="macro-svg">
+                                    <circle class="bg" cx="40" cy="40" r="34"></circle>
+                                    <circle class="bar" id="p_bar" cx="40" cy="40" r="34" stroke="#4facfe" stroke-dasharray="213" stroke-dashoffset="213"></circle>
+                                </svg>
+                            </div>
+                            <div class="macro-label">
+                                <div class="macro-name">Protein</div>
+                                <div class="macro-val" id="p_val">0 / 0g</div>
+                            </div>
+                        </div>
+                        <!-- Carbs Ring -->
+                        <div class="macro-ring-group">
+                            <div class="macro-ring" id="carbsRing">
+                                <svg class="macro-svg">
+                                    <circle class="bg" cx="40" cy="40" r="34"></circle>
+                                    <circle class="bar" id="c_bar" cx="40" cy="40" r="34" stroke="#43e97b" stroke-dasharray="213" stroke-dashoffset="213"></circle>
+                                </svg>
+                            </div>
+                            <div class="macro-label">
+                                <div class="macro-name">Carbs</div>
+                                <div class="macro-val" id="c_val">0 / 0g</div>
+                            </div>
+                        </div>
+                        <!-- Fats Ring -->
+                        <div class="macro-ring-group">
+                            <div class="macro-ring" id="fatsRing">
+                                <svg class="macro-svg">
+                                    <circle class="bg" cx="40" cy="40" r="34"></circle>
+                                    <circle class="bar" id="f_bar" cx="40" cy="40" r="34" stroke="#f5576c" stroke-dasharray="213" stroke-dashoffset="213"></circle>
+                                </svg>
+                            </div>
+                            <div class="macro-label">
+                                <div class="macro-name">Fats</div>
+                                <div class="macro-val" id="f_val">0 / 0g</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weekly Pulse Card -->
+                <div class="progress-trend-card" id="reportableSection">
+                    <div class="section-header" style="margin-bottom: 20px;">
+                        <h2><i class="fas fa-chart-line"></i> Weekly Pulse</h2>
+                        <button class="btn btn-primary" onclick="generateClinicalReport('.page-container', 'NutriDeq-Weekly-Overview.pdf')" title="Generate clinical PDF report of your progress">
+                            <i class="fas fa-file-pdf"></i> Weekly Report
+                        </button>
+                    </div>
+                    <div class="pulse-chart-container">
+                        <canvas id="userTrendChart" height="150"></canvas>
+                    </div>
+                </div>
+            </div>
 
             <!-- Two Column Layout for Meal Plans and Communications -->
             <div class="two-column-layout">
@@ -1722,6 +1787,9 @@ $pdo = $database->getConnection();
                 });
             </script>
             <script src="scripts/realtime-dashboard.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+            <script src="scripts/user-realtime.js" defer></script>
             <!-- Notification Toast Container -->
             <div id="notificationToast" class="notification-toast">
                 <div class="toast-icon">

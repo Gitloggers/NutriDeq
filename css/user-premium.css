@@ -1,0 +1,113 @@
+/* 
+    NutriDeq - User Dashboard Premium Styles
+    Macro Rings, Glassmorphism, and Health Trends
+*/
+
+:root {
+    --ring-bg: rgba(255, 255, 255, 0.05);
+    --protein-color: #4facfe;
+    --carbs-color: #43e97b;
+    --fats-color: #f5576c;
+    --spring-ease: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.performance-overview {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.macro-snap-card, .progress-trend-card {
+    background: white;
+    border-radius: 24px;
+    padding: 25px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0,0,0,0.02);
+    animation: fadeInUp 0.8s var(--spring-ease) backwards;
+}
+
+.macro-rings-container {
+    padding: 20px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: relative;
+    min-height: 200px;
+}
+
+.macro-ring-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+/* SVG Ring Styling */
+.macro-svg {
+    width: 80px;
+    height: 80px;
+    transform: rotate(-90deg);
+}
+
+.macro-svg circle {
+    fill: none;
+    stroke-width: 8;
+    stroke-linecap: round;
+}
+
+.macro-svg .bg {
+    stroke: #f0f0f0;
+}
+
+.macro-svg .bar {
+    transition: stroke-dashoffset 1s var(--spring-ease);
+    filter: drop-shadow(0 0 5px rgba(0,0,0,0.05));
+}
+
+.macro-label {
+    text-align: center;
+}
+
+.macro-name {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--gray);
+    margin-bottom: 2px;
+}
+
+.macro-val {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--dark);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.progress-trend-card {
+    animation-delay: 0.2s;
+}
+
+/* Mobile Responsiveness */
+@media screen and (max-width: 768px) {
+    .performance-overview {
+        grid-template-columns: 1fr;
+    }
+    .macro-rings-container {
+        gap: 20px;
+    }
+    .macro-svg {
+        width: 100px;
+        height: 100px;
+    }
+}

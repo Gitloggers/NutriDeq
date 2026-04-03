@@ -97,6 +97,9 @@ $nav_links = getNavigationLinks($_SESSION['user_role'], 'staff-client-diary.php'
     <link rel="stylesheet" href="css/mobile-style.css">
     <link rel="stylesheet" href="css/logout-modal.css">
     <link rel="stylesheet" href="css/staff-diary-premium.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="scripts/report-generator.js" defer></script>
     <script src="scripts/dashboard.js" defer></script>
     <style>
         .split-layout {
@@ -310,8 +313,12 @@ $nav_links = getNavigationLinks($_SESSION['user_role'], 'staff-client-diary.php'
                 <section class="monitor-content">
                     <?php if ($selected_client): ?>
                         <div class="diary-brief">
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <h2 style="font-size: 1.25rem; margin: 0;">Food Diary: <?php echo htmlspecialchars($selected_client['name']); ?></h2>
+                            <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px;">
+                                <h2 style="font-size: 1.25rem; margin: 0;"><i class="fas fa-book-medical"></i> Food Diary: <?php echo htmlspecialchars($selected_client['name']); ?></h2>
+                                <button class="btn btn-primary" onclick="generateClinicalReport('.monitor-content', 'Patient-Journal-Report.pdf')" style="padding: 8px 16px; font-size: 0.85rem;">
+                                    <i class="fas fa-file-pdf"></i> Download Report
+                                </button>
+                            </div>
                                 <div class="date-picker-nav">
                                     <?php 
                                     $prev_date = date('Y-m-d', strtotime($selected_date . ' -1 day'));
