@@ -82,11 +82,11 @@ if ($selected_thread_id) {
     <title>Support Hub | NutriDeq</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/base.css?v=106">
-    <link rel="stylesheet" href="css/sidebar.css?v=106">
-    <link rel="stylesheet" href="css/logout-modal.css?v=106">
+    <link rel="stylesheet" href="css/base.css?v=107">
+    <link rel="stylesheet" href="css/sidebar.css?v=107">
+    <link rel="stylesheet" href="css/logout-modal.css?v=107">
     <style>
-        /* ELITE CLINICAL HUB - V106 */
+        /* ABSOLUTE ATOMIC SYNC - V107 */
         body { margin: 0; background: #f0f2f5 !important; overflow: hidden; font-family:'Poppins',sans-serif; }
         .main-layout { display: grid; grid-template-columns: 260px 1fr; height: 100vh; width: 100%; position:fixed; left:0; top:0; }
         .main-content { grid-column: 2; height: 100vh; overflow-y: auto; padding: 24px !important; box-sizing: border-box !important; position:relative; }
@@ -107,7 +107,6 @@ if ($selected_thread_id) {
         .message-wrapper.sent .message-bubble { background: #2E8B57; color: white !important; box-shadow: 0 4px 15px rgba(46,139,87,0.2); }
         .message-wrapper.received .message-bubble { background: #f1f1f1; color: #1a1a1a !important; }
 
-        /* THE ELITE PILL */
         .chat-input-area { padding: 15px 25px; border-top: 1px solid #f0f0f0; background: white; }
         .input-pill { background: #f8f9fa; border: 1px solid #ddd; border-radius: 30px; display: flex; align-items: center; padding: 5px 15px; width: 100%; box-sizing: border-box; }
         .chat-input { flex: 1; border: none !important; background: transparent !important; padding: 10px 15px !important; outline: none !important; font-size: 0.95rem; resize: none !important; min-height: 24px; color: #1a1a1a !important; box-shadow: none !important; }
@@ -116,17 +115,21 @@ if ($selected_thread_id) {
 
         @keyframes bubbleIn { from { opacity:0; transform: scale(0.8) translateY(20px); } to { opacity:1; transform: scale(1) translateY(0); } }
 
-        /* SIDEBAR COMPACT MODE */
-        .sidebar { background: white; border-right: 1px solid #ddd; padding: 15px 20px; display: flex; flex-direction: column; }
-        .logo-box { padding: 10px 0 20px 0; display: flex; align-items: center; gap: 10px; text-decoration:none; }
-        .logo-box img { height: 40px; width: auto; object-fit: contain; }
-        .logo-text { color: #2e8b57; font-size: 1.5rem; font-weight: 700; font-family: 'Playfair Display', serif; }
+        /* SYNC SIDEBAR CSS WITH MASTER */
+        .sidebar { background: #ffffff; border-right: 1px solid rgba(46, 139, 87, 0.2); padding: 30px 0; display: flex; flex-direction: column; width: 260px; height: 100vh; position: sticky; top:0; }
+        .logo { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: #2e8b57; display: flex; align-items: center; text-decoration: none; padding: 0 20px 20px; border-bottom: 1px solid rgba(46, 139, 87, 0.2); margin-bottom: 15px; }
+        .logo-img { height: 45px; width: auto; border-radius: 6px; }
+        .nav-links { list-style: none; padding: 0 15px; flex: 1; margin: 0; }
+        .nav-links li { margin-bottom: 8px; }
+        .nav-links a { display: flex; align-items: center; padding: 12px 15px; text-decoration: none; color: #4b5563; border-radius: 8px; transition: all 0.2s ease; font-weight: 500; font-size: 0.9rem; position: relative; }
+        .nav-links a:hover, .nav-links a.active { color: #2e8b57; background-color: rgba(46, 139, 87, 0.08); }
+        .nav-links a.active::after { content: ''; position: absolute; right: 0; top: 50%; transform: translateY(-50%); height: 60%; width: 3px; background-color: #2e8b57; border-radius: 4px 0 0 4px; }
+        .nav-links i { margin-right: 12px; font-size: 20px; width: 24px; text-align: center; }
 
-        .nav-links { list-style: none; padding: 0; margin: 10px 0; flex: 1; }
-        .nav-links li { margin-bottom: 2px; }
-        .nav-links a { display: flex; align-items: center; gap: 12px; padding: 10px 15px; border-radius: 10px; text-decoration: none; color: #444; font-weight: 500; transition: 0.2s; font-size: 0.9rem; }
-        .nav-links a:hover { background: #f5f7fa; color: #2e8b57; transform: translateX(5px); }
-        .nav-links a.active { background: #2e8b57; color: white; box-shadow: 0 4px 12px rgba(46,139,87,0.2); }
+        .logout-section { padding: 10px 20px; border-top: 1px solid rgba(46, 139, 87, 0.2); }
+        .logout-btn { display: flex; align-items: center; padding: 10px 12px; text-decoration: none; color: #ff6b6b; border-radius: 8px; transition: 0.2s; cursor: pointer; border: none; background: none; width: 100%; font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500; }
+        .logout-btn:hover { background: rgba(255, 107, 107, 0.1); transform: translateX(3px); }
+        .logout-btn i { margin-right: 10px; font-size: 18px; width: 20px; text-align: center; }
 
         .logout-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
         .logout-modal.active { display: flex; }
@@ -136,27 +139,29 @@ if ($selected_thread_id) {
 <body>
     <div class="main-layout">
         <div class="sidebar">
-            <a href="dashboard.php" class="logo-box">
-                <img src="assets/img/logo.png" alt="NutriDeq">
-                <span class="logo-text">NutriDeq</span>
+            <a class="logo" href="dashboard.php">
+                <img src="assets/img/logo.png" alt="NutriDeq" class="logo-img">
+                <span style="margin-left:10px;">NutriDeq</span>
             </a>
             <ul class="nav-links">
                 <?php foreach ($nav_links as $link): ?>
                     <?php if (isset($link['type']) && $link['type'] === 'header'): ?>
-                        <li style="font-size:0.7rem; color:#999; text-transform:uppercase; margin-top:12px; padding-left:15px; font-weight:700;"><?= $link['text'] ?></li>
+                        <li style="font-size:0.7rem; color:#999; text-transform:uppercase; margin-top:20px; margin-bottom:10px; padding-left:15px; font-weight:700;"><?= $link['text'] ?></li>
                     <?php else: ?>
                         <li><a href="<?= $link['href'] ?>" class="<?= !empty($link['active'])?'active':'' ?>"><i class="<?= $link['icon'] ?>"></i> <span><?= $link['text'] ?></span></a></li>
                     <?php endif; ?>
                 <?php endforeach; ?>
             </ul>
-            <div style="border-top:1px solid #eee; padding-top:15px; display:flex; align-items:center; gap:12px;">
-                <div style="width:38px; height:38px; background:#e6f4ea; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#2e8b57; font-weight:700; font-size:0.85rem;"><?= $user_initials ?></div>
+            <div style="padding: 15px 20px; border-top: 1px solid rgba(46, 139, 87, 0.2); display: flex; align-items: center; gap: 12px;">
+                <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #2e8b57, #4ca1af); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;"><?= $user_initials ?></div>
                 <div style="font-size:0.8rem;">
                     <div style="font-weight:700; color:#1a1a1a;"><?= htmlspecialchars($user_name) ?></div>
                     <div style="color:#999;"><?= ucfirst($user_role) ?></div>
                 </div>
             </div>
-            <a href="javascript:void(0)" id="logoutTrigger" style="margin-top:12px; color:#ff6b6b; text-decoration:none; display:flex; align-items:center; gap:10px; font-weight:600; font-size:0.85rem;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            <div class="logout-section">
+                <button id="logoutTrigger" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
         </div>
 
         <main class="main-content">
@@ -213,9 +218,12 @@ if ($selected_thread_id) {
                 <?php foreach ($admins as $admin): ?><label style="display:flex; align-items:center; gap:10px; margin-bottom:5px; font-size:0.9rem;"><input type="checkbox" name="admins[]" value="<?= $admin['id'] ?>"> <?= htmlspecialchars($admin['name']) ?></label><?php endforeach; ?>
             </div></div><div style="margin-bottom:15px;"><label style="font-weight:600;">Message</label><textarea name="initial_message" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:12px; outline:none;" rows="3" required></textarea></div><button type="submit" name="create_thread" style="width:100%; background:#2e8b57; color:white; border:none; padding:14px; border-radius:12px; font-weight:700; cursor:pointer;">Initiate Consult</button></form></div></div>
 
-            <script src="scripts/internal-chat-controller.js?v=106"></script>
             <script>
+                // ABSOLUTE BASE URL FOR AJAX Transmission
                 const BASE_URL = '<?= rtrim(dirname($_SERVER['PHP_SELF']), '/') ?>/';
+            </script>
+            <script src="scripts/internal-chat-controller.js?v=107"></script>
+            <script>
                 function openModal() { document.getElementById('threadModal').classList.add('active'); }
                 function closeModal() { document.getElementById('threadModal').classList.remove('active'); }
                 document.getElementById('logoutTrigger').onclick = () => document.getElementById('logoutModal').classList.add('active');
