@@ -126,6 +126,21 @@ if ($selected_thread_id) {
         }
 
         .back-btn { display: none; background: none; border: none; font-size: 1.2rem; color: #2e8b57; cursor: pointer; margin-right: 15px; }
+
+        /* CHAT BUBBLE RESTORATION - V115 */
+        .chat-messages { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; background:#fff; scroll-behavior: smooth; }
+        .message-wrapper { display: flex; width: 100%; margin-bottom: 10px; animation: liquidIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .message-wrapper.sent { flex-direction: row-reverse; }
+        .message-wrapper.received { flex-direction: row; }
+        
+        .message-bubble { padding: 14px 20px; border-radius: 20px; max-width: 75%; line-height: 1.5; font-size: 0.95rem; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .message-wrapper.sent .message-bubble { background:#2E8B57; color:white !important; border-bottom-right-radius: 4px; }
+        .message-wrapper.received .message-bubble { background:#f0f2f5; color:#1a1a1a !important; border-bottom-left-radius: 4px; border: 1px solid rgba(0,0,0,0.02); }
+        
+        .chat-input-area { padding: 15px 25px; border-top: 1px solid #f0f0f0; background: white; }
+        .input-pill { background: #f4f7f6; border: 1px solid transparent; border-radius: 30px; display: flex; align-items: center; padding: 5px 15px; width: 100%; box-sizing: border-box; transition: 0.3; }
+        .chat-input { flex: 1; border: none !important; background: transparent !important; padding: 10px 15px !important; outline: none !important; resize: none !important; font-size: 0.95rem; color: #1a1a1a !important; box-shadow: none !important; }
+
         @media screen and (max-width: 992px) { .back-btn { display: flex; } }
     </style>
 </head>
