@@ -96,6 +96,10 @@ $pdo = $database->getConnection();
     <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="css/mobile-style.css">
     <link rel="stylesheet" href="css/user-premium.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#2e8b57">
     <style>
         /* Dashboard-specific refined mobile metrics */
         @media screen and (max-width: 768px) {
@@ -2165,6 +2169,15 @@ $pdo = $database->getConnection();
                     color: #e74c3c;
                 }
             </style>
+            <script>
+                if ('serviceWorker' in navigator) {
+                    window.addEventListener('load', () => {
+                        navigator.serviceWorker.register('service-worker.js')
+                            .then(reg => console.log('NutriDeq Native App Enabled', reg.scope))
+                            .catch(err => console.error('Native App Connection Failed', err));
+                    });
+                }
+            </script>
 </body>
 
 </html>            </div></main></div>

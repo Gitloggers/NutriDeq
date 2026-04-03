@@ -1,0 +1,25 @@
+{
+  "name": "Nutrideq Nutrition Platform",
+  "short_name": "Nutrideq",
+  "description": "Premium Clinical Nutrition & Diet Management Platform",
+  "start_url": "/dashboard.php",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2e8b57",
+  "icons": [
+    {
+      "src": "assets/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "display_override": ["window-controls-overlay"],
+  "orientation": "portrait"
+}
