@@ -57,11 +57,14 @@ class ChatController {
     async fetchMessages() {
         if (!this.currentThreadId) return;
         try {
-            const endpoint = `${window.location.origin}${window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'))}/handlers/get_internal_messages.php?thread_id=${this.currentThreadId}`;
+            const endpoint = `handlers/get_internal_messages.php?thread_id=${this.currentThreadId}`;
             const res = await fetch(endpoint);
+            if (!res.ok) throw new Error(`HTTP: ${res.status}`);
             const data = await res.json();
             if (data.success) { this.renderMessages(data.messages); }
-        } catch (e) {}
+        } catch (e) {
+            console.error('Fetch error:', e);
+        }
     }
 
     renderMessages(messages) {
@@ -112,11 +115,21 @@ class ChatController {
         if (this.fileInput) this.fileInput.value = '';
 
         try {
-            const endpoint = `${window.location.origin}${window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'))}/handlers/send_internal_message.php`;
+            const endpoint = `handlers/send_internal_message.php`;
             const res = await fetch(endpoint, { method: 'POST', body: formData });
+            if (!res.ok) throw new Error(`HTTP: ${res.status}`);
             const data = await res.json();
-            if (data.success) { this.renderMessages([data.message]); }
-        } catch (e) { alert("Communication Error."); }
+            if (data.success) { 
+                this.renderMessages([data.message]); 
+                if (this.inputArea) this.inputArea.value = '';
+                if (this.fileInput) this.fileInput.value = '';
+            } else {
+                alert("Server Error: " + (data.message || "Unknown error"));
+            }
+        } catch (e) { 
+            console.error('Send error:', e);
+            alert("Communication Error: " + e.message); 
+        }
     }
 
     scrollToBottom() { if (this.chatMessages) this.chatMessages.scrollTop = this.chatMessages.scrollHeight; }
