@@ -113,88 +113,63 @@ try {
         $stmt->execute();
     $response['alerts'] = $stmt->fetchAll();
 
-    // 5. Activity Ratios (Logins vs Goals Met - Mocked logic based on data availability)
-    // For a real app, you'd track successful meal plan completions or login counts
-    $response['activity_ratios']['logins'] = array_map(function () {
-        return rand(10, 50);
-    }, range(0, 6));
-    $response['activity_ratios']['goals_met'] = array_map(function () {
-        return rand(5, 30);
-    }, range(0, 6));
+    // 5. System Efficiency (Real Calculation)
+    // We'll calculate efficiency as: (Logs Today / Avg Logs per Day) * 100
+    $efficiency_query = "
+        SELECT 
+            (SELECT COUNT(*) FROM food_tracking WHERE tracking_date = CURDATE()) as today,
+            (SELECT COUNT(*) / 7 FROM food_tracking WHERE tracking_date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)) as weekly_avg
+    ";
+    $eff_stmt = $pdo->query($efficiency_query);
+    $eff_row = $eff_stmt->fetch();
+    
+    $today_count = (int)$eff_row['today'];
+    $avg_count = (float)$eff_row['weekly_avg'] ?: 1; // Prevent div by zero
+    $efficiency_pct = min(100, round(($today_count / $avg_count) * 100));
 
-    // 6. Staff Engagement Delta Calculation
-    $response['engagement_delta'] = null;
-    $response['staff_list'] = [];
+    $response['efficiency'] = [
+        'percentage' => $efficiency_pct,
+        'today' => $today_count,
+        'avg' => round($avg_count, 1)
+    ];
 
-    // Get all staff with their engagement deltas
-    $staff_query = $pdo->query("SELECT id, name, last_login FROM users WHERE role = 'staff' AND status = 'active' ORDER BY name ASC");
+    // 6. Recent System Activity (REAL DATA)
+    $activity_sql = "
+        (SELECT 'user' as type, name as title, 'New User Registered' as description, created_at, 'success' as status FROM users ORDER BY created_at DESC LIMIT 5)
+        UNION ALL
+        (SELECT 'food' as type, food_name as title, CONCAT('Food logged by User ID: ', user_id) as description, created_at, 'info' as status FROM food_tracking ORDER BY created_at DESC LIMIT 5)
+        UNION ALL
+        (SELECT 'message' as type, 'New Message' as title, content as description, created_at, 'warning' as status FROM wellness_messages ORDER BY created_at DESC LIMIT 5)
+        ORDER BY created_at DESC
+        LIMIT 10
+    ";
+    $act_stmt = $pdo->query($activity_sql);
+    $response['recent_activity'] = $act_stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // 7. Staff Influence Score (Calculated Influence)
+    $response['staff_influence'] = [];
+    $staff_query = $pdo->query("SELECT id, name FROM users WHERE role = 'staff' AND status = 'active'");
     $all_staff = $staff_query->fetchAll();
 
-    foreach ($all_staff as $staff_member) {
-        $delta_value = null;
-        $sid = $staff_member['id'];
-
-        // Get most recent interaction: MAX of last_login OR last message sent
-        $interaction_query = $pdo->prepare("
-            SELECT GREATEST(
-                COALESCE(u.last_login, '1970-01-01'),
-                COALESCE((
-                    SELECT MAX(wm.created_at) 
-                    FROM wellness_messages wm 
-                    JOIN conversations conv ON wm.conversation_id = conv.id 
-                    WHERE wm.sender_type = 'staff' AND wm.sender_id = u.id
-                ), '1970-01-01')
-            ) as last_interaction
-            FROM users u WHERE u.id = ?
+    foreach ($all_staff as $staff) {
+        // Simple Influence: (Messages Sent / Clients Assigned)
+        $inf_stmt = $pdo->prepare("
+            SELECT 
+                (SELECT COUNT(*) FROM wellness_messages WHERE sender_id = ?) as msgs,
+                (SELECT COUNT(*) FROM clients WHERE staff_id = ?) as clients
         ");
-        $interaction_query->execute([$sid]);
-        $interaction_row = $interaction_query->fetch();
-        $last_interaction = $interaction_row['last_interaction'] ?? null;
+        $inf_stmt->execute([$staff['id'], $staff['id']]);
+        $inf_row = $inf_stmt->fetch();
+        
+        $msgs = (int)$inf_row['msgs'];
+        $clients = (int)$inf_row['clients'] ?: 1;
+        $score = round(($msgs / $clients) * 10, 1);
 
-        if ($last_interaction && $last_interaction !== '1970-01-01') {
-            // Calculate Pre-Activity (24h before interaction)
-            $pre_query = $pdo->prepare("
-                SELECT COUNT(*) as activity_count
-                FROM food_tracking ft
-                JOIN clients c ON ft.user_id = c.user_id
-                WHERE c.staff_id = ?
-                AND ft.created_at BETWEEN DATE_SUB(?, INTERVAL 24 HOUR) AND ?
-            ");
-            $pre_query->execute([$sid, $last_interaction, $last_interaction]);
-            $pre_activity = (int) $pre_query->fetchColumn();
-
-            // Calculate Post-Activity (24h after interaction)
-            $post_query = $pdo->prepare("
-                SELECT COUNT(*) as activity_count
-                FROM food_tracking ft
-                JOIN clients c ON ft.user_id = c.user_id
-                WHERE c.staff_id = ?
-                AND ft.created_at BETWEEN ? AND DATE_ADD(?, INTERVAL 24 HOUR)
-            ");
-            $post_query->execute([$sid, $last_interaction, $last_interaction]);
-            $post_activity = (int) $post_query->fetchColumn();
-
-            // Calculate delta with division by zero protection
-            if ($pre_activity > 0) {
-                $delta_value = round((($post_activity - $pre_activity) / $pre_activity) * 100, 1);
-            } elseif ($post_activity > 0) {
-                $delta_value = 100; // From 0 to something = 100% increase
-            } else {
-                $delta_value = 0; // No activity before or after
-            }
-        }
-
-        $response['staff_list'][] = [
-            'id' => $sid,
-            'name' => $staff_member['name'],
-            'engagement_delta' => $delta_value,
-            'last_interaction' => $last_interaction
+        $response['staff_influence'][] = [
+            'name' => $staff['name'],
+            'score' => $score,
+            'label' => $score > 5 ? 'High Influence' : ($score > 2 ? 'Active' : 'Developing')
         ];
-
-        // If specific staff selected, set their delta as main response
-        if ($staff_id !== 'all' && (int) $staff_id === $sid) {
-            $response['engagement_delta'] = $delta_value;
-        }
     }
 
     echo json_encode($response);

@@ -264,15 +264,15 @@ $pdo = $database->getConnection();
                 <!-- Charts Grid -->
                 <div class="charts-section">
                     <!-- Staff Engagement Delta Card -->
-                    <div class="chart-container" id="engagementDeltaContainer">
+                    <div class="chart-container" id="staffInfluenceContainer">
                         <div class="chart-header">
-                            <h2>Staff Engagement Delta</h2>
+                            <h2>Staff Performance Influence <i class="fas fa-info-circle" title="Measures how often staff interact with users relative to their assigned client load."></i></h2>
                             <span id="deltaSelectedBadge"
                                 style="display: none; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">--</span>
                         </div>
                         <p style="color: var(--gray); font-size: 0.85rem; margin-bottom: 15px;">Client activity change 24h
                             before vs. after staff interaction</p>
-                        <div id="staffDeltaList" style="display: flex; flex-wrap: wrap; gap: 10px;">
+                        <div id="staffInfluenceList" style="display: flex; flex-direction: column; gap: 10px;">
                             <!-- Populated by JS -->
                             <div style="color: #999; font-size: 0.85rem;">Loading staff data...</div>
                         </div>
@@ -303,9 +303,19 @@ $pdo = $database->getConnection();
                 <!-- System Efficiency Card -->
                 <div class="chart-container" style="margin-bottom: 30px;">
                     <div class="chart-header">
-                        <h2>System Efficiency</h2>
+                        <h2>Platform Activity Overview <i class="fas fa-info-circle" title="Measures how active users are today relative to the weekly average. Over 100% means the system is performing exceptionally well."></i></h2>
                     </div>
-                    <canvas id="activityRatiosChart" height="120"></canvas>
+                    <div id="efficiencyMetrics" style="display: flex; align-items: center; gap: 30px; padding: 15px;">
+                        <div class="efficiency-gauge" style="position: relative; width: 100px; height: 100px;">
+                            <canvas id="efficiencyDoughnutChart"></canvas>
+                            <div id="efficiencyPctLabel" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-weight: 700; font-size: 1.2rem;">--%</div>
+                        </div>
+                        <div class="efficiency-details" style="flex: 1;">
+                            <p id="efficiencyDescription" style="margin: 0; color: var(--gray); font-size: 0.9rem; line-height: 1.4;">Crunching platform stats...</p>
+                            <div id="efficiencyTrendLine" style="margin-top: 5px; font-weight: 600; font-size: 0.8rem; color: var(--primary);">Calculating trends...</div>
+                        </div>
+                    </div>
+                    <canvas id="activityRatiosChart" height="120" style="display: none;"></canvas>
                 </div>
 
                 <!-- System Management Quick Actions -->
@@ -359,7 +369,15 @@ $pdo = $database->getConnection();
                         </button>
                     </div>
 
-                    <div class="system-activity-list">
+                    <div class="system-activity-list" id="recentActivityList">
+                        <!-- REAL-TIME DATA INJECTED HERE -->
+                        <div style="text-align: center; padding: 40px; color: #999;">
+                            <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                            <p>Connecting to live system feed...</p>
+                        </div>
+                    </div>
+                    <script src="scripts/admin-realtime.js" defer></script>
+                    <div class="system-activity-list-obsolete" style="display:none;">
                         <div class="activity-item">
                             <div class="activity-icon success">
                                 <i class="fas fa-user-check"></i>
