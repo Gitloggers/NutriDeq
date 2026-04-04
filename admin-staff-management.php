@@ -966,33 +966,36 @@ try {
                         });
                     }
 
-                    const editButtons = document.querySelectorAll('.edit-btn');
-                    const editModal = document.getElementById('editUserModal');
-                    const editForm = document.getElementById('editUserForm');
-                    if (editButtons && editModal && editForm) {
-                        editButtons.forEach(btn => {
-                            btn.addEventListener('click', function (e) {
-                                e.preventDefault();
-                                const id = this.getAttribute('data-user-id');
-                                const name = this.getAttribute('data-name');
-                                const email = this.getAttribute('data-email');
-                                const role = this.getAttribute('data-role');
-                                const status = this.getAttribute('data-status');
-                                
-                                document.getElementById('edit_user_id').value = id;
-                                document.getElementById('edit_name').value = name;
-                                document.getElementById('edit_email').value = email;
-                                document.getElementById('edit_role').value = role || 'staff';
-                                document.getElementById('edit_status').value = status || 'active';
-                                
-                                document.getElementById('edit_password').value = '';
-                                document.getElementById('edit_confirm_password').value = '';
-                                
+                    // Edit User Modal Delegation (Fixed icon clicking issue)
+                    document.addEventListener('click', function (e) {
+                        const editBtn = e.target.closest('.edit-btn');
+                        if (editBtn) {
+                            e.preventDefault();
+                            const editModal = document.getElementById('editUserModal');
+                            const id = editBtn.getAttribute('data-user-id');
+                            const name = editBtn.getAttribute('data-name');
+                            const email = editBtn.getAttribute('data-email');
+                            const role = editBtn.getAttribute('data-role');
+                            const status = editBtn.getAttribute('data-status');
+
+                            if (id) document.getElementById('edit_user_id').value = id;
+                            if (name) document.getElementById('edit_name').value = name;
+                            if (email) document.getElementById('edit_email').value = email;
+                            
+                            const roleSelect = document.getElementById('edit_role');
+                            const statusSelect = document.getElementById('edit_status');
+                            if (roleSelect) roleSelect.value = role || 'staff';
+                            if (statusSelect) statusSelect.value = status || 'active';
+
+                            document.getElementById('edit_password').value = '';
+                            document.getElementById('edit_confirm_password').value = '';
+
+                            if (editModal) {
                                 editModal.style.display = 'flex';
                                 document.body.style.overflow = 'hidden';
-                            });
-                        });
-                    }
+                            }
+                        }
+                    });
 
 
 
