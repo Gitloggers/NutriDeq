@@ -849,8 +849,26 @@ try {
                 </div>
             </div>
 
+            <!-- Logout Modal -->
+            <div id="logoutModal" class="logout-modal">
+                <div class="logout-modal-content">
+                    <div class="logout-modal-header">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <h3>Confirm Logout</h3>
+                    </div>
+                    <div class="logout-modal-body">
+                        <p>Are you sure you want to log out of your session? Any unsaved changes may be lost.</p>
+                    </div>
+                    <div class="logout-modal-footer">
+                        <button type="button" class="btn btn-outline" id="cancelLogout">Cancel</button>
+                        <button type="button" class="btn btn-primary" id="confirmLogout">Logout</button>
+                    </div>
+                </div>
+            </div>
+
             <script>
                 document.addEventListener('DOMContentLoaded', function () {
+                    // Password visibility toggles
                     const togglePassword = document.getElementById('toggle_password');
                     if (togglePassword) {
                         togglePassword.addEventListener('click', function () {
@@ -888,12 +906,7 @@ try {
                         });
                     }
 
-                    if (<?php echo isset($_SESSION['add_user_data']) ? 'true' : 'false'; ?>) {
-                        document.getElementById('addUserModal').style.display = 'flex';
-                        document.body.style.overflow = 'hidden';
-                        <?php unset($_SESSION['add_user_data']); ?>
-                    }
-                    // Add User Button
+                    // Add User Modal
                     const addUserBtn = document.getElementById('addUserBtn');
                     if (addUserBtn) {
                         addUserBtn.addEventListener('click', function () {
@@ -902,201 +915,153 @@ try {
                         });
                     }
 
-                    // Tab switching functionality
-                    const tabButtons = document.querySelectorAll('.tab-btn');
-                    tabButtons.forEach(btn => {
-                        btn.addEventListener('click', function (e) {
-                            // Remove active class from all tabs
-                            tabButtons.forEach(b => b.classList.remove('active'));
-                            // Add active class to clicked tab
-                            this.classList.add('active');
+                    // Edit Buttons
+                    const editButtons = document.querySelectorAll('.edit-btn');
+                    const editModal = document.getElementById('editUserModal');
+                    if (editButtons && editModal) {
+                        editButtons.forEach(btn => {
+                            btn.addEventListener('click', function (e) {
+                                e.preventDefault();
+                                const id = this.getAttribute('data-user-id');
+                                const name = this.getAttribute('data-name');
+                                const email = this.getAttribute('data-email');
+                                const role = this.getAttribute('data-role');
+                                const status = this.getAttribute('data-status');
+                                
+                                document.getElementById('edit_user_id').value = id;
+                                document.getElementById('edit_name').value = name;
+                                document.getElementById('edit_email').value = email;
+                                document.getElementById('edit_role').value = role || 'staff';
+                                document.getElementById('edit_status').value = status || 'active';
+                                
+                                document.getElementById('edit_password').value = '';
+                                document.getElementById('edit_confirm_password').value = '';
+                                
+                                editModal.style.display = 'flex';
+                                document.body.style.overflow = 'hidden';
+                            });
                         });
-                    });
+                    }
 
-                    // Handle search functionality
+                    // Search Functionality
                     const searchInput = document.getElementById('searchInput');
                     if (searchInput) {
                         searchInput.addEventListener('input', function (e) {
                             const searchTerm = e.target.value.toLowerCase();
-
-                            // Get the currently active tab
                             const currentTab = document.querySelector('.tab-content.active');
                             if (currentTab) {
-                                // Search in the active tab only
                                 const rows = currentTab.querySelectorAll('tbody tr');
-
                                 rows.forEach(row => {
                                     const text = row.textContent.toLowerCase();
-                                    if (text.includes(searchTerm)) {
-                                        row.style.display = '';
-                                    } else {
-                                        row.style.display = 'none';
-                                    }
+                                    row.style.display = text.includes(searchTerm) ? '' : 'none';
                                 });
                             }
                         });
                     }
 
-                    // Logout Modal Functionality
+                    // Logout Logic
                     const logoutBtn = document.getElementById('logoutBtn');
                     const logoutModal = document.getElementById('logoutModal');
                     const cancelLogout = document.getElementById('cancelLogout');
                     const confirmLogout = document.getElementById('confirmLogout');
 
-                    // Open logout modal
                     if (logoutBtn) {
                         logoutBtn.addEventListener('click', function (e) {
                             e.preventDefault();
                             logoutModal.classList.add('active');
                         });
                     }
-
-                    // Cancel logout
                     if (cancelLogout) {
                         cancelLogout.addEventListener('click', function () {
                             logoutModal.classList.remove('active');
                         });
                     }
-
-                    // Confirm logout
                     if (confirmLogout) {
                         confirmLogout.addEventListener('click', function () {
-                            // Redirect to logout script
-                            window.location.href = 'logout.php';
+                            window.location.href = 'login-logout/logout.php';
                         });
                     }
 
-                    // Edit User Modal Delegation (Fixed icon clicking issue)
-                    document.addEventListener('click', function (e) {
-                        const editBtn = e.target.closest('.edit-btn');
-                        if (editBtn) {
-                            e.preventDefault();
-                            const editModal = document.getElementById('editUserModal');
-                            const id = editBtn.getAttribute('data-user-id');
-                            const name = editBtn.getAttribute('data-name');
-                            const email = editBtn.getAttribute('data-email');
-                            const role = editBtn.getAttribute('data-role');
-                            const status = editBtn.getAttribute('data-status');
-
-                            if (id) document.getElementById('edit_user_id').value = id;
-                            if (name) document.getElementById('edit_name').value = name;
-                            if (email) document.getElementById('edit_email').value = email;
-                            
-                            const roleSelect = document.getElementById('edit_role');
-                            const statusSelect = document.getElementById('edit_status');
-                            if (roleSelect) roleSelect.value = role || 'staff';
-                            if (statusSelect) statusSelect.value = status || 'active';
-
-                            document.getElementById('edit_password').value = '';
-                            document.getElementById('edit_confirm_password').value = '';
-
-                            if (editModal) {
-                                editModal.style.display = 'flex';
-                                document.body.style.overflow = 'hidden';
-                            }
-                        }
-                    });
-
-
-
-                    function formatTimeLeft(seconds) {
-                        const d = Math.floor(seconds / 86400);
-                        seconds -= d * 86400;
-                        const h = Math.floor(seconds / 3600);
-                        seconds -= h * 3600;
-                        const m = Math.floor(seconds / 60);
-                        const s = Math.floor(seconds - m * 60);
-                        return `${d}d ${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+                    // Handle session-based auto-open for Add User
+                    if (<?php echo isset($_SESSION['add_user_data']) ? 'true' : 'false'; ?>) {
+                        document.getElementById('addUserModal').style.display = 'flex';
+                        document.body.style.overflow = 'hidden';
+                        <?php unset($_SESSION['add_user_data']); ?>
                     }
 
-                    function setupPermDeleteCountdown() {
-                        const buttons = document.querySelectorAll('.perm-delete-btn');
-                        buttons.forEach(btn => {
-                            const deletedAtStr = btn.getAttribute('data-deleted-at');
-                            const minDays = parseInt(btn.getAttribute('data-min-days') || '10', 10);
-                            const countdownSpan = btn.parentElement.querySelector('.perm-countdown');
-                            if (!deletedAtStr || !countdownSpan) return;
-                            const deletedMs = Date.parse(deletedAtStr.replace(' ', 'T'));
-                            function update() {
-                                const elapsed = Date.now() - deletedMs;
-                                const minMs = minDays * 86400 * 1000;
-                                const leftMs = Math.max(0, minMs - elapsed);
-                                const leftSec = Math.floor(leftMs / 1000);
-                                if (leftMs <= 0) {
-                                    btn.removeAttribute('disabled');
-                                    countdownSpan.textContent = '';
-                                    return true;
-                                } else {
-                                    btn.setAttribute('disabled', 'disabled');
-                                    countdownSpan.textContent = `Available in ${formatTimeLeft(leftSec)}`;
-                                    return false;
-                                }
-                            }
-                            update();
-                            const iv = setInterval(() => { if (update()) clearInterval(iv); }, 1000);
-                        });
-                    }
-
+                    // Countdown for Permanent Delete
                     setupPermDeleteCountdown();
                 });
 
-                // Tab switching function
                 function switchTab(tabName) {
-                    window.location.href = `admin-staff-management.php?tab=${tabName}`;
+                    window.location.href = `?tab=${tabName}`;
                 }
 
                 function closeModal() {
-                    const addUserModal = document.getElementById('addUserModal');
-                    if (addUserModal) {
-                        addUserModal.style.display = 'none';
-                        document.body.style.overflow = 'auto';
-                        document.getElementById('addUserForm').reset();
-                    }
+                    document.getElementById('addUserModal').style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                    document.getElementById('addUserForm').reset();
                 }
 
                 function closeEditModal() {
-                    const editUserModal = document.getElementById('editUserModal');
-                    if (editUserModal) {
-                        editUserModal.style.display = 'none';
-                        document.body.style.overflow = 'auto';
-                        document.getElementById('editUserForm').reset();
-                    }
+                    document.getElementById('editUserModal').style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                    document.getElementById('editUserForm').reset();
                 }
 
                 function confirmRestore() {
-                    return confirm('Are you sure you want to restore this user? All user data and privileges will be restored.');
+                    return confirm('Are you sure you want to restore this user?');
                 }
 
-                // Close modal when clicking outside
+                function setupPermDeleteCountdown() {
+                    const buttons = document.querySelectorAll('.perm-delete-btn');
+                    buttons.forEach(btn => {
+                        const deletedAtStr = btn.getAttribute('data-deleted-at');
+                        const countdownSpan = btn.parentElement.querySelector('.perm-countdown');
+                        if (!deletedAtStr || !countdownSpan) return;
+                        
+                        const deletedMs = Date.parse(deletedAtStr.replace(' ', 'T'));
+                        const minMs = 10 * 86400 * 1000;
+
+                        function update() {
+                            const leftMs = Math.max(0, minMs - (Date.now() - deletedMs));
+                            if (leftMs <= 0) {
+                                btn.removeAttribute('disabled');
+                                countdownSpan.textContent = '';
+                                return true;
+                            } else {
+                                const s = Math.floor(leftMs / 1000);
+                                const d = Math.floor(s / 86400);
+                                const h = Math.floor((s % 86400) / 3600);
+                                const m = Math.floor((s % 3600) / 60);
+                                countdownSpan.textContent = `Available in ${d}d ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+                                return false;
+                            }
+                        }
+                        update();
+                        const iv = setInterval(() => { if (update()) clearInterval(iv); }, 1000);
+                    });
+                }
+
+                // Close modals on outside click
                 window.addEventListener('click', function (event) {
-                    const addUserModal = document.getElementById('addUserModal');
-                    if (event.target === addUserModal) {
-                        closeModal();
-                    }
-                    const editUserModal = document.getElementById('editUserModal');
-                    if (event.target === editUserModal) {
-                        closeEditModal();
-                    }
+                    const addUserM = document.getElementById('addUserModal');
+                    const editUserM = document.getElementById('editUserModal');
+                    const logoutM = document.getElementById('logoutModal');
+                    if (event.target === addUserM) closeModal();
+                    if (event.target === editUserM) closeEditModal();
+                    if (event.target === logoutM) logoutM.classList.remove('active');
                 });
 
-                // Close modal with Escape key
-                document.addEventListener('keydown', function (event) {
-                    if (event.key === 'Escape') {
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape') {
                         closeModal();
                         closeEditModal();
+                        document.getElementById('logoutModal').classList.remove('active');
                     }
                 });
-
-                // Close logout modal when clicking outside
-                window.addEventListener('click', function (event) {
-                    const logoutModal = document.getElementById('logoutModal');
-                    if (event.target === logoutModal) {
-                        logoutModal.classList.remove('active');
-                    }
-                });
-
+            </script>
         </div> <!-- end main-content -->
     </div> <!-- end main-layout -->
 </body>
-
 </html>
