@@ -1,3 +1,18 @@
+:root {
+    --primary: #2E8B57;
+    --primary-dark: #1e6b42;
+    --primary-light: #3cb371;
+    --secondary: #4A90E2;
+    --accent: #FF6B6B;
+    --light: #F8F9FA;
+    --dark: #212529;
+    --gray: #6C757D;
+    --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    --shadow-hover: 0 15px 40px rgba(0, 0, 0, 0.12);
+    --gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+}
+
 /* Premium Calculator Enhancements (V125) */
 .calculator-card {
     background: var(--bg-surface) !important;
@@ -5,7 +20,7 @@
     border: 1px solid var(--glass-border) !important;
     border-radius: 24px !important;
     box-shadow: var(--shadow-premium) !important;
-    overflow: hidden;
+    overflow: hidden !important;
 }
 
 .result-card {
@@ -68,6 +83,47 @@
         width: calc(100% - 260px) !important;
         padding: 40px !important;
     }
+}
+
+.select-group {
+    display: flex;
+    align-items: stretch;
+    background: #fff;
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    transition: var(--transition-smooth);
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.select-group:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.1);
+}
+
+.select-group .form-control {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 12px 15px !important;
+}
+
+.select-group select.form-control {
+    width: auto !important;
+    min-width: 75px;
+    background: #f8f9fa !important;
+    border-left: 1px solid var(--border-color) !important;
+    margin: 0 !important;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--primary);
+    -webkit-appearance: none;
+    appearance: none;
+    padding: 0 30px 0 15px !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%232E8B57' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: calc(100% - 12px) center !important;
+    border-radius: 0 !important;
 }
 
 * {
