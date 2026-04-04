@@ -39,11 +39,10 @@
      }
 
      .main-layout {
-         display: grid;
-         grid-template-columns: 260px 1fr;
+         display: block; /* Transitioned from grid to block for fixed persistence */
          min-height: 100vh;
          width: 100%;
-         gap: 0;
+         position: relative;
      }
 
      /* Standardized Sidebar Active State */
@@ -67,10 +66,8 @@
 
      .main-content {
          padding: 2rem !important;
-         margin: 0 !important;
          width: 100%;
          min-width: 0;
-         /* Prevent grid breakout */
          display: block !important;
          visibility: visible !important;
          background: #f9fafb;
@@ -254,10 +251,10 @@
      }
 
      /* Message input error state */
-     .chat-input.error {
-         border-color: #dc3545 !important;
-         box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1) !important;
-     }
+    .message-input.error {
+        border-color: var(--accent);
+        background: rgba(255, 107, 107, 0.05);
+    }
 
      /* Message sending animation */
      @keyframes sending {
@@ -292,21 +289,29 @@
          }
      }
 
-     /* Desktop Visibility Standard */
-     @media screen and (min-width: 1025px) {
-         body .main-content {
-             display: block !important;
-             visibility: visible !important;
-             width: 100% !important;
-             margin-left: 0 !important;
-             position: relative !important;
-             grid-column: 2;
-             min-width: 0;
-         }
+    /* Desktop Visibility Standard */
+    @media screen and (min-width: 1025px) {
+        body .sidebar {
+            position: fixed !important;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 260px;
+            z-index: 1002;
+        }
 
-         body .page-container {
-             max-width: 1200px;
-             margin: 0 auto;
-             padding: 2rem;
-         }
-     }
+        body .main-content {
+            display: block !important;
+            visibility: visible !important;
+            width: calc(100% - 260px) !important; /* Proper fixed offset */
+            margin-left: 260px !important; /* Correct for fixed sidebar */
+            position: relative !important;
+            min-width: 0;
+        }
+
+        body .page-container {
+            max-width: 1300px; /* Enhanced wide clinical view */
+            margin: 0 auto;
+            padding: 2rem;
+        }
+    }

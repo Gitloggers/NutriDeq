@@ -867,9 +867,22 @@ try {
                                             </td>
                                             <td data-label="Actions">
                                                 <div class="user-actions">
-                                                    <button class="action-btn edit-btn" title="Edit Client"
-                                                        onclick="openEditModal(<?php echo htmlspecialchars(json_encode($client)); ?>)"><i
-                                                            class="fas fa-edit"></i></button>
+                                                    <button class="action-btn edit-client-btn" title="Edit Client"
+                                                        data-id="<?php echo $client['id']; ?>"
+                                                        data-name="<?php echo htmlspecialchars($client['name']); ?>"
+                                                        data-email="<?php echo htmlspecialchars($client['email']); ?>"
+                                                        data-phone="<?php echo htmlspecialchars($client['phone'] ?? ''); ?>"
+                                                        data-age="<?php echo $client['age'] ?? ''; ?>"
+                                                        data-gender="<?php echo $client['gender'] ?? ''; ?>"
+                                                        data-address="<?php echo htmlspecialchars($client['address'] ?? ''); ?>"
+                                                        data-city="<?php echo htmlspecialchars($client['city'] ?? ''); ?>"
+                                                        data-state="<?php echo htmlspecialchars($client['state'] ?? ''); ?>"
+                                                        data-zip_code="<?php echo htmlspecialchars($client['zip_code'] ?? ''); ?>"
+                                                        data-waist="<?php echo $client['waist_circumference'] ?? ''; ?>"
+                                                        data-hip="<?php echo $client['hip_circumference'] ?? ''; ?>"
+                                                        data-staff_id="<?php echo $client['staff_id'] ?? ''; ?>">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
                                                     <form method="POST" style="display:inline;"
                                                         onsubmit="return confirm('Delete this client? They will be moved to delete history.')">
                                                         <input type="hidden" name="action" value="delete_client">
@@ -1211,25 +1224,35 @@ try {
                             }
                         }
                     });
+                    const editClientButtons = document.querySelectorAll('.edit-client-btn');
+                    if (editClientButtons && editClientModal) {
+                        editClientButtons.forEach(btn => {
+                            btn.addEventListener('click', function (e) {
+                                e.preventDefault();
+                                document.getElementById('edit_client_id').value = this.getAttribute('data-id');
+                                document.getElementById('edit_name').value = this.getAttribute('data-name');
+                                document.getElementById('edit_email').value = this.getAttribute('data-email');
+                                document.getElementById('edit_phone').value = this.getAttribute('data-phone');
+                                document.getElementById('edit_age').value = this.getAttribute('data-age');
+                                document.getElementById('edit_address').value = this.getAttribute('data-address');
+                                document.getElementById('edit_city').value = this.getAttribute('data-city');
+                                document.getElementById('edit_state').value = this.getAttribute('data-state');
+                                document.getElementById('edit_zip_code').value = this.getAttribute('data-zip_code');
+                                document.getElementById('edit_waist_circumference').value = this.getAttribute('data-waist');
+                                document.getElementById('edit_hip_circumference').value = this.getAttribute('data-hip');
+                                document.getElementById('edit_new_password').value = '';
+                                
+                                const staffId = this.getAttribute('data-staff_id');
+                                const staffSel = document.getElementById('edit_staff_id');
+                                if (staffSel) { staffSel.value = staffId || ''; }
+                                
+                                editClientModal.style.display = 'flex';
+                                document.body.style.overflow = 'hidden';
+                            });
+                        });
+                    }
                 });
 
-                function openEditModal(client) {
-                    document.getElementById('edit_client_id').value = client.id;
-                    document.getElementById('edit_name').value = client.name || '';
-                    document.getElementById('edit_email').value = client.email || '';
-                    document.getElementById('edit_phone').value = client.phone || '';
-                    document.getElementById('edit_age').value = client.age || '';
-                    document.getElementById('edit_address').value = client.address || '';
-                    document.getElementById('edit_city').value = client.city || '';
-                    document.getElementById('edit_state').value = client.state || '';
-                    document.getElementById('edit_zip_code').value = client.zip_code || '';
-                    document.getElementById('edit_waist_circumference').value = client.waist_circumference || '';
-                    document.getElementById('edit_hip_circumference').value = client.hip_circumference || '';
-                    document.getElementById('edit_new_password').value = '';
-                    var staffSel = document.getElementById('edit_staff_id'); if (staffSel) { staffSel.value = client.staff_id || ''; }
-                    document.getElementById('editClientModal').style.display = 'flex';
-                    document.body.style.overflow = 'hidden';
-                }
                 function closeModal() { document.getElementById('addClientModal').style.display = 'none'; document.body.style.overflow = 'auto'; document.getElementById('addClientForm').reset(); }
                 function closeEditModal() { document.getElementById('editClientModal').style.display = 'none'; document.body.style.overflow = 'auto'; document.getElementById('editClientForm').reset(); }
             </script>

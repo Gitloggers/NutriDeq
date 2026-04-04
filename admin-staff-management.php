@@ -458,10 +458,7 @@ try {
     <div class="main-layout">
         <?php include 'includes/sidebar.php'; ?>
         <div class="main-content">
-
-            <!-- Main Content -->
-            <div class="main-content">
-                <div class="header">
+            <div class="header">
                     <div class="page-title">
                         <h1>Staff Management</h1>
                         <p>Manage staff accounts and permissions</p>
@@ -974,19 +971,23 @@ try {
                     const editForm = document.getElementById('editUserForm');
                     if (editButtons && editModal && editForm) {
                         editButtons.forEach(btn => {
-                            btn.addEventListener('click', function () {
+                            btn.addEventListener('click', function (e) {
+                                e.preventDefault();
                                 const id = this.getAttribute('data-user-id');
                                 const name = this.getAttribute('data-name');
                                 const email = this.getAttribute('data-email');
                                 const role = this.getAttribute('data-role');
                                 const status = this.getAttribute('data-status');
+                                
                                 document.getElementById('edit_user_id').value = id;
                                 document.getElementById('edit_name').value = name;
                                 document.getElementById('edit_email').value = email;
-                                document.getElementById('edit_role').value = role;
-                                document.getElementById('edit_status').value = status;
+                                document.getElementById('edit_role').value = role || 'staff';
+                                document.getElementById('edit_status').value = status || 'active';
+                                
                                 document.getElementById('edit_password').value = '';
                                 document.getElementById('edit_confirm_password').value = '';
+                                
                                 editModal.style.display = 'flex';
                                 document.body.style.overflow = 'hidden';
                             });
@@ -1091,8 +1092,8 @@ try {
                     }
                 });
 
-        </div>
-    </div>
+        </div> <!-- end main-content -->
+    </div> <!-- end main-layout -->
 </body>
 
 </html>
