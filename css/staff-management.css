@@ -335,27 +335,27 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 10000; /* Peak Visibility */
-    align-items: flex-start; /* Fix for tall modals */
+    background: rgba(0, 0, 0, 0.4); /* Subtle dimming */
+    z-index: 10000;
+    align-items: center; /* Precision Centering */
     justify-content: center;
-    padding: 60px 20px; /* Luxury Breathing Room */
-    overflow-y: auto; /* Allow the modal parent to scroll */
+    padding: 20px;
+    overflow: hidden; /* No external scroll */
     animation: fadeIn 0.3s ease;
-    -webkit-overflow-scrolling: touch;
 }
 
 .modal-content {
     background: var(--bg-surface) !important;
     border-radius: var(--border-radius) !important;
-    width: 90%;
-    max-width: 500px;
-    margin: 20px auto; /* Centering on scroll */
-    box-shadow: var(--shadow-hover) !important;
+    width: 95%;
+    max-width: 550px;
+    max-height: 85vh; /* Fitting the center properly */
+    overflow-y: auto; /* Internal scroll only */
+    margin: 0; 
+    box-shadow: var(--shadow-premium) !important;
     animation: slideIn 0.3s ease;
-    max-height: none !important; /* Managed by .modal overflow */
     position: relative;
-    backdrop-filter: blur(15px);
+    backdrop-filter: blur(20px);
     border: 1px solid var(--glass-border) !important;
 }
 
