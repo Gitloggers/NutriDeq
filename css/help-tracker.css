@@ -730,8 +730,83 @@
         }
 
         .fel-table-container {
-            overflow-x: auto;
+            overflow: visible !important;
             margin-bottom: 30px;
+            position: relative;
+        }
+
+        /* Choices.js Dropdown Elevation Fix */
+        .choices {
+            overflow: visible !important;
+            z-index: 10;
+            margin-bottom: 0;
+            border-radius: 8px;
+        }
+
+        .choices__list--dropdown {
+            z-index: 1000 !important;
+            border: 1px solid var(--primary-light) !important;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+            border-radius: 8px !important;
+            background: white !important;
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .choices__inner {
+            background: white !important;
+            border: 2px solid #f1f3f5 !important;
+            border-radius: 8px !important;
+            min-height: 42px !important;
+            padding: 4px 8px !important;
+        }
+
+        .choices.is-focused .choices__inner {
+            border-color: var(--primary) !important;
+        }
+
+        /* Prevent table clipping on cells holding Choices */
+        .fel-table td {
+            overflow: visible !important;
+            position: relative;
+        }
+
+        .fel-table tr {
+            overflow: visible !important;
+            position: relative;
+            z-index: 1; /* Base level */
+        }
+
+        /* STACKING DOMINATION: Elevate the active row to the top */
+        .food-item:focus-within,
+        .food-item.is-active {
+            z-index: 1000 !important;
+        }
+
+        .group-header {
+            position: relative;
+            z-index: 2; /* Higher than inactive items, lower than active ones */
+        }
+
+        .choices__list--dropdown {
+            z-index: 1000 !important;
+            background-color: #ffffff !important; /* Solid background */
+            opacity: 1 !important;
+            border: 1px solid var(--primary) !important;
+            box-shadow: var(--shadow-hover) !important;
+            min-width: 250px !important; /* Wider for readability */
+        }
+
+        @media (max-width: 768px) {
+            .choices__list--dropdown {
+                min-width: 100% !important;
+                left: 0 !important;
+            }
+            
+            .fel-table td:first-child {
+                position: relative;
+                overflow: visible !important;
+            }
         }
 
         .fel-table {
