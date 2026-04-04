@@ -468,7 +468,46 @@ try {
     <link rel="stylesheet" href="css/logout-modal.css">
     <link rel="stylesheet" href="css/mobile-style.css">
     <script src="scripts/dashboard.js" defer></script>
-    <style>
+        <style>
+        /* Priority Structural Anchor (V125) */
+        @media screen and (min-width: 1025px) {
+            .sidebar {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                bottom: 0 !important;
+                width: 260px !important;
+                height: 100vh !important;
+                z-index: 1000 !important;
+                overflow-y: auto !important;
+                transform: translateX(0) !important;
+            }
+            .main-content {
+                margin-left: 260px !important;
+                width: calc(100% - 260px) !important;
+                padding: 40px !important;
+            }
+        }
+        /* Priority Structural Anchor (V125) */
+        @media screen and (min-width: 1025px) {
+            .sidebar {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                bottom: 0 !important;
+                width: 260px !important;
+                height: 100vh !important;
+                z-index: 1000 !important;
+                overflow-y: auto !important;
+                transform: translateX(0) !important;
+            }
+            .main-content {
+                margin-left: 260px !important;
+                width: calc(100% - 260px) !important;
+                padding: 40px !important;
+            }
+        }
+
         .tabs-header {
             display: flex;
             gap: 12px;

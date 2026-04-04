@@ -40,13 +40,17 @@
         display: none !important;
     }
 
-    /* Sidebar visible and sticky for grid */
+    /* Sidebar visible and fixed for persistence (V125) */
     .sidebar {
         transform: translateX(0) !important;
-        position: sticky !important;
+        position: fixed !important;
         top: 0;
+        left: 0;
+        bottom: 0;
         width: 260px !important;
-        z-index: 1000;
+        height: 100vh !important;
+        z-index: 1000 !important;
+        overflow-y: auto !important;
     }
 
     .sidebar-overlay {
@@ -54,8 +58,9 @@
     }
 
     .main-content {
+        margin-left: 260px !important;
+        width: calc(100% - 260px) !important;
         padding: 2rem !important;
-        width: 100% !important;
     }
 
     /* Dashboard Grid - 3 columns */
@@ -256,3 +261,4 @@
         break-inside: avoid;
     }
 }
+
