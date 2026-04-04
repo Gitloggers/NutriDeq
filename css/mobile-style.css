@@ -120,6 +120,8 @@ body {
         padding-right: 15px !important;
         margin-left: 0 !important;
         width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
         transition: none !important; /* Remove desktop transition */
     }
 
@@ -258,6 +260,27 @@ body {
         gap: 8px 12px !important;
         align-items: center !important;
         transition: all 0.3s ease !important;
+    }
+
+    .card,
+    .nutrition-card,
+    .tab-content,
+    .management-section,
+    .dashboard-section,
+    .stat-card,
+    .message-item,
+    .appointment-item,
+    .quick-action-card {
+        background: var(--card-bg) !important;
+        border-radius: var(--border-radius) !important;
+        border: 1px solid var(--glass-border) !important;
+        box-shadow: var(--shadow) !important;
+        transition: var(--transition) !important;
+        backdrop-filter: blur(10px);
+        min-height: 50px;
+        width: 100%;
+        animation: fadeInUp 0.6s ease forwards;
+        opacity: 1 !important; /* Force visibility fallback */
     }
 
     .food-icon {
