@@ -84,7 +84,7 @@ class ChatController {
                 }
 
                 const html = `
-                    <div class="message-wrapper ${isMe ? 'sent' : 'received'}" id="msg-${msg.id}" style="margin-bottom:15px; width:100%; display:flex; flex-direction:${isMe ? 'row-reverse' : 'row'};">
+                    <div class="message-wrapper ${isMe ? 'sent' : 'received'}" id="msg-${msg.id}" style="margin-bottom:15px; width:100%; display:flex; flex-direction:${isMe ? 'row-reverse' : 'row'}; animation: liquidIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;">
                         <div class="message-bubble" style="background:${isMe ? '#2E8B57' : '#f1f1f1'}; color:${isMe ? 'white' : '#1a1a1a'} !important; padding:12px 18px; border-radius:18px; max-width:80%; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
                             <div style="font-size:0.75rem; color:${isMe ? 'rgba(255,255,255,0.8)' : '#2e8b57'}; margin-bottom:4px; font-weight:700;">${msg.sender_name}</div>
                             ${content}

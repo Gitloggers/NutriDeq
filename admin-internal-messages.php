@@ -66,16 +66,16 @@ if ($selected_thread_id) {
     <title>Admin Masters | NutriDeq</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/base.css?v=111">
-    <link rel="stylesheet" href="css/sidebar.css?v=111">
-    <link rel="stylesheet" href="css/logout-modal.css?v=111">
+    <link rel="stylesheet" href="css/base.css?v=119">
+    <link rel="stylesheet" href="css/sidebar.css?v=119">
+    <link rel="stylesheet" href="css/logout-modal.css?v=119">
     <style>
-        /* ADMIN INTERACTION FORTRESS - V115 */
+        /* ADMIN INTERACTION FORTRESS - V118 */
         body { margin: 0; background: #f4f7f6 !important; overflow: hidden; font-family:'Poppins',sans-serif; }
         .main-layout { display: grid; grid-template-columns: 260px 1fr; height: 100vh; width: 100%; position:fixed; left:0; top:0; }
         .main-content { grid-column: 2; height: 100vh; overflow: hidden; box-sizing: border-box; position:relative; }
         .messaging-wrapper { display: flex !important; gap: 20px; height: 100vh; width: 100% !important; margin: 0; padding: 20px; box-sizing: border-box; }
-        .msg-sidebar, .msg-container { background: white; border-radius: 24px; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.05); overflow: hidden; }
+        .msg-sidebar, .msg-container { background: white; border-radius: 24px; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.05); overflow: hidden; animation: liquidIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
         .msg-sidebar { width: 360px; flex-shrink:0; }
         .msg-container { flex: 1; }
 
@@ -94,9 +94,9 @@ if ($selected_thread_id) {
 
         .back-btn { display: none; background: none; border: none; font-size: 1.2rem; color: #2e8b57; cursor: pointer; margin-right: 15px; }
 
-        /* CHAT BUBBLE RESTORATION - V115 */
+        /* CHAT BUBBLE RESTORATION - V118 */
         .chat-messages { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; background:#fff; scroll-behavior: smooth; }
-        .message-wrapper { display: flex; width: 100%; margin-bottom: 10px; animation: liquidIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .message-wrapper { display: flex; width: 100%; margin-bottom: 10px; animation: liquidIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
         .message-wrapper.sent { flex-direction: row-reverse; }
         .message-wrapper.received { flex-direction: row; }
         
@@ -221,14 +221,21 @@ if ($selected_thread_id) {
 
             <div id="logoutModal" class="logout-modal"><div class="logout-modal-content" style="background:white; padding:40px; border-radius:24px; text-align:center; max-width:400px; box-shadow:0 20px 60px rgba(0,0,0,0.15);"><i class="fas fa-sign-out-alt fa-3x" style="color:#ff6b6b; margin-bottom:20px;"></i><h3>End Session?</h3><p style="color:#666;">Are you sure you want to log out?</p><div style="display:flex; gap:12px; justify-content:center; margin-top:25px;"><button onclick="document.getElementById('logoutModal').classList.remove('active')" style="padding:12px 24px; border-radius:12px; border:1px solid #eee; background:none; cursor:pointer; font-weight:600;">Cancel</button><button onclick="window.location.href='login-logout/logout.php'" style="padding:12px 24px; border-radius:12px; border:none; background:#ff6b6b; color:white; font-weight:700; cursor:pointer;">Logout</button></div></div></div>
 
-            <script src="scripts/internal-chat-controller.js?v=109"></script>
+            <script src="scripts/internal-chat-controller.js?v=119"></script>
             <script>
                 function toggleSidebar() { 
                     document.getElementById('atomicSidebar').classList.toggle('active');
                     document.getElementById('sidebarOverlay').classList.toggle('active');
                 }
-                document.getElementById('logoutTrigger').onclick = () => document.getElementById('logoutModal').classList.add('active');
                 document.addEventListener('DOMContentLoaded', () => {
+                    const logoutBtn = document.getElementById('logoutTrigger');
+                    const logoutModal = document.getElementById('logoutModal');
+                    if (logoutBtn && logoutModal) {
+                        logoutBtn.onclick = (e) => {
+                            e.preventDefault();
+                            logoutModal.classList.add('active');
+                        };
+                    }
                     <?php if ($selected_thread_id): ?>
                     new ChatController(<?= $user_id ?>, 'admin', <?= $selected_thread_id ?>);
                     const el = document.getElementById('chatMessages'); if(el) el.scrollTop = el.scrollHeight;
