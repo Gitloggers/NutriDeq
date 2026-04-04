@@ -221,11 +221,11 @@ if ($selected_thread_id) {
                         <div class="chat-input-area">
                             <?php if($selected_thread['status'] == 'open'): ?>
                             <form id="messageForm">
-                                <div class="input-pill" style="border: 2px solid #f0f0f0; background:white; transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);">
-                                    <button type="button" class="icon-btn" id="attachBtn" style="background:none; border:none; color:#999; cursor:pointer; padding:12px; transition:0.3s;"><i class="fas fa-plus"></i></button>
+                                <div class="input-pill" style="border: 2px solid #f0f0f0; background:white; display: flex; align-items: center; border-radius: 30px; padding: 5px 10px; width: 100%; box-sizing: border-box; transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);">
+                                    <button type="button" class="icon-btn" id="attachBtn" style="background:none; border:none; color:#999; cursor:pointer; padding:10px; transition:0.3s; flex-shrink:0;"><i class="fas fa-plus"></i></button>
                                     <input type="file" id="fileInput" style="display:none;" accept=".pdf,.png,.jpg,.jpeg">
-                                    <textarea class="chat-input" id="messageInput" style="flex:1; border:none !important; background:transparent !important; padding:12px 15px !important; outline:none !important; resize:none !important; font-size:1rem; color:#1a1a1a;" placeholder="Type professional response..." rows="1"></textarea>
-                                    <button type="submit" class="icon-btn" style="background:#2e8b57; color:white; border:none; width:40px; height:40px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.4s cubic-bezier(0.34, 1.56, 0.64, 1);"><i class="fas fa-arrow-up"></i></button>
+                                    <textarea class="chat-input" id="messageInput" style="flex:1; border:none !important; background:transparent !important; padding:12px 15px !important; outline:none !important; resize:none !important; font-size:1rem; color:#1a1a1a; min-width:0;" placeholder="Type professional response..." rows="1"></textarea>
+                                    <button type="submit" class="icon-btn" style="background:#2e8b57; color:white; border:none; width:45px; height:45px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.4s cubic-bezier(0.34, 1.56, 0.64, 1); flex-shrink:0; transform: scale(1);"><i class="fas fa-arrow-up"></i></button>
                                 </div>
                             </form>
                             <?php endif; ?>
