@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true || $_SESSION['user_role'] !== 'admin') {
     header("Location: login-logout/NutriDeqN-Login.php");
