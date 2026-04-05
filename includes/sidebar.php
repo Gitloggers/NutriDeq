@@ -27,26 +27,16 @@ require_once 'navigation.php';
 $sidebar_nav_links = getNavigationLinks($sidebar_user_role, $current_page);
 ?>
 
-<!-- Mobile Header (Fixed) -->
-<div class="mobile-header">
-    <button class="mobile-nav-toggle" id="mobileNavToggle">
-        <i class="fas fa-bars"></i>
-    </button>
-    <div class="header-logo">
-        <img src="assets/img/logo.png" alt="NutriDeq" height="45">
-        <span>NutriDeq</span>
-    </div>
-</div>
-
-<!-- Sidebar Overlay -->
-<div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-<!-- Sidebar -->
 <div class="sidebar" id="mainSidebar">
-    <a class="logo" href="dashboard.php">
-        <img src="assets/img/logo.png" alt="NutriDeq" class="logo-img">
-        <span>NutriDeq</span>
-    </a>
+    <div class="sidebar-header">
+        <a class="logo" href="dashboard.php">
+            <img src="assets/img/logo.png" alt="NutriDeq" class="logo-img">
+            <span class="logo-text">NutriDeq</span>
+        </a>
+        <button class="sidebar-collapse-btn" id="sidebarCollapseBtn" title="Toggle Sidebar">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
 
     <ul class="nav-links">
         <?php foreach ($sidebar_nav_links as $link): ?>
@@ -56,9 +46,9 @@ $sidebar_nav_links = getNavigationLinks($sidebar_user_role, $current_page);
                 </li>
             <?php else: ?>
                 <li>
-                    <a href="<?php echo $link['href']; ?>" class="<?php echo !empty($link['active']) ? 'active' : ''; ?>">
+                    <a href="<?php echo $link['href']; ?>" class="<?php echo !empty($link['active']) ? 'active' : ''; ?>" title="<?php echo $link['text']; ?>">
                         <i class="<?php echo $link['icon']; ?>"></i>
-                        <span><?php echo $link['text']; ?></span>
+                        <span class="nav-text"><?php echo $link['text']; ?></span>
                     </a>
                 </li>
             <?php endif; ?>
@@ -76,13 +66,35 @@ $sidebar_nav_links = getNavigationLinks($sidebar_user_role, $current_page);
     <div class="logout-section">
         <a href="login-logout/logout.php" class="logout-btn" id="logoutBtn">
             <i class="fas fa-sign-out-alt"></i>
-            <span>Logout</span>
+            <span class="nav-text">Logout</span>
         </a>
     </div>
 </div>
 
+<!-- Mobile Bottom App Bar -->
+<nav class="bottom-app-bar" id="mobileBottomBar">
+    <div class="bottom-nav-links">
+        <?php 
+        // Only get actual links (ignore headers) and limit to 5 max for mobile UI
+        $mobile_links_count = 0;
+        foreach ($sidebar_nav_links as $link) {
+            if (!isset($link['type']) || $link['type'] !== 'header') {
+                if ($mobile_links_count < 5) {
+                    $is_active = !empty($link['active']) ? 'active' : '';
+                    echo '<a href="' . $link['href'] . '" class="mobile-nav-item ' . $is_active . '">';
+                    echo '<i class="' . $link['icon'] . '"></i>';
+                    echo '<span>' . $link['text'] . '</span>';
+                    echo '</a>';
+                    $mobile_links_count++;
+                }
+            }
+        }
+        ?>
+    </div>
+</nav>
+
 <!-- Global Logout Modal -->
-<div class="logout-modal" id="logoutModal" style="z-index: 9999;">
+<div class="logout-modal" id="logoutModal" style="z-index: 10001;">
     <div class="logout-modal-content">
         <div class="logout-icon">
             <i class="fas fa-sign-out-alt"></i>
@@ -91,10 +103,40 @@ $sidebar_nav_links = getNavigationLinks($sidebar_user_role, $current_page);
         <p>You will be logged out and redirected to the login page.</p>
         <div class="logout-modal-actions">
             <button class="btn btn-secondary" id="cancelLogout">Cancel</button>
-            <button class="btn btn-primary" id="confirmLogout">Yes, Logout</button>
+            <button class="btn btn-primary" id="confirmLogout" onclick="window.location.href='login-logout/logout.php'">Yes, Logout</button>
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const logoutTrigger = document.getElementById('logoutTrigger');
+        const logoutModal = document.getElementById('logoutModal');
+        const cancelLogout = document.getElementById('cancelLogout');
+        
+        if (logoutTrigger && logoutModal) {
+            logoutTrigger.addEventListener('click', (e) => {
+                e.preventDefault();
+                logoutModal.classList.add('active');
+            });
+        }
+        
+        if (cancelLogout && logoutModal) {
+            cancelLogout.addEventListener('click', () => {
+                logoutModal.classList.remove('active');
+            });
+        }
+        
+        // Close modal when clicking on the backdrop
+        if (logoutModal) {
+            logoutModal.addEventListener('click', (e) => {
+                if (e.target === logoutModal) {
+                    logoutModal.classList.remove('active');
+                }
+            });
+        }
+    });
+</script>
 
 <link rel="stylesheet" href="css/sidebar.css?v=119">
 <link rel="stylesheet" href="css/logout-modal.css?v=119">

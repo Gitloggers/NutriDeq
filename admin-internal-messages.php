@@ -56,214 +56,440 @@ if ($selected_thread_id) {
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <script src="scripts/theme-toggle.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Admin Masters | NutriDeq</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <title>Clinical Command | NutriDeq</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/base.css?v=116">
-    <link rel="stylesheet" href="css/sidebar.css?v=116">
-    <link rel="stylesheet" href="css/logout-modal.css?v=116">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/dashboard-premium.css">
+    <link rel="stylesheet" href="css/interactive-animations.css">
     <style>
-        /* LIQUID KINETIC ADMIN FORTRESS - V116 */
-        body { margin: 0; background: #f4f7f6 !important; overflow: hidden; font-family:'Poppins',sans-serif; }
-        .main-layout { display: grid; grid-template-columns: 260px 1fr; height: 100vh; width: 100%; position:fixed; left:0; top:0; }
-        .main-content { grid-column: 2; height: 100vh; overflow: hidden; box-sizing: border-box; }
-        .messaging-wrapper { display: flex !important; gap: 20px; height: 100vh; width: 100% !important; margin: 0; padding: 20px; box-sizing: border-box; }
-        .msg-sidebar, .msg-container { background: white; border-radius: 28px; display: flex; flex-direction: column; box-shadow: 0 15px 45px rgba(0,0,0,0.06); border: 1px solid rgba(0,0,0,0.04); overflow: hidden; transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        .msg-sidebar { width: 360px; flex-shrink:0; }
-        .msg-container { flex: 1; }
+        .dash-premium { background: transparent !important; }
+        .messaging-hub { 
+            display: grid; 
+            grid-template-columns: 380px 1fr; 
+            height: calc(100vh - 100px); 
+            gap: 24px; 
+            margin: 20px;
+            position: relative;
+            z-index: 10;
+        }
 
-        @keyframes liquidIn { from { opacity: 0; transform: translateY(30px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
-        @keyframes magneticFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        /* Thread List Pane */
+        .thread-pane {
+            display: flex;
+            flex-direction: column;
+            background: var(--glass-bg) !important;
+            backdrop-filter: blur(20px);
+            border-radius: 32px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border) !important;
+            box-shadow: var(--glass-shadow);
+        }
 
-        .contact-item { padding: 18px 24px; border-radius: 20px; display: flex; align-items: center; gap: 15px; cursor: pointer; transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); border: 1px solid transparent; margin: 6px 12px; position: relative; overflow: hidden; animation: liquidIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) backwards; }
-        .contact-item:hover { background: #f8fbf9; border-color: rgba(46, 139, 87, 0.1); transform: scale(1.02) translateX(8px); box-shadow: 0 10px 25px rgba(46, 139, 87, 0.05); }
-        .contact-item:active { transform: scale(0.96); transition: 0.1s; }
-        .contact-item.active { background: #eff7f2; border-left: 6px solid #2e8b57; box-shadow: inset 0 0 20px rgba(46, 139, 87, 0.03); }
+        .thread-header {
+            padding: 32px 24px;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(255,255,255,0.05) !important;
+        }
 
-        .chat-messages { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 18px; scroll-behavior: smooth; background: #fff; }
-        .message-wrapper { display: flex; width: 100%; animation: liquidIn 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) backwards; }
-        .message-wrapper.sent { flex-direction: row-reverse; }
-        
-        .message-bubble { padding: 16px 22px; border-radius: 24px; max-width: 78%; line-height: 1.6; font-size: 0.98rem; position: relative; box-shadow: 0 6px 18px rgba(0,0,0,0.04); transition: all 0.3s ease; cursor: pointer; }
-        .message-bubble:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.08); }
-        .message-wrapper.sent .message-bubble { background: linear-gradient(135deg, #2e8b57, #3da36b); color: white !important; border-bottom-right-radius: 6px; }
-        .message-wrapper.received .message-bubble { background: #f0f2f5; color: #1a1a1a !important; border-bottom-left-radius: 6px; border: 1px solid rgba(0,0,0,0.02); }
+        .thread-search {
+            margin-top: 16px;
+            position: relative;
+        }
 
-        .btn-premium { background: #2e8b57; color: white; border: none; padding: 12px 24px; border-radius: 16px; cursor: pointer; font-weight: 700; transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 8px 20px rgba(46, 139, 87, 0.2); }
-        .btn-premium:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 12px 30px rgba(46, 139, 87, 0.3); }
-        .btn-premium:active { transform: scale(0.93); }
+        .thread-search i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+        }
 
-        .sidebar { background: #ffffff !important; border-right: 1px solid rgba(46, 139, 87, 0.1); padding: 20px 0; display: flex; flex-direction: column; width: 260px; height: 100vh; position: fixed; left: 0; top: 0; z-index: 9999 !important; transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); overflow-y: auto !important; }
-        .logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: #2e8b57; display: flex; align-items: center; text-decoration: none; padding: 0 20px 20px; border-bottom: 1px solid rgba(46, 139, 87, 0.1); margin-bottom: 15px; }
-        .nav-links { list-style: none; padding: 0 15px; flex: 1; margin: 0; }
-        .nav-links a { display: flex; align-items: center; padding: 14px 18px; text-decoration: none; color: #555; border-radius: 12px; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); font-weight: 500; font-size: 14px; margin-bottom: 4px; }
-        .nav-links a:hover { color: #2e8b57; background-color: rgba(46, 139, 87, 0.08); transform: translateX(5px); }
-        .nav-links a.active { color: #2e8b57; background-color: rgba(46, 139, 87, 0.08); font-weight: 700; }
+        .thread-search input {
+            width: 100%;
+            padding: 14px 16px 14px 44px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            background: rgba(255,255,255,0.3);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .thread-search input:focus { background: #ffffff; box-shadow: 0 10px 30px -10px rgba(5, 150, 105, 0.1); border-color: var(--primary); }
 
-        .mobile-nav-header { display: none; background: #2e8b57; padding: 15px 20px; align-items: center; justify-content: space-between; position: fixed; top: 0; left: 0; width: 100%; z-index: 9000; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 9500 !important; backdrop-filter: blur(4px); }
-        .sidebar-overlay.active { display: block; }
-        .back-btn { display: none; background: none; border: none; font-size: 1.4rem; color: #2e8b57; cursor: pointer; margin-right: 15px; transition: 0.3s; }
-        .back-btn:hover { transform: scale(1.2); }
+        .thread-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
 
-        @media screen and (max-width: 992px) {
-            .main-layout { grid-template-columns: 1fr; }
-            .sidebar { transform: translateX(-100%); }
-            .sidebar.active { transform: translateX(0); }
-            .main-content { grid-column: 1; padding: 75px 10px 10px 10px !important; }
-            .mobile-nav-header { display: flex; }
-            .messaging-wrapper { padding: 0; height: calc(100vh - 85px); gap: 0; }
-            .msg-sidebar, .msg-container { border-radius: 0; border: none; box-shadow: none; width: 100%; display: none; }
-            <?php if (!$selected_thread_id) : ?> .msg-sidebar { display: flex; } <?php else : ?> .msg-container { display: flex; } <?php endif; ?>
-            .back-btn { display: flex; }
+        .thread-card {
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 1px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: transparent !important;
+        }
+
+        .thread-card:hover { background: rgba(255, 255, 255, 0.4) !important; transform: translateX(5px); }
+        .thread-card.active { background: rgba(255,255,255,0.7) !important; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1); border-color: transparent !important; }
+
+        .thread-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: #1e293b;
+            flex-shrink: 0;
+            font-size: 1.2rem;
+            border: 2px solid #ffffff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        /* Chat Pane */
+        .chat-pane {
+            background: rgba(255, 255, 255, 0.1) !important;
+            backdrop-filter: blur(20px);
+            border-radius: 32px;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(255,255,255,0.4) !important;
+            box-shadow: 0 40px 100px -20px rgba(0,0,0,0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .chat-header {
+            padding: 24px 32px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255,255,255,0.3) !important;
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            background: transparent !important;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Chat Bubbles */
+        .msg-row { display: flex; width: 100%; margin-bottom: 8px; }
+        .msg-row.me { justify-content: flex-end; }
+        .msg-row.them { justify-content: flex-start; }
+
+        .msg-bubble {
+            max-width: 70%;
+            padding: 16px 24px;
+            border-radius: 24px;
+            font-size: 0.98rem;
+            line-height: 1.6;
+            position: relative;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.03);
+            transition: transform 0.2s;
+            border: 1px solid rgba(255,255,255,0.4);
+        }
+        .msg-row.me .msg-bubble {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 15px 30px rgba(16, 185, 129, 0.2);
+        }
+        .msg-row.them .msg-bubble {
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(5px);
+            color: #1e293b;
+            border-bottom-left-radius: 4px;
+        }
+
+        .msg-meta { font-size: 0.75rem; color: #64748b; margin-top: 6px; font-weight: 500; }
+        .msg-row.me .msg-meta { text-align: right; color: rgba(255,255,255,0.6); }
+
+        .chat-input-area {
+            padding: 24px 32px;
+            background: rgba(255,255,255,0.2) !important;
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .chat-input-pill {
+            background: #f1f5f9;
+            border-radius: 16px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1.5px solid transparent;
+            transition: all 0.2s;
+        }
+        .chat-input-pill:focus-within { background: white; border-color: #10b981; box-shadow: 0 0 0 4px rgba(16,185,129,0.1); }
+
+        .chat-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            outline: none;
+            resize: none;
+            max-height: 120px;
+        }
+
+        .chat-send-btn {
+            width: 44px;
+            height: 44px;
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .chat-send-btn:hover { background: #059669; transform: scale(1.05); }
+
+        /* Status Badges */
+        .chat-status { 
+            padding: 2px 14px; 
+            border-radius: 50px; 
+            font-size: 0.72rem; 
+            font-weight: 700; 
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 24px;
+        }
+        .status-open { background: rgba(16,185,129,0.1); color: #10b981; border: 1px solid rgba(16,185,129,0.2); }
+        .status-resolved { background: rgba(148,163,184,0.1); color: #64748b; border: 1px solid rgba(148,163,184,0.2); }
+
+        /* Premium Resolve Button */
+        .btn-resolve-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 50px;
+            color: #475569;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-family: 'Outfit', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+
+        .btn-resolve-pill:hover {
+            background: #1e293b;
+            color: white;
+            border-color: #1e293b;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(30, 41, 59, 0.15);
+        }
+
+        .btn-resolve-pill i {
+            font-size: 0.9rem;
+            color: #10b981;
+            transition: all 0.3s ease;
+        }
+
+        .btn-resolve-pill:hover i {
+            color: #34d399;
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 1024px) {
+            .messaging-hub { grid-template-columns: 1fr; margin: 0; height: calc(100vh - 60px); padding: 10px; gap: 0; }
+            .thread-pane { <?php if($selected_thread_id) echo 'display: none;'; ?> }
+            .chat-pane { <?php if(!$selected_thread_id) echo 'display: none;'; ?> }
         }
     </style>
 </head>
 <body>
-    <div class="mobile-nav-header">
-        <button onclick="toggleSidebar()" style="background:none; border:none; font-size:1.5rem; color:white;"><i class="fas fa-bars"></i></button>
-        <div style="font-weight:700; color:white; font-family:'Playfair Display',serif; font-size:1.2rem;">NutriDeq Admin</div>
-        <div style="width:30px;"></div>
-    </div>
-
-    <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
-
-    <div class="sidebar" id="atomicSidebar">
-        <a class="logo" href="dashboard.php">
-            <img src="assets/img/logo.png" alt="NutriDeq" style="height: 40px; width: auto;">
-            <span style="margin-left:10px;">NutriDeq</span>
-        </a>
-        <ul class="nav-links">
-            <?php foreach ($nav_links as $link): ?>
-                <?php if (isset($link['type']) && $link['type'] === 'header'): ?>
-                    <li style="font-size:0.7rem; color:#999; text-transform:uppercase; margin-top:20px; margin-bottom:10px; padding-left:15px; font-weight:700;"><?= $link['text'] ?></li>
-                <?php else: ?>
-                    <li><a href="<?= $link['href'] ?>" class="<?= !empty($link['active'])?'active':'' ?>"><i class="<?= $link['icon'] ?>"></i> <span><?= $link['text'] ?></span></a></li>
-                <?php endif; ?>
-            <?php endforeach; ?>
-        </ul>
-        <div style="padding: 15px 20px; border-top: 1px solid rgba(46, 139, 87, 0.1); display: flex; align-items: center; gap: 12px;">
-            <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #2e8b57, #4ca1af); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;"><?= $user_initials ?></div>
-            <div style="font-size:0.8rem;">
-                <div style="font-weight:700; color:#1a1a1a;"><?= htmlspecialchars($user_name) ?></div>
-                <div style="color:#999;">Administrator</div>
-            </div>
-        </div>
-        <div style="padding: 10px 20px; border-top: 1px solid rgba(46, 139, 87, 0.1);">
-            <button id="logoutTrigger" style="display:flex; align-items:center; padding:10px 12px; text-decoration:none; color:#ff6b6b; border:none; background:none; width:100%; cursor:pointer; font-weight:600;"><i class="fas fa-sign-out-alt" style="margin-right:10px;"></i> Logout</button>
-        </div>
-    </div>
-
     <div class="main-layout">
-        <main class="main-content">
-            <div class="messaging-wrapper">
-                <div class="msg-sidebar">
-                    <div style="padding:28px; border-bottom:1px solid #eee; background:#fafafa;">
-                        <h3 style="margin:0 0 15px 0; font-family:'Playfair Display',serif; font-size:1.4rem; color:#2e8b57;">Clinical Oversight</h3>
-                        <form method="GET">
-                            <select name="status" onchange="this.form.submit()" style="width:100%; padding:15px; border-radius:16px; border:1px solid #ddd; outline:none; font-family:inherit; color:#1a1a1a; font-size:0.9rem; transition:0.3s; background:white;">
-                                <option value="all" <?= $status_filter=='all'?'selected':'' ?>>All Conversations</option>
-                                <option value="open" <?= $status_filter=='open'?'selected':'' ?>>Active Cases</option>
-                                <option value="resolved" <?= $status_filter=='resolved'?'selected':'' ?>>Resolved</option>
-                            </select>
-                        </form>
+        <?php include 'includes/sidebar.php'; ?>
+
+        <main class="main-content dash-premium">
+            <!-- Modern Mesh Background Elements -->
+            <div class="mesh-gradient-container dashboard-mesh">
+                <div class="mesh-blob blob-1"></div>
+                <div class="mesh-blob blob-2"></div>
+                <div class="mesh-blob blob-3"></div>
+            </div>
+
+            <!-- Nutri-Glass Noise Texture -->
+            <div class="glass-noise"></div>
+
+            <!-- Spotlight & Custom Cursor -->
+            <div class="spotlight" id="spotlight"></div>
+            <div id="organicCursor"></div>
+            <div class="glow-aura" id="cursorAura"></div>
+
+            <!-- Floating Navigation Pills -->
+            <div style="display: flex; justify-content: center; margin-bottom: 24px; position: relative; z-index: 20;">
+                <div class="floating-pill-nav" style="background: rgba(255,255,255,0.4); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.6); padding: 6px; border-radius: 50px; display: flex; gap: 8px; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1);">
+                    <a href="?status=all" class="pill-nav-item <?= $status_filter === 'all' ? 'active' : '' ?>" style="padding: 10px 24px; border-radius: 50px; font-weight: 700; font-size: 0.85rem; text-decoration: none; transition: all 0.3s; color: <?= $status_filter === 'all' ? '#ffffff' : '#64748b' ?>; background: <?= $status_filter === 'all' ? '#10b981' : 'transparent' ?>; box-shadow: <?= $status_filter === 'all' ? '0 4px 12px rgba(16, 185, 129, 0.3)' : 'none' ?>;">All</a>
+                    <a href="?status=open" class="pill-nav-item <?= $status_filter === 'open' ? 'active' : '' ?>" style="padding: 10px 24px; border-radius: 50px; font-weight: 700; font-size: 0.85rem; text-decoration: none; transition: all 0.3s; color: <?= $status_filter === 'open' ? '#ffffff' : '#64748b' ?>; background: <?= $status_filter === 'open' ? '#10b981' : 'transparent' ?>; box-shadow: <?= $status_filter === 'open' ? '0 4px 12px rgba(16, 185, 129, 0.3)' : 'none' ?>;">Open</a>
+                    <a href="?status=closed" class="pill-nav-item <?= $status_filter === 'closed' ? 'active' : '' ?>" style="padding: 10px 24px; border-radius: 50px; font-weight: 700; font-size: 0.85rem; text-decoration: none; transition: all 0.3s; color: <?= $status_filter === 'closed' ? '#ffffff' : '#64748b' ?>; background: <?= $status_filter === 'closed' ? '#10b981' : 'transparent' ?>; box-shadow: <?= $status_filter === 'closed' ? '0 4px 12px rgba(16, 185, 129, 0.3)' : 'none' ?>;">Closed</a>
+                </div>
+            </div>
+
+            <div class="messaging-hub">
+                <!-- Search & Thread Sidebar -->
+                <div class="thread-pane stagger d-1">
+                    <div class="thread-header">
+                        <h2 style="font-family:'Outfit',sans-serif; font-weight: 800; margin:0; font-size:1.4rem; color:#1e293b;">Internal Comms</h2>
+                        <div class="thread-search">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Search conversations...">
+                        </div>
                     </div>
-                    <div class="contact-list" style="overflow-y:auto; flex:1; padding-top:10px;">
+
+                    <div class="thread-list">
                         <?php foreach ($threads as $index => $thread): ?>
-                            <div class="contact-item <?= ($selected_thread_id == $thread['id'])?'active':'' ?>" 
-                                 style="animation-delay: <?= $index * 0.05 ?>s"
+                            <div class="thread-card <?= ($selected_thread_id == $thread['id'])?'active':'' ?>" 
                                  onclick="window.location.href='?thread_id=<?= $thread['id'] ?>&status=<?= $status_filter ?>'">
-                                <div style="width:46px; height:46px; background:#f4f7f6; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#2e8b57; flex-shrink:0; font-weight:700; transition:0.3s;">#</div>
+                                <div class="thread-avatar">
+                                    <i class="fas fa-hashtag" style="font-size: 0.9rem; opacity: 0.5;"></i>
+                                </div>
                                 <div style="flex:1;">
-                                    <div style="font-weight:700; color:#1a1a1a; font-size:1rem;"><?= htmlspecialchars($thread['title']) ?></div>
-                                    <div style="font-size:0.8rem; color:#888; display:flex; align-items:center; gap:5px;">
-                                        <i class="fas fa-circle" style="font-size:6px; color:<?= $thread['status']=='open'?'#2e8b57':'#ff6b6b' ?>"></i>
-                                        <?= ucfirst($thread['status']) ?>
+                                    <div style="font-weight:700; color:#1e293b; font-size: 0.95rem;"><?= htmlspecialchars($thread['title']) ?></div>
+                                    <div style="font-size:0.75rem; color:#64748b; margin-top:4px; font-weight: 500;">
+                                        <i class="far fa-clock" style="margin-right: 4px;"></i> <?= date('M j, g:i A', strtotime($thread['last_message_at'])) ?>
                                     </div>
                                 </div>
-                                <i class="fas fa-chevron-right" style="opacity:0.2; font-size:0.8rem;"></i>
+                                <?php if($thread['status'] == 'open'): ?>
+                                    <div style="width:10px; height:10px; border-radius:50%; background:#10b981; box-shadow: 0 0 10px rgba(16, 185, 129, 0.4); border: 2px solid #ffffff;"></div>
+                                <?php endif; ?>
                             </div>
                         <?php endforeach; ?>
                     </div>
                 </div>
-                <div class="msg-container">
+
+                <!-- Chat Area -->
+                <div class="chat-pane stagger d-2">
                     <?php if ($selected_thread): ?>
-                        <div style="padding:22px 30px; border-bottom:1px solid #eee; background:#fff; display:flex; align-items:center; justify-content:space-between;">
-                            <div style="display:flex; align-items:center;">
-                                <button class="back-btn" onclick="window.location.href='admin-internal-messages.php?status=<?= $status_filter ?>'"><i class="fas fa-arrow-left"></i></button>
-                                <div>
-                                    <h4 style="margin:0; font-weight:700; color:#1a1a1a; font-size:1.1rem;"><?= htmlspecialchars($selected_thread['title']) ?></h4>
-                                    <div style="font-size:0.75rem; color:#888;">Clinical Thread Record</div>
+                        <div class="chat-header">
+                            <div>
+                                <h3 style="margin:0; font-size:1.25rem; color:#1e293b; font-family:'Outfit',sans-serif; font-weight: 800;"><?= htmlspecialchars($selected_thread['title']) ?></h3>
+                                <div style="display:flex; align-items:center; gap:12px; margin-top:6px;">
+                                    <span class="chat-status <?= $selected_thread['status']=='open'?'status-open':'status-resolved' ?>" style="font-weight: 800; text-transform: uppercase; font-size: 0.65rem; padding: 4px 10px; border-radius: 20px;">
+                                        <?= ucfirst($selected_thread['status']) ?>
+                                    </span>
+                                    <span style="font-size:0.75rem; color:#64748b; font-weight: 600;">Thread ID: #<?= $selected_thread_id ?></span>
                                 </div>
                             </div>
                             <?php if($selected_thread['status'] == 'open'): ?>
-                            <form method="POST"><input type="hidden" name="thread_id" value="<?= $selected_thread_id ?>"><input type="hidden" name="update_status" value="1"><button type="submit" name="status" value="resolved" class="btn-premium">Close Case</button></form>
+                                <form method="POST">
+                                    <input type="hidden" name="thread_id" value="<?= $selected_thread_id ?>">
+                                    <input type="hidden" name="update_status" value="1">
+                                    <button type="submit" name="status" value="resolved" class="btn-resolve-pill" style="border-radius: 50px; font-weight: 800; font-size: 0.8rem;">
+                                        <i class="fas fa-check-circle"></i> Resolve Case
+                                    </button>
+                                </form>
                             <?php endif; ?>
                         </div>
+
                         <div class="chat-messages" id="chatMessages">
                             <?php foreach ($thread_messages as $index => $msg): 
                                 $isMe = ($msg['sender_id'] == $user_id); ?>
-                                <div class="message-wrapper <?= $isMe ? 'sent' : 'received' ?>" id="msg-<?= $msg['id'] ?>" style="animation-delay: <?= $index * 0.05 ?>s">
-                                    <div class="message-bubble">
-                                        <?php if(!$isMe): ?><div style="font-size:0.8rem; color:#2e8b57; font-weight:700; margin-bottom:6px; display:flex; align-items:center; gap:6px;"><i class="fas fa-user-md" style="font-size:0.7rem;"></i> <?= htmlspecialchars($msg['sender_name']) ?></div><?php endif; ?>
-                                        <div style="color:inherit !important;"><?= nl2br(htmlspecialchars($msg['message'])) ?></div>
-                                        <div style="font-size:0.7rem; opacity:0.6; text-align:right; margin-top:8px; font-weight:500;"><?= date('g:i A', strtotime($msg['created_at'])) ?></div>
+                                <div class="msg-row <?= $isMe ? 'me' : 'them' ?>">
+                                    <div class="msg-bubble">
+                                        <?php if(!$isMe): ?>
+                                            <div style="font-size:0.75rem; font-weight:700; color:#10b981; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
+                                                <i class="fas fa-user-md"></i> <?= htmlspecialchars($msg['sender_name']) ?>
+                                            </div>
+                                        <?php endif; ?>
+                                        <div><?= nl2br(htmlspecialchars($msg['message'])) ?></div>
+                                        <div class="msg-meta"><?= date('g:i A', strtotime($msg['created_at'])) ?></div>
                                     </div>
                                 </div>
                             <?php endforeach; ?>
                         </div>
+
                         <div class="chat-input-area">
                             <?php if($selected_thread['status'] == 'open'): ?>
-                            <form id="messageForm">
-                                <div class="input-pill" style="border: 2px solid #f0f0f0; background:white; display: flex; align-items: center; border-radius: 30px; padding: 5px 10px; width: 100%; box-sizing: border-box; transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);">
-                                    <button type="button" class="icon-btn" id="attachBtn" style="background:none; border:none; color:#999; cursor:pointer; padding:10px; transition:0.3s; flex-shrink:0;"><i class="fas fa-plus"></i></button>
-                                    <input type="file" id="fileInput" style="display:none;" accept=".pdf,.png,.jpg,.jpeg">
-                                    <textarea class="chat-input" id="messageInput" style="flex:1; border:none !important; background:transparent !important; padding:12px 15px !important; outline:none !important; resize:none !important; font-size:1rem; color:#1a1a1a; min-width:0;" placeholder="Type professional response..." rows="1"></textarea>
-                                    <button type="submit" class="icon-btn" style="background:#2e8b57; color:white; border:none; width:45px; height:45px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.4s cubic-bezier(0.34, 1.56, 0.64, 1); flex-shrink:0; transform: scale(1);"><i class="fas fa-arrow-up"></i></button>
+                                <form id="messageForm">
+                                    <div class="chat-input-pill">
+                                        <button type="button" style="background:none; border:none; color:#64748b; cursor:pointer; padding:8px;" id="attachBtn">
+                                            <i class="fas fa-paperclip"></i>
+                                        </button>
+                                        <input type="file" id="fileInput" style="display:none;" accept=".pdf,.png,.jpg,.jpeg">
+                                        <textarea class="chat-input" id="messageInput" placeholder="Write clinical response..." rows="1"></textarea>
+                                        <button type="submit" class="chat-send-btn">
+                                            <i class="fas fa-paper-plane"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                            <?php else: ?>
+                                <div style="text-align:center; color:#94a3b8; padding:10px; font-weight:500;">
+                                    This case has been resolved and is now closed.
                                 </div>
-                            </form>
                             <?php endif; ?>
                         </div>
                     <?php else: ?>
-                        <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#fff; animation: liquidIn 0.8s ease;">
-                            <div style="width:120px; height:120px; background:#eff7f2; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:25px; animation: magneticFloat 4s ease-in-out infinite;">
-                                <i class="fas fa-shield-halved fa-4x" style="color:#2e8b57; opacity:0.6;"></i>
+                        <!-- Empty State -->
+                        <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; background: transparent;">
+                            <div style="width:140px; height:140px; background: rgba(255,255,255,0.4); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.6); border-radius:40px; display:flex; align-items:center; justify-content:center; margin-bottom:32px; box-shadow: 0 40px 80px -20px rgba(0,0,0,0.1); transform: rotate(-5deg);">
+                                <i class="fas fa-shield-halved fa-4x" style="color:#10b981; opacity:0.8;"></i>
                             </div>
-                            <h3 style="font-family:'Playfair Display',serif; color:#1a1a1a; margin:0; font-size:1.8rem;">Clinical Command</h3>
-                            <p style="color:#999; font-weight:500;">Select a thread to monitor oversight.</p>
+                            <h3 style="font-family:'Outfit',sans-serif; color:#1e293b; margin:0; font-size:1.8rem; font-weight: 800;">Internal Terminal</h3>
+                            <p style="color:#64748b; font-weight: 600; margin-top:12px; font-size: 1.05rem;">Select an active thread to begin oversight.</p>
                         </div>
                     <?php endif; ?>
                 </div>
             </div>
 
-            <div id="logoutModal" class="logout-modal"><div class="logout-modal-content" style="background:white; padding:45px; border-radius:32px; text-align:center; max-width:420px; box-shadow:0 30px 80px rgba(0,0,0,0.2);"><div style="width:70px; height:70px; background:#fff5f5; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 25px;"><i class="fas fa-power-off fa-2x" style="color:#ff6b6b;"></i></div><h3 style="font-size:1.5rem; color:#1a1a1a;">Terminate Session?</h3><p style="color:#666; font-size:1rem; line-height:1.6;">Are you sure you want to exit the clinical management environment?</p><div style="display:flex; gap:15px; justify-content:center; margin-top:35px;"><button onclick="document.getElementById('logoutModal').classList.remove('active')" style="padding:15px 30px; border-radius:18px; border:2px solid #f0f0f0; background:none; cursor:pointer; font-weight:700; color:#666; transition:0.3s;">Stay</button><button onclick="window.location.href='login-logout/logout.php'" style="padding:15px 30px; border-radius:18px; border:none; background:#ff6b6b; color:white; font-weight:700; cursor:pointer; box-shadow:0 10px 25px rgba(255,107,107,0.3); transition:0.3s;">Exit</button></div></div></div>
-
-            <script src="scripts/internal-chat-controller.js?v=116"></script>
+            <script src="scripts/internal-chat-controller.js"></script>
             <script>
-                function toggleSidebar() { 
-                    document.getElementById('atomicSidebar').classList.toggle('active');
-                    document.getElementById('sidebarOverlay').classList.toggle('active');
-                }
-                document.getElementById('logoutTrigger').onclick = () => document.getElementById('logoutModal').classList.add('active');
-                
-                // Focus Logic
-                const mi = document.getElementById('messageInput');
-                if(mi) {
-                    mi.addEventListener('focus', () => { mi.parentElement.style.borderColor = '#2e8b57'; mi.parentElement.style.boxShadow = '0 10px 30px rgba(46,139,87,0.1)'; });
-                    mi.addEventListener('blur', () => { mi.parentElement.style.borderColor = '#f0f0f0'; mi.parentElement.style.boxShadow = 'none'; });
-                }
-
                 document.addEventListener('DOMContentLoaded', () => {
+                    const el = document.getElementById('chatMessages'); 
+                    if(el) el.scrollTop = el.scrollHeight;
+                    
                     <?php if ($selected_thread_id): ?>
                     new ChatController(<?= $user_id ?>, 'admin', <?= $selected_thread_id ?>);
-                    const el = document.getElementById('chatMessages'); if(el) el.scrollTop = el.scrollHeight;
                     <?php endif; ?>
+
+                    // Auto-resize textarea
+                    const textarea = document.getElementById('messageInput');
+                    if(textarea) {
+                        textarea.addEventListener('input', function() {
+                            this.style.height = 'auto';
+                            this.style.height = (this.scrollHeight) + 'px';
+                        });
+                    }
                 });
             </script>
         </main>
