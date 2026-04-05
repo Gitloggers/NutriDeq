@@ -622,59 +622,84 @@ body {
     }
 
     .bottom-nav-links {
-        display: flex !important;
+        display: grid !important;
+        grid-auto-flow: column !important;
+        grid-auto-columns: 1fr !important;
         height: 64px !important;
         align-items: center !important;
-        justify-content: space-around !important;
+        justify-items: center !important;
     }
 
     .mobile-nav-item {
-        flex: 1 !important;
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
         text-decoration: none !important;
-        color: #64748b !important;
+        color: #94a3b8 !important;
         font-family: 'Outfit', sans-serif !important;
         font-size: 0.65rem !important;
-        font-weight: 700 !important;
+        font-weight: 600 !important;
         gap: 4px !important;
         background: transparent !important;
         border: none !important;
-        padding: 0 !important;
+        padding: 0 4px !important;
         margin: 0 !important;
-        -webkit-appearance: none !important;
-        appearance: none !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        transition: all 0.2s ease !important;
+        position: relative !important;
+    }
+
+    .mobile-nav-item span {
+        width: 100% !important;
+        text-align: center !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        display: block !important;
+        font-weight: 500 !important;
     }
 
     .mobile-nav-item i {
-        font-size: 1.4rem !important;
-        transition: transform 0.3s ease !important;
-        color: #94a3b8 !important;
-    }
-
-    .mobile-nav-item.active {
-        color: #10b981 !important;
-    }
-    
-    .mobile-nav-item.active i {
-        color: #10b981 !important;
-        transform: translateY(-2px);
-    }
-
-    .mobile-nav-item:active {
-        transform: scale(0.92);
-        opacity: 0.7;
+        font-size: 1.3rem !important;
+        color: #cbd5e1 !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        display: block !important;
+        height: 24px !important;
+        line-height: 24px !important;
     }
 
     .mobile-nav-item.active {
         color: var(--primary) !important;
     }
-
+    
+    .mobile-nav-item.active span {
+        font-weight: 700 !important;
+    }
+    
     .mobile-nav-item.active i {
-        transform: translateY(-2px) !important;
+        color: var(--primary) !important;
+        transform: translateY(-2px) scale(1.1) !important;
+        filter: drop-shadow(0 4px 6px rgba(45, 138, 86, 0.3)) !important;
+    }
+
+    .mobile-nav-item:active {
+        transform: scale(0.92);
+        opacity: 0.8;
+    }
+
+    /* Subtle dot indicator for active tab */
+    .mobile-nav-item.active::after {
+        content: '';
+        position: absolute;
+        bottom: -6px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: var(--primary);
     }
 
     /* Table Fixes */

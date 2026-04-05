@@ -113,19 +113,48 @@ $pdo = $database->getConnection();
     <style>
         /* Dashboard-specific refined mobile metrics */
         @media screen and (max-width: 768px) {
-            .dashboard-grid {
-                grid-template-columns: repeat(2, 1fr) !important;
+            .main-content {
+                padding-bottom: 90px !important; /* Prevents bottom app bar from covering content */
+            }
+            .dashboard-grid, .bento-grid {
+                grid-template-columns: 1fr !important;
+                gap: 12px !important;
+            }
+            .dash-row {
+                grid-template-columns: 1fr !important;
+                gap: 15px !important;
+            }
+            .charts-section {
+                grid-template-columns: 1fr !important;
+                gap: 15px !important;
+            }
+            .command-tiles {
+                grid-template-columns: 1fr !important;
                 gap: 12px !important;
             }
             .stat-card {
                 padding: 15px !important;
                 margin-bottom: 0 !important;
             }
-            .charts-section {
-                grid-template-columns: 1fr !important;
+            .dash-hero-content h1 {
+                font-size: 1.5rem !important;
+            }
+            .dash-panel {
+                padding: 15px !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+                overflow: hidden !important;
+            }
+            .table-responsive {
+                width: 100%;
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch;
+                display: block;
+            }
+            .table-responsive table {
+                white-space: nowrap;
             }
         }
-    </style>
     </style>
     <script>
         const BASE_URL = '<?= rtrim(dirname($_SERVER['PHP_SELF']), '/') ?>/';
