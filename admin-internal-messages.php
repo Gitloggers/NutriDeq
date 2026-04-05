@@ -70,6 +70,7 @@ if ($selected_thread_id) {
     <link rel="stylesheet" href="css/sidebar.css">
     <link rel="stylesheet" href="css/dashboard-premium.css">
     <link rel="stylesheet" href="css/interactive-animations.css">
+    <link rel="stylesheet" href="css/mobile-style.css">
     <style>
         .dash-premium { background: transparent !important; }
         .messaging-hub { 
@@ -331,9 +332,14 @@ if ($selected_thread_id) {
         }
 
         @media (max-width: 1024px) {
-            .messaging-hub { grid-template-columns: 1fr; margin: 0; height: calc(100vh - 60px); padding: 10px; gap: 0; }
-            .thread-pane { <?php if($selected_thread_id) echo 'display: none;'; ?> }
-            .chat-pane { <?php if(!$selected_thread_id) echo 'display: none;'; ?> }
+            .mobile-back-btn { display: flex !important; margin-left: -8px; }
+            .messaging-hub { grid-template-columns: 1fr; margin: 10px; height: calc(100vh - 150px); padding: 0; gap: 0; }
+            .thread-pane { <?php if($selected_thread_id) echo 'display: none;'; ?> border-radius: 24px; }
+            .chat-pane { <?php if(!$selected_thread_id) echo 'display: none;'; ?> border-radius: 24px; border: none !important; }
+            .chat-messages { padding: 20px; }
+            .chat-header { padding: 16px 20px; }
+            .chat-input-area { padding: 16px 20px; }
+            .floating-pill-nav { width: 95%; overflow-x: auto; }
         }
     </style>
 </head>
@@ -402,13 +408,18 @@ if ($selected_thread_id) {
                 <div class="chat-pane stagger d-2">
                     <?php if ($selected_thread): ?>
                         <div class="chat-header">
-                            <div>
-                                <h3 style="margin:0; font-size:1.25rem; color:#1e293b; font-family:'Outfit',sans-serif; font-weight: 800;"><?= htmlspecialchars($selected_thread['title']) ?></h3>
-                                <div style="display:flex; align-items:center; gap:12px; margin-top:6px;">
+                            <div style="display: flex; align-items: center; gap: 16px;">
+                                <a href="admin-internal-messages.php?status=<?= $status_filter ?>" class="mobile-back-btn" style="display: none; width: 36px; height: 36px; background: rgba(0,0,0,0.04); border-radius: 50%; align-items: center; justify-content: center; color: #64748b; text-decoration: none; transition: 0.2s;">
+                                    <i class="fas fa-chevron-left" style="font-size: 1rem;"></i>
+                                </a>
+                                <div>
+                                    <h3 style="margin:0; font-size:1.25rem; color:#1e293b; font-family:'Outfit',sans-serif; font-weight: 800;"><?= htmlspecialchars($selected_thread['title']) ?></h3>
+                                    <div style="display:flex; align-items:center; gap:12px; margin-top:6px;">
                                     <span class="chat-status <?= $selected_thread['status']=='open'?'status-open':'status-resolved' ?>" style="font-weight: 800; text-transform: uppercase; font-size: 0.65rem; padding: 4px 10px; border-radius: 20px;">
                                         <?= ucfirst($selected_thread['status']) ?>
                                     </span>
                                     <span style="font-size:0.75rem; color:#64748b; font-weight: 600;">Thread ID: #<?= $selected_thread_id ?></span>
+                                    </div>
                                 </div>
                             </div>
                             <?php if($selected_thread['status'] == 'open'): ?>

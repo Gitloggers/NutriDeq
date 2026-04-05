@@ -24,33 +24,48 @@
     }
 
     function updateAllStats() {
-        fetch('api/admin_stats.php')
-            .then(res => res.json())
+        fetch('api/admin_stats.php', { cache: 'no-store' })
+            .then(async res => {
+                const text = await res.text();
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    console.error('[NutriDeq] API Response Parse Error:', text.substring(0, 200));
+                    throw new Error('API returned invalid format (see console).');
+                }
+            })
             .then(data => {
-                if (data.success) {
-                    renderInfluenceList(data.staff_influence);
-                    renderEfficiency(data.efficiency);
-                    renderActivityFeed(data.recent_activity);
+                if (data && data.success) {
+                    renderInfluenceList(data.staff_influence || []);
+                    renderEfficiency(data.efficiency || { percentage: 0, today: 0, avg: 0 });
+                    renderActivityFeed(data.recent_activity || []);
                     
-                    // Update workload if elements exist
                     if (data.workload) {
-                        const pct = Math.round((data.workload.total_clients / data.workload.max_capacity) * 100);
+                        const pct = data.workload.max_capacity ? Math.round((data.workload.total_clients / data.workload.max_capacity) * 100) : 0;
                         const progressBar = document.getElementById('workloadProgressBar');
                         const workloadText = document.getElementById('workloadText');
                         if (progressBar) progressBar.style.width = pct + '%';
                         if (workloadText) workloadText.innerText = `${data.workload.total_clients} Active Clients (${pct}% Capacity)`;
                     }
                 } else {
-                    console.error('API Error:', data.error);
-                    const list = document.getElementById('recentActivityList');
-                    if (list) list.innerHTML = `<div style="text-align: center; padding: 20px; color: #ef4444;"><i class="fas fa-exclamation-triangle"></i> Sync Error</div>`;
+                    const msg = data ? data.error : 'Unknown Sync Error';
+                    showFeedError(`<i class="fas fa-exclamation-triangle"></i> Sync Error: ${msg}`);
                 }
             })
             .catch(err => {
-                console.error('Real-time update error:', err);
-                const list = document.getElementById('recentActivityList');
-                if (list) list.innerHTML = `<div style="text-align: center; padding: 20px; color: #ef4444;"><i class="fas fa-exclamation-triangle"></i> Sync Offline</div>`;
+                console.error('[NutriDeq] Feed Fetch Error:', err);
+                showFeedError(`<i class="fas fa-wifi"></i> Sync Offline: Connection or API Failure`);
             });
+    }
+
+    function showFeedError(message) {
+        const list = document.getElementById('recentActivityList');
+        if (list) {
+            // Only overwrite if it's currently attempting to load or already empty, to prevent clearing good data on a momentary hiccup
+            if (list.innerHTML.includes('fa-spinner') || list.children.length === 0 || list.innerHTML.includes('Sync')) {
+                list.innerHTML = `<div style="text-align: center; padding: 30px; color: #ef4444; font-weight: 600;">${message}</div>`;
+            }
+        }
     }
 
     function renderInfluenceList(staff) {
@@ -71,47 +86,57 @@
     function renderEfficiency(eff) {
         if (!eff) return;
         
-        const pctLabel = document.getElementById('efficiencyPctLabel');
-        const desc = document.getElementById('efficiencyDescription');
-        const trend = document.getElementById('efficiencyTrendLine');
-        
-        if (pctLabel) pctLabel.innerText = eff.percentage + '%';
-        if (desc) desc.innerText = `Platform handling ${eff.today} logs today compared to ${eff.avg} weekly avg.`;
-        if (trend) {
-            const isGood = eff.percentage >= 100;
-            trend.innerHTML = `<i class="fas fa-arrow-${isGood ? 'up' : 'down'}"></i> Efficiency is ${isGood ? 'Higher' : 'Lower'} than average`;
-            trend.style.color = isGood ? 'var(--primary)' : '#e74c3c';
-        }
+        try {
+            const pctLabel = document.getElementById('efficiencyPctLabel');
+            const desc = document.getElementById('efficiencyDescription');
+            const trend = document.getElementById('efficiencyTrendLine');
+            
+            if (pctLabel) pctLabel.innerText = eff.percentage + '%';
+            if (desc) desc.innerText = `Platform handling ${eff.today} logs today compared to ${eff.avg} weekly avg.`;
+            if (trend) {
+                const isGood = eff.percentage >= 100;
+                trend.innerHTML = `<i class="fas fa-arrow-${isGood ? 'up' : 'down'}"></i> Efficiency is ${isGood ? 'Higher' : 'Lower'} than average`;
+                trend.style.color = isGood ? 'var(--primary)' : '#e74c3c';
+            }
 
-        renderDoughnut(eff.percentage);
+            renderDoughnut(eff.percentage);
+        } catch (e) {
+            console.warn('[NutriDeq] Efficiency render failed:', e.message);
+        }
     }
 
     function renderDoughnut(pct) {
         const ctx = document.getElementById('efficiencyDoughnutChart');
         if (!ctx) return;
 
-        if (efficiencyChart) {
-            efficiencyChart.data.datasets[0].data = [pct, 100 - pct];
-            efficiencyChart.update();
-            return;
-        }
-
-        efficiencyChart = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                datasets: [{
-                    data: [pct, 100 - pct],
-                    backgroundColor: ['#2E8B57', '#e9ecef'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                cutout: '80%',
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false }, tooltip: { enabled: false } }
+        try {
+            // Check if Chart.js has already bound this canvas (dashboard.php does this on load)
+            let existingChart = Chart.getChart(ctx);
+            
+            if (existingChart) {
+                existingChart.data.datasets[0].data = [pct, 100 - pct];
+                existingChart.update();
+            } else {
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        datasets: [{
+                            data: [pct, 100 - pct],
+                            backgroundColor: ['#2E8B57', '#e9ecef'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        cutout: '80%',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false }, tooltip: { enabled: false } }
+                    }
+                });
             }
-        });
+        } catch (e) {
+            console.warn('[NutriDeq] Doughnut chart skipped:', e.message);
+        }
     }
 
     function renderActivityFeed(activities) {

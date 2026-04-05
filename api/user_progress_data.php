@@ -1,4 +1,5 @@
 <?php
+ini_set('display_errors', 0);
 // api/user_progress_data.php
 session_start();
 header('Content-Type: application/json');

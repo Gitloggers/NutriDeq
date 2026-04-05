@@ -66,7 +66,9 @@ $nav_links = getNavigationLinks($user_role, 'user-diary.php');
     <link rel="stylesheet" href="css/sidebar.css">
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/responsive.css">
-    <link rel="stylesheet" href="css/mobile-style.css">
+    <!-- Platform Specific Styles -->
+    <link rel="stylesheet" href="css/desktop-style.css" media="all and (min-width: 1025px)">
+    <link rel="stylesheet" href="css/mobile-style.css" media="all and (max-width: 1024px)">
     <link rel="stylesheet" href="css/logout-modal.css">
     <script src="scripts/dashboard.js" defer></script>
     <style>

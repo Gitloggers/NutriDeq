@@ -1,4 +1,5 @@
 <?php
+ini_set('display_errors', 0);
 // api/dashboard_stats.php
 // Unified real-time data engine for NutriDeq
 session_start();

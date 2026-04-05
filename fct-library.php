@@ -112,7 +112,9 @@ function getFoodIcon(string $category): array
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
     <link rel="stylesheet" href="css/fct-style.css">
     <link rel="stylesheet" href="css/dashboard-premium.css">
-    <link rel="stylesheet" href="css/mobile-style.css">
+    <!-- Platform Specific Styles -->
+    <link rel="stylesheet" href="css/desktop-style.css" media="all and (min-width: 1025px)">
+    <link rel="stylesheet" href="css/mobile-style.css" media="all and (max-width: 1024px)">
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
     <!-- dashboard.js included via sidebar.php -->
     <!-- Final Choices.js Polish - Highest specificity, loaded last -->

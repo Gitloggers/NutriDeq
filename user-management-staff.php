@@ -576,7 +576,9 @@ $nav_links_array = getNavigationLinks($user_role, 'user-management-staff.php');
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="css/logout-modal.css">
-    <link rel="stylesheet" href="css/mobile-style.css">
+    <!-- Platform Specific Styles -->
+    <link rel="stylesheet" href="css/desktop-style.css" media="all and (min-width: 1025px)">
+    <link rel="stylesheet" href="css/mobile-style.css" media="all and (max-width: 1024px)">
     <link rel="stylesheet" href="css/premium-management.css">
     <script src="scripts/dashboard.js" defer></script>
     <style>

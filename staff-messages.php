@@ -94,7 +94,9 @@ if ($selected_client_id) {
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/sidebar.css">
     <link rel="stylesheet" href="css/modern-messages.css">
-    <link rel="stylesheet" href="css/mobile-style.css">
+    <!-- Platform Specific Styles -->
+    <link rel="stylesheet" href="css/desktop-style.css" media="all and (min-width: 1025px)">
+    <link rel="stylesheet" href="css/mobile-style.css" media="all and (max-width: 1024px)">
     <link rel="stylesheet" href="css/dashboard-premium.css">
     <style>
         /* ═══════════ WELLNESS INBOX · EMERALD SLATE PREMIUM ═══════════ */

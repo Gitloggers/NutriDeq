@@ -105,7 +105,9 @@ $deleted_clients = $dbHelper->getDeletedClients();
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/admin.css">
     <link rel="stylesheet" href="css/responsive.css">
-    <link rel="stylesheet" href="css/mobile-style.css">
+    <!-- Platform Specific Styles -->
+    <link rel="stylesheet" href="css/desktop-style.css" media="all and (min-width: 1025px)">
+    <link rel="stylesheet" href="css/mobile-style.css" media="all and (max-width: 1024px)">
     <script src="scripts/dashboard.js" defer></script>
     <style>
         .tab-navigation {

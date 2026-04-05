@@ -94,7 +94,9 @@ $nav_links = getNavigationLinks($_SESSION['user_role'], 'staff-client-diary.php'
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/modern-messages.css">
     <link rel="stylesheet" href="css/responsive.css">
-    <link rel="stylesheet" href="css/mobile-style.css">
+    <!-- Platform Specific Styles -->
+    <link rel="stylesheet" href="css/desktop-style.css" media="all and (min-width: 1025px)">
+    <link rel="stylesheet" href="css/mobile-style.css" media="all and (max-width: 1024px)">
     <link rel="stylesheet" href="css/dashboard-premium.css">
     <style>
         .dash-premium { background: transparent !important; }
@@ -547,8 +549,8 @@ $nav_links = getNavigationLinks($_SESSION['user_role'], 'staff-client-diary.php'
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 40px;">
                     <div>
                         <h4 style="color: #10b981; text-transform: uppercase; font-size: 0.8rem; margin-bottom: 10px;">Patient Information</h4>
-                        <p style="font-size: 1.1rem; font-weight: 700; margin: 0;"><?php echo htmlspecialchars($selected_client['name']); ?></p>
-                        <p style="color: #64748b; margin: 4px 0;"><?php echo htmlspecialchars($selected_client['email']); ?></p>
+                        <p style="font-size: 1.1rem; font-weight: 700; margin: 0;"><?php echo htmlspecialchars($selected_client['name'] ?? 'N/A'); ?></p>
+                        <p style="color: #64748b; margin: 4px 0;"><?php echo htmlspecialchars($selected_client['email'] ?? 'N/A'); ?></p>
                     </div>
                     <div>
                         <h4 style="color: #10b981; text-transform: uppercase; font-size: 0.8rem; margin-bottom: 10px;">Review Date</h4>

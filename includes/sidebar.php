@@ -27,15 +27,33 @@ require_once 'navigation.php';
 $sidebar_nav_links = getNavigationLinks($sidebar_user_role, $current_page);
 ?>
 
+<!-- Mobile Top Header -->
+<div class="mobile-header">
+    <div class="header-logo">
+        <img src="assets/img/logo.png" alt="NutriDeq" style="height: 32px; width: auto;">
+        <span>NutriDeq</span>
+    </div>
+    <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle Menu">
+        <i class="fas fa-bars"></i>
+    </button>
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
 <div class="sidebar" id="mainSidebar">
     <div class="sidebar-header">
         <a class="logo" href="dashboard.php">
             <img src="assets/img/logo.png" alt="NutriDeq" class="logo-img">
             <span class="logo-text">NutriDeq</span>
         </a>
-        <button class="sidebar-collapse-btn" id="sidebarCollapseBtn" title="Toggle Sidebar">
-            <i class="fas fa-bars"></i>
-        </button>
+        <div class="sidebar-controls">
+            <button class="sidebar-collapse-btn" id="sidebarCollapseBtn" title="Toggle Sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
+            <button class="mobile-sidebar-close" id="mobileSidebarClose" title="Close Menu">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
     </div>
 
     <ul class="nav-links">
@@ -75,19 +93,31 @@ $sidebar_nav_links = getNavigationLinks($sidebar_user_role, $current_page);
 <nav class="bottom-app-bar" id="mobileBottomBar">
     <div class="bottom-nav-links">
         <?php 
-        // Only get actual links (ignore headers) and limit to 5 max for mobile UI
-        $mobile_links_count = 0;
-        foreach ($sidebar_nav_links as $link) {
-            if (!isset($link['type']) || $link['type'] !== 'header') {
-                if ($mobile_links_count < 5) {
-                    $is_active = !empty($link['active']) ? 'active' : '';
-                    echo '<a href="' . $link['href'] . '" class="mobile-nav-item ' . $is_active . '">';
-                    echo '<i class="' . $link['icon'] . '"></i>';
-                    echo '<span>' . $link['text'] . '</span>';
-                    echo '</a>';
-                    $mobile_links_count++;
-                }
-            }
+        // Filter out headers for mobile view
+        $filtered_links = array_filter($sidebar_nav_links, function($l) {
+            return !isset($l['type']) || $l['type'] !== 'header';
+        });
+        $filtered_links = array_values($filtered_links); // Re-index
+        $total_links = count($filtered_links);
+        
+        $limit = 5;
+        $show_menu_btn = ($total_links > $limit);
+        $display_count = $show_menu_btn ? 4 : $total_links;
+
+        for ($i = 0; $i < $display_count; $i++) {
+            $link = $filtered_links[$i];
+            $is_active = !empty($link['active']) ? 'active' : '';
+            echo '<a href="' . $link['href'] . '" class="mobile-nav-item ' . $is_active . '">';
+            echo '<i class="' . $link['icon'] . '"></i>';
+            echo '<span>' . $link['text'] . '</span>';
+            echo '</a>';
+        }
+
+        if ($show_menu_btn) {
+            echo '<button class="mobile-nav-item" id="mobileMenuTrigger">';
+            echo '<i class="fas fa-th-large"></i>';
+            echo '<span>Menu</span>';
+            echo '</button>';
         }
         ?>
     </div>
@@ -114,6 +144,30 @@ $sidebar_nav_links = getNavigationLinks($sidebar_user_role, $current_page);
         const logoutModal = document.getElementById('logoutModal');
         const cancelLogout = document.getElementById('cancelLogout');
         
+        // Mobile Navigation Elements
+        const mobileNavToggle = document.getElementById('mobileNavToggle');
+        const mobileSidebarClose = document.getElementById('mobileSidebarClose');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const mainSidebar = document.getElementById('mainSidebar');
+        const mobileMenuTrigger = document.getElementById('mobileMenuTrigger');
+
+        const toggleSidebar = () => {
+            mainSidebar.classList.toggle('active');
+            sidebarOverlay.classList.toggle('active');
+            document.body.style.overflow = mainSidebar.classList.contains('active') ? 'hidden' : '';
+        };
+
+        const closeSidebar = () => {
+            mainSidebar.classList.remove('active');
+            sidebarOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        };
+
+        if (mobileNavToggle) mobileNavToggle.addEventListener('click', toggleSidebar);
+        if (mobileSidebarClose) mobileSidebarClose.addEventListener('click', closeSidebar);
+        if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
+        if (mobileMenuTrigger) mobileMenuTrigger.addEventListener('click', toggleSidebar);
+
         if (logoutTrigger && logoutModal) {
             logoutTrigger.addEventListener('click', (e) => {
                 e.preventDefault();

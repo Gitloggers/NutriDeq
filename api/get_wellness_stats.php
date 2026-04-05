@@ -1,4 +1,5 @@
 <?php
+ini_set('display_errors', 0);
 // api/get_wellness_stats.php
 session_start();
 header('Content-Type: application/json');

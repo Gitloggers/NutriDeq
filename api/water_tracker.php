@@ -1,4 +1,5 @@
 <?php
+ini_set('display_errors', 0);
 // api/water_tracker.php - Real-time daily hydration tracking
 session_start();
 header('Content-Type: application/json');

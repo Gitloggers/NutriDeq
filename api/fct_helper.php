@@ -1,4 +1,5 @@
 <?php
+ini_set('display_errors', 0);
 // This matches your specific file structure
 require_once dirname(__DIR__) . '/database.php';
 

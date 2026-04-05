@@ -43,7 +43,9 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
     <link rel="stylesheet" href="css/dashboard-premium.css">
     <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="css/logout-modal.css">
-    <link rel="stylesheet" href="css/mobile-style.css">
+    <!-- Platform Specific Styles -->
+    <link rel="stylesheet" href="css/desktop-style.css" media="all and (min-width: 1025px)">
+    <link rel="stylesheet" href="css/mobile-style.css" media="all and (max-width: 1024px)">
     <!-- dashboard.js included via sidebar.php -->
     <style>
         /* ═══════════ FOOD EXCHANGE TERMINAL · PREMIUM SHELL ═══════════ */

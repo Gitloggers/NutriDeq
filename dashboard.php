@@ -77,7 +77,7 @@ $pdo = $database->getConnection();
 <head>
     <script src="scripts/theme-toggle.js"></script>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>NutriDeq - <?php echo getDashboardTitle($user_role); ?></title>
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;700&display=swap"
@@ -90,6 +90,7 @@ $pdo = $database->getConnection();
     <link rel="stylesheet" href="css/logout-modal.css">
     <link rel="stylesheet" href="css/sidebar.css">
     <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/mobile-style.css">
     <?php if ($user_role === 'admin'): ?>
         <link rel="stylesheet" href="css/admin.css">
     <?php elseif ($user_role === 'staff'): ?>

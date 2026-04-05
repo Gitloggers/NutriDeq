@@ -1,4 +1,5 @@
 <?php
+ini_set('display_errors', 0);
 // api/conversation_status.php
 session_start();
 header('Content-Type: application/json');

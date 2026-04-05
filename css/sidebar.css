@@ -124,11 +124,33 @@
     display: none; /* Hidden on desktop */
 }
 
-@media (max-width: 768px) {
+.mobile-sidebar-close {
+    display: none;
+}
+
+/* --- Mobile Specific Navigation Toggles --- */
+@media screen and (max-width: 1024px) {
     .sidebar {
-        display: none !important; /* Force kill sidebar on mobile */
+        width: 280px !important;
     }
-    
+
+    .sidebar-collapse-btn {
+        display: none !important;
+    }
+
+    .mobile-sidebar-close {
+        display: flex !important;
+        width: 36px;
+        height: 36px;
+        background: rgba(239, 68, 68, 0.08);
+        color: #ef4444;
+        border: none;
+        border-radius: 50%;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        cursor: pointer;
+    }
     .bottom-app-bar {
         display: block;
         position: fixed;
