@@ -621,6 +621,10 @@ body {
         padding-bottom: env(safe-area-inset-bottom) !important;
     }
 
+    .main-content, .page-container, main {
+        padding-bottom: 90px !important;
+    }
+
     .bottom-nav-links {
         display: grid !important;
         grid-auto-flow: column !important;
@@ -713,7 +717,11 @@ body {
     }
 
     table {
-        min-width: 600px !important;
+        min-width: 100% !important;
+        display: block !important;
+        overflow-x: auto !important;
+        white-space: nowrap !important;
+        -webkit-overflow-scrolling: touch !important;
     }
 
     /* Fix for very small screens */

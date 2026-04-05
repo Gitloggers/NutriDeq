@@ -218,6 +218,67 @@ function getFoodIcon(string $category): array
     
         
 </style>
+    <!-- MOBILE FALLBACK FIXES -->
+    <style>
+    @media (max-width: 1024px) {
+        .main-content, .page-container, main { padding-bottom: 120px !important; margin-bottom: 120px !important; }
+        .table-responsive, .table-container, .card-body, .ant-table-wrapper {
+            width: 100vw !important;
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+            display: block !important;
+        }
+        table { min-width: 800px !important; display: table !important; }
+        thead, tbody, tr { width: 100% !important; }
+        
+        /* Form & Search Bar Fixes */
+        form > div[style*="grid-template-columns"] {
+            grid-template-columns: 1fr !important;
+            gap: 12px !important;
+        }
+        
+        /* Activity Feed / Card Fixes */
+        .activity-content > div {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 14px !important;
+        }
+        .ant-btn-group {
+            display: flex !important;
+            gap: 8px !important;
+            width: 100% !important;
+            margin-top: 4px !important;
+        }
+        .activity-content div[style*="align-items: center; gap: 8px"] {
+            flex-wrap: wrap !important;
+            height: auto !important;
+            align-items: flex-start !important;
+            flex-direction: column !important;
+        }
+        .profile-badge {
+            height: auto !important;
+            padding: 6px 12px !important;
+            line-height: 1.3 !important;
+            text-align: left !important;
+            white-space: normal !important;
+            border-radius: 12px !important; 
+            display: inline-block !important;
+            width: fit-content !important;
+        }
+        .dash-hero-ribbon { padding: 20px !important; }
+        .dash-hero-ribbon h1 { font-size: 1.8rem !important; }
+        
+        .search-box { 
+            width: 100% !important; 
+            box-sizing: border-box !important;
+            border-radius: 12px !important;
+            padding: 0 16px !important;
+        }
+        .search-box input { width: 100% !important; }
+        .choices { width: 100% !important; }
+    }
+    </style>
 </head>
 
 <body>
@@ -1098,3 +1159,4 @@ endforeach; ?>
 </body>
 
 </html>
+

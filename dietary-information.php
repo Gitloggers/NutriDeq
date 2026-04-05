@@ -162,6 +162,33 @@ $nav_links = getNavigationLinks($user_role, 'dietary-information.php');
             .nutrient-terminal { grid-template-columns: 1fr; }
         }
     </style>
+    <style>
+    @media (max-width: 1024px) {
+        .main-content, .page-container, main { padding-bottom: 120px !important; }
+        .dash-premium { height: auto !important; min-height: auto !important; overflow: visible !important; }
+        .nutrient-terminal { 
+            height: auto !important; 
+            display: flex !important; 
+            flex-direction: column !important; 
+        }
+        .bento-nutrient-grid { 
+            max-height: none !important; 
+            overflow-y: visible !important; 
+            display: grid !important;
+            grid-template-columns: 1fr !important;
+        }
+        #resultsList { max-height: none !important; overflow-y: visible !important; }
+        .table-responsive, .table-container, .card-body, .ant-table-wrapper {
+            width: 100vw !important;
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+            display: block !important;
+        }
+        table { min-width: 800px !important; display: table !important; }
+        .grid, .tab-buttons { display: flex; flex-direction: column; }
+    }
+    </style>
 </head>
 
 <body>

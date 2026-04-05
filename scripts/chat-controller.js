@@ -63,6 +63,14 @@ class ChatController {
 
     renderMessages(messages) {
         if (!this.chatMessages) return;
+
+        // Clear loading spinner once we have incoming messages
+        const loadingElt = this.chatMessages.querySelector('.fa-spinner');
+        if (loadingElt && loadingElt.parentElement) {
+            loadingElt.parentElement.remove();
+        }
+
+        let addedNew = false;
         messages.forEach(msg => {
             if (!document.getElementById(`msg-${msg.id}`)) {
                 const isMe = msg.type === 'sent';
@@ -84,9 +92,14 @@ class ChatController {
                     </div>
                 `;
                 this.chatMessages.insertAdjacentHTML('beforeend', html);
-                this.scrollToBottom();
+                addedNew = true;
             }
         });
+        
+        // Only trigger scroll if we actually painted a new message to prevent jitter
+        if (addedNew) {
+            this.scrollToBottom();
+        }
     }
 
     async sendMessage() {
@@ -114,7 +127,11 @@ class ChatController {
     }
 
     scrollToBottom() {
-        if (this.chatMessages) this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+        if (this.chatMessages) {
+            this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+            // Mobile fallback: If the container isn't locally scrolling, scroll the entire document to the bottom.
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
     }
 
     escapeHtml(t) {

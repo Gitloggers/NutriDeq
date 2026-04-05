@@ -273,6 +273,8 @@ if (isset($_GET['tab'])) {
     <link rel="stylesheet" href="css/premium-management.css">
     <!-- Page-specific premium styles -->
     <link rel="stylesheet" href="css/anthropometric-premium.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/mobile-style.css">
     <script>const BASE_URL = '<?= rtrim(dirname($_SERVER['PHP_SELF']), '/') ?>/';</script>
 </head>
 

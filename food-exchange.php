@@ -288,6 +288,34 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
         .legend-fat { background: #7c3aed; }
         .legend-sugar { background: #db2777; }
     </style>
+    <!-- MOBILE FALLBACK FIXES -->
+    <style>
+    @media (max-width: 1024px) {
+        .main-content, .page-container, main, .dashboard { padding-bottom: 120px !important; margin-bottom: 120px !important; }
+        .table-responsive, .table-container, .card-body {
+            width: 100% !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+            display: block !important;
+        }
+        table { min-width: 700px !important; display: table !important; }
+        thead, tbody, tr { width: 100% !important; }
+    }
+    </style>
+    <style>
+    @media (max-width: 1024px) {
+        .main-content, .page-container, main { padding-bottom: 120px !important; }
+        .table-responsive, .table-container, .card-body {
+            width: 100vw !important;
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+            display: block !important;
+        }
+        table { min-width: 800px !important; display: table !important; }
+        .grid, .tab-buttons { display: flex; flex-direction: column; }
+    }
+    </style>
 </head>
 
 <body>
@@ -2129,3 +2157,4 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
 </body>
 
 </html>
+

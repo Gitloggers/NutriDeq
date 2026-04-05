@@ -604,6 +604,26 @@ if ($selected_thread_id) {
             }
         }
     </style>
+    <!-- Critical Missing Stylesheets for Sidebar & Mobile Engine -->
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/desktop-style.css" media="all and (min-width: 1025px)">
+    <link rel="stylesheet" href="css/mobile-style.css" media="all and (max-width: 1024px)">
+    
+    <!-- MOBILE FALLBACK FIXES -->
+    <style>
+    @media (max-width: 1024px) {
+        .main-content, .page-container, main { padding-bottom: 120px !important; margin-bottom: 120px !important; }
+        .table-responsive, .table-container, .card-body, .ant-table-wrapper {
+            width: 100vw !important;
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+            display: block !important;
+        }
+        table { min-width: 800px !important; display: table !important; }
+        .grid, .tab-buttons { display: flex; flex-direction: column; }
+    }
+    </style>
 </head>
 
 <body>

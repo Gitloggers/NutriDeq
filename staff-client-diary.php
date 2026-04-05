@@ -211,6 +211,34 @@ $nav_links = getNavigationLinks($_SESSION['user_role'], 'staff-client-diary.php'
             }
         }
     </style>
+    <!-- MOBILE FALLBACK FIXES -->
+    <style>
+    @media (max-width: 1024px) {
+        .main-content, .page-container, main, .dashboard { padding-bottom: 120px !important; margin-bottom: 120px !important; }
+        .table-responsive, .table-container, .card-body {
+            width: 100% !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+            display: block !important;
+        }
+        table { min-width: 700px !important; display: table !important; }
+        thead, tbody, tr { width: 100% !important; }
+    }
+    </style>
+    <style>
+    @media (max-width: 1024px) {
+        .main-content, .page-container, main { padding-bottom: 120px !important; }
+        .table-responsive, .table-container, .card-body {
+            width: 100vw !important;
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+            display: block !important;
+        }
+        table { min-width: 800px !important; display: table !important; }
+        .grid, .tab-buttons { display: flex; flex-direction: column; }
+    }
+    </style>
 </head>
 <body>
     <div class="main-layout">
@@ -611,4 +639,5 @@ $nav_links = getNavigationLinks($_SESSION['user_role'], 'staff-client-diary.php'
     </script>
 </body>
 </html>
+
 

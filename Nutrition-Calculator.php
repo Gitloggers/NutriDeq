@@ -173,6 +173,19 @@ $nav_links_array = getNavigationLinks($user_role, 'Nutrition-Calculator.php');
         .status-danger { background: rgba(225, 29, 72, 0.1); color: #e11d48; }
 
         @media (max-width: 1100px) { .diagnostic-engine { grid-template-columns: 1fr; } }
+        
+        /* Mobile Precision Polish */
+        @media screen and (max-width: 768px) {
+            .page-container { padding: 15px 15px 90px 15px !important; }
+            .terminal-panel { padding: 20px !important; border-radius: 20px !important; }
+            .bento-input-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
+            .pill-nav { flex-wrap: wrap; justify-content: center; width: 100%; border-radius: 12px; }
+            .pill-item { flex: 1 1 auto; text-align: center; padding: 8px 12px !important; }
+            .page-title h1 { font-size: 1.6rem !important; }
+            #inputTerminal h2 { font-size: 1.1rem !important; }
+            .diagnostic-hud .terminal-panel > div { gap: 12px !important; }
+            .hud-val-main { font-size: 1.8rem !important; }
+        }
     </style>
 </head>
 
