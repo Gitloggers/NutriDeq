@@ -1218,38 +1218,36 @@ header("Pragma: no-cache");
         // PWA Install Prompt Logic
         let deferredPrompt;
         const installBtn = document.getElementById('pwa-install-btn');
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            // Prevent Chrome 67 and earlier from automatically showing the prompt
-            e.preventDefault();
-            // Stash the event so it can be triggered later.
-            deferredPrompt = e;
-            // Update UI to notify the user they can add to home screen
-            if (installBtn) {
-                installBtn.style.display = 'block';
-                
-                installBtn.addEventListener('click', () => {
-                    // Hide our user interface that shows our A2HS button
-                    installBtn.style.display = 'none';
-                    // Show the prompt
+        
+        // Ensure the button is visible by default so it's always accessible
+        if (installBtn) {
+            installBtn.style.display = 'block';
+            
+            // Handle clicks
+            installBtn.addEventListener('click', () => {
+                if (deferredPrompt) {
+                    // Show the native prompt
                     deferredPrompt.prompt();
-                    // Wait for the user to respond to the prompt
                     deferredPrompt.userChoice.then((choiceResult) => {
                         if (choiceResult.outcome === 'accepted') {
                             console.log('User accepted the A2HS prompt');
-                        } else {
-                            console.log('User dismissed the A2HS prompt');
-                            // They dismissed it, but they might want to click it again later.
-                            installBtn.style.display = 'block'; 
+                            installBtn.style.display = 'none';
                         }
                         deferredPrompt = null;
                     });
-                });
-            }
+                } else {
+                    // Fallback for when the native prompt isn't available (iOS, already installed, etc)
+                    alert("To install NutriDeq: tap the Share icon (iOS) or browser menu (Android/Desktop), then select 'Add to Home Screen'.");
+                }
+            });
+        }
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e; // Stash it for when they click the button
         });
 
         window.addEventListener('appinstalled', (evt) => {
-            // Log that the PWA has been installed
             console.log('INSTALL: Success');
             if (installBtn) {
                 installBtn.style.display = 'none';
