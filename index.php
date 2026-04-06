@@ -1245,45 +1245,89 @@ header("Pragma: no-cache");
             });
         }
 
-        // PWA Install Prompt Logic
+        // Distribution Modal Logic
         let deferredPrompt;
         const installBtn = document.getElementById('pwa-install-btn');
-        
-        // Ensure the button is visible by default so it's always accessible
-        if (installBtn) {
+        const distModal = document.getElementById('dist-modal');
+        const closeDistModal = document.getElementById('close-dist-modal');
+        const btnNative = document.getElementById('btn-native-install');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+        });
+
+        if (installBtn && distModal) {
             installBtn.style.display = 'block';
-            
-            // Handle clicks
             installBtn.addEventListener('click', () => {
-                if (deferredPrompt) {
-                    // Show the native prompt
-                    deferredPrompt.prompt();
-                    deferredPrompt.userChoice.then((choiceResult) => {
-                        if (choiceResult.outcome === 'accepted') {
-                            console.log('User accepted the A2HS prompt');
-                            installBtn.style.display = 'none';
-                        }
-                        deferredPrompt = null;
-                    });
-                } else {
-                    // Fallback for when the native prompt isn't available (iOS, already installed, etc)
-                    alert("To install NutriDeq: tap the Share icon (iOS) or browser menu (Android/Desktop), then select 'Add to Home Screen'.");
+                distModal.style.display = 'flex';
+                // Show/hide Native option based on readiness
+                if(btnNative) {
+                    btnNative.style.display = deferredPrompt ? 'flex' : 'none';
                 }
             });
         }
 
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e; // Stash it for when they click the button
-        });
+        if (closeDistModal) {
+            closeDistModal.addEventListener('click', () => {
+                distModal.style.display = 'none';
+            });
+        }
+
+        if (btnNative) {
+            btnNative.addEventListener('click', () => {
+                if (deferredPrompt) {
+                    distModal.style.display = 'none';
+                    deferredPrompt.prompt();
+                    deferredPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult.outcome === 'accepted') {
+                            installBtn.style.display = 'none';
+                        }
+                        deferredPrompt = null;
+                    });
+                }
+            });
+        }
 
         window.addEventListener('appinstalled', (evt) => {
             console.log('INSTALL: Success');
-            if (installBtn) {
-                installBtn.style.display = 'none';
-            }
+            if (installBtn) installBtn.style.display = 'none';
+            if (distModal) distModal.style.display = 'none';
         });
     </script>
+
+    <!-- App Distribution Modal -->
+    <div id="dist-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(15, 23, 42, 0.6); backdrop-filter:blur(10px); z-index:99999; align-items:center; justify-content:center;">
+        <div style="background:white; padding:30px; border-radius:24px; max-width:400px; width:90%; box-shadow:0 25px 50px rgba(0,0,0,0.15); position:relative;">
+            <button id="close-dist-modal" style="position:absolute; top:20px; right:20px; background:none; border:none; font-size:20px; color:#64748b; cursor:pointer;"><i class="fas fa-times"></i></button>
+            <div style="text-align:center; margin-bottom:24px;">
+                <img src="assets/img/logo.png" style="width:60px; height:60px; border-radius:16px; margin-bottom:12px;">
+                <h3 style="margin:0; font-family:'Outfit'; font-size:24px; color:#0f172a;">Get NutriDeq App</h3>
+                <p style="margin:8px 0 0; color:#64748b; font-size:14px; line-height:1.5;">Choose your preferred platform to install the secure clinic application.</p>
+            </div>
+            
+            <div style="display:flex; flex-direction:column; gap:12px;">
+                <button id="btn-native-install" style="display:none; align-items:center; gap:12px; padding:16px; border:2px solid #10b981; border-radius:16px; background:rgba(16,185,129,0.05); cursor:pointer; color:#0f172a; font-weight:700; text-align:left; transition:0.3s;" onmouseover="this.style.background='rgba(16,185,129,0.1)'" onmouseout="this.style.background='rgba(16,185,129,0.05)'">
+                    <i class="fab fa-chrome" style="font-size:24px; color:#10b981;"></i>
+                    <div style="flex:1;"><div style="font-size:15px;">Native Web App</div><div style="font-size:12px; color:#64748b; font-weight:500;">Zero configuration required</div></div>
+                    <i class="fas fa-arrow-right" style="color:#10b981;"></i>
+                </button>
+
+                <a href="downloads/NutriDeq-Android-v1.apk" download style="display:flex; align-items:center; gap:12px; padding:16px; border:1px solid #e2e8f0; border-radius:16px; background:white; cursor:pointer; color:#0f172a; font-weight:700; text-decoration:none; transition:0.3s;" onmouseover="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 4px 15px rgba(59,130,246,0.1)'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+                    <i class="fab fa-android" style="font-size:24px; color:#3b82f6;"></i>
+                    <div style="flex:1;"><div style="font-size:15px;">Android Package</div><div style="font-size:12px; color:#64748b; font-weight:500;">Download .apk format</div></div>
+                    <i class="fas fa-download" style="color:#94a3b8;"></i>
+                </a>
+
+                <a href="downloads/NutriDeq-Windows-v1.exe" download style="display:flex; align-items:center; gap:12px; padding:16px; border:1px solid #e2e8f0; border-radius:16px; background:white; cursor:pointer; color:#0f172a; font-weight:700; text-decoration:none; transition:0.3s;" onmouseover="this.style.borderColor='#8b5cf6'; this.style.boxShadow='0 4px 15px rgba(139,92,246,0.1)'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
+                    <i class="fab fa-windows" style="font-size:24px; color:#8b5cf6;"></i>
+                    <div style="flex:1;"><div style="font-size:15px;">Windows Desktop</div><div style="font-size:12px; color:#64748b; font-weight:500;">Download .exe format</div></div>
+                    <i class="fas fa-download" style="color:#94a3b8;"></i>
+                </a>
+            </div>
+            <div style="text-align:center; margin-top:20px; font-size:12px; color:#94a3b8;">Protected by end-to-end encryption.</div>
+        </div>
+    </div>
 </body>
 
 </html>
