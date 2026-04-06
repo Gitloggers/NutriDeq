@@ -969,11 +969,34 @@ header("Pragma: no-cache");
                 <li><a href="#features">Capabilities</a></li>
                 <li><a href="#database">Database Integrity</a></li>
             </ul>
-            <div class="auth-buttons" style="display: flex; gap: 10px; align-items: center;">
-                <button id="pwa-install-btn" class="btn btn-glow" style="display: none; font-size: 0.9rem; padding: 10px 18px;"><i class="fas fa-download"></i> Install App</button>
+            <div class="auth-buttons" style="display: flex; gap: 8px; align-items: center;">
+                <button id="pwa-install-btn" class="btn btn-glow pwa-btn-responsive" style="display: none;"><i class="fas fa-download"></i> <span class="pwa-text">Install App</span></button>
                 <a href="login-logout/NutriDeqN-Login.php" class="btn btn-glass">Sign in</a>
             </div>
         </header>
+
+        <style>
+            .pwa-btn-responsive {
+                font-size: 0.9rem;
+                padding: 10px 18px;
+                white-space: nowrap;
+            }
+            @media (max-width: 480px) {
+                .pwa-btn-responsive {
+                    padding: 8px 12px;
+                    font-size: 0.85rem;
+                }
+                .pwa-btn-responsive .pwa-text {
+                    display: none;
+                }
+                .auth-buttons {
+                    gap: 5px !important;
+                }
+                header .logo-text {
+                    font-size: 1.2rem;
+                }
+            }
+        </style>
 
         <!-- Hero Section -->
         <section class="hero">
