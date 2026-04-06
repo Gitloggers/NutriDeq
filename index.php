@@ -969,7 +969,8 @@ header("Pragma: no-cache");
                 <li><a href="#features">Capabilities</a></li>
                 <li><a href="#database">Database Integrity</a></li>
             </ul>
-            <div class="auth-buttons">
+            <div class="auth-buttons" style="display: flex; gap: 10px; align-items: center;">
+                <button id="pwa-install-btn" class="btn btn-glow" style="display: none; font-size: 0.9rem; padding: 10px 18px;"><i class="fas fa-download"></i> Install App</button>
                 <a href="login-logout/NutriDeqN-Login.php" class="btn btn-glass">Sign in</a>
             </div>
         </header>
@@ -1213,6 +1214,47 @@ header("Pragma: no-cache");
                     .catch(err => console.error('PWA Engine failure:', err));
             });
         }
+
+        // PWA Install Prompt Logic
+        let deferredPrompt;
+        const installBtn = document.getElementById('pwa-install-btn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent Chrome 67 and earlier from automatically showing the prompt
+            e.preventDefault();
+            // Stash the event so it can be triggered later.
+            deferredPrompt = e;
+            // Update UI to notify the user they can add to home screen
+            if (installBtn) {
+                installBtn.style.display = 'block';
+                
+                installBtn.addEventListener('click', () => {
+                    // Hide our user interface that shows our A2HS button
+                    installBtn.style.display = 'none';
+                    // Show the prompt
+                    deferredPrompt.prompt();
+                    // Wait for the user to respond to the prompt
+                    deferredPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult.outcome === 'accepted') {
+                            console.log('User accepted the A2HS prompt');
+                        } else {
+                            console.log('User dismissed the A2HS prompt');
+                            // They dismissed it, but they might want to click it again later.
+                            installBtn.style.display = 'block'; 
+                        }
+                        deferredPrompt = null;
+                    });
+                });
+            }
+        });
+
+        window.addEventListener('appinstalled', (evt) => {
+            // Log that the PWA has been installed
+            console.log('INSTALL: Success');
+            if (installBtn) {
+                installBtn.style.display = 'none';
+            }
+        });
     </script>
 </body>
 
