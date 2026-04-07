@@ -57,15 +57,22 @@ class Database
     private function ensureColumnsExist()
     {
         try {
-            $this->conn->exec("ALTER TABLE users ADD COLUMN IF NOT EXISTS is_verified TINYINT(1) DEFAULT 0");
-            $this->conn->exec("ALTER TABLE users ADD COLUMN IF NOT EXISTS verification_token VARCHAR(255) DEFAULT NULL");
-            $this->conn->exec("ALTER TABLE users ADD COLUMN IF NOT EXISTS has_password TINYINT(1) DEFAULT 1");
+            // Get all columns in the users table
+            $stmt = $this->conn->query("DESCRIBE users");
+            $columns = $stmt->fetchAll(PDO::FETCH_COLUMN);
             
-            // Mark existing users as verified if not already
-            // This is just for initial migration
-            // $this->conn->exec("UPDATE users SET is_verified = 1 WHERE is_verified = 0 AND verification_token IS NULL");
+            // Check and add columns if missing (compatibile with older MySQL versions)
+            if (!in_array('is_verified', $columns)) {
+                $this->conn->exec("ALTER TABLE users ADD COLUMN is_verified TINYINT(1) DEFAULT 0");
+            }
+            if (!in_array('verification_token', $columns)) {
+                $this->conn->exec("ALTER TABLE users ADD COLUMN verification_token VARCHAR(255) DEFAULT NULL");
+            }
+            if (!in_array('has_password', $columns)) {
+                $this->conn->exec("ALTER TABLE users ADD COLUMN has_password TINYINT(1) DEFAULT 1");
+            }
         } catch (PDOException $e) {
-            // Ignore errors if columns already exist or other issues (common in older MySQL)
+            // Log error or ignore
         }
     }
 }
