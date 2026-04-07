@@ -12,6 +12,7 @@ use PHPMailer\PHPMailer\Exception;
 
 $message = '';
 $error = '';
+$email = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
@@ -184,6 +185,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         .btn-submit:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(16, 185, 129, 0.3); }
         
+        .resend-container {
+            text-align: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #cbd5e1;
+        }
+        .resend-text {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .btn-resend {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-resend:hover {
+            background: var(--primary);
+            color: white;
+        }
+        .btn-resend:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            border-color: #94a3b8;
+            color: #94a3b8;
+        }
+        
         .alert { padding: 20px; border-radius: 16px; margin-bottom: 25px; font-size: 0.95rem; line-height: 1.5; }
         .alert-success { background: #ecfdf5; border: 1px solid #10b981; color: #065f46; }
         .alert-error { background: #fef2f2; border: 1px solid #ef4444; color: #991b1b; }
@@ -205,7 +242,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <i class="fas fa-check-circle" style="margin-right: 8px;"></i>
                 <?php echo $message; ?>
             </div>
+
+            <div class="resend-container">
+                <span class="resend-text">Didn't receive the email? Check your spam folder or try again.</span>
+                <form method="POST" id="resendForm">
+                    <input type="hidden" name="email" value="<?php echo htmlspecialchars($email); ?>">
+                    <button type="submit" class="btn-resend" id="resendBtn">
+                        <i class="fas fa-paper-plane"></i> Resend Reset Link
+                    </button>
+                </form>
+            </div>
+
             <a href="NutriDeqN-Login.php" class="back-link"><i class="fas fa-arrow-left"></i> Back to Login</a>
+
+            <script>
+                const resendBtn = document.getElementById('resendBtn');
+                let countdown = 60;
+                
+                function updateResendButton() {
+                    if (countdown > 0) {
+                        resendBtn.disabled = true;
+                        resendBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Wait ${countdown}s`;
+                        countdown--;
+                        setTimeout(updateResendButton, 1000);
+                    } else {
+                        resendBtn.disabled = false;
+                        resendBtn.innerHTML = `<i class="fas fa-paper-plane"></i> Resend Reset Link`;
+                    }
+                }
+                
+                // Start countdown on page load after successful send
+                updateResendButton();
+            </script>
         <?php else: ?>
             <p>Enter your email address and we'll send you a secure link to reset your password.</p>
             
