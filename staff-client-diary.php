@@ -83,6 +83,37 @@ function getInitials($name) {
     return substr($initials, 0, 2);
 }
 
+// Fetch existing report if any
+try {
+    $report_stmt = $conn->prepare("SELECT * FROM clinical_reports WHERE user_id = ? AND log_date = ?");
+    $report_stmt->execute([$client_user_id ?? 0, $selected_date]);
+    $saved_report = $report_stmt->fetch(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    // If the table doesn't exist, create it and retry
+    if ($e->getCode() == '42S02') {
+        $conn->exec("CREATE TABLE IF NOT EXISTS clinical_reports (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NOT NULL,
+            staff_id INT NOT NULL,
+            log_date DATE NOT NULL,
+            dietician_name VARCHAR(255),
+            patient_name VARCHAR(255),
+            report_id VARCHAR(50),
+            report_content LONGTEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            INDEX (user_id),
+            INDEX (staff_id),
+            INDEX (log_date)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+        
+        $report_stmt = $conn->prepare("SELECT * FROM clinical_reports WHERE user_id = ? AND log_date = ?");
+        $report_stmt->execute([$client_user_id ?? 0, $selected_date]);
+        $saved_report = $report_stmt->fetch(PDO::FETCH_ASSOC);
+    } else {
+        throw $e;
+    }
+}
+
 $nav_links = getNavigationLinks($_SESSION['user_role'], 'staff-client-diary.php');
 ?>
 
@@ -106,7 +137,136 @@ $nav_links = getNavigationLinks($_SESSION['user_role'], 'staff-client-diary.php'
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="stylesheet" href="css/dashboard-premium.css">
     <style>
+        :root {
+            --bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
         .dash-premium { background: transparent !important; }
+        
+        /* Global Animation Overrides */
+        * { transition: all 0.3s var(--smooth); }
+        
+        /* Bouncy Entry Animations */
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .client-list-sidebar { animation: fadeIn 0.8s var(--smooth); }
+        .monitor-content { animation: slideInUp 0.6s var(--bounce); }
+        .bento-stat { animation: slideInUp 0.8s var(--bounce) backwards; }
+        .bento-stat:nth-child(1) { animation-delay: 0.1s; }
+        .bento-stat:nth-child(2) { animation-delay: 0.2s; }
+        .bento-stat:nth-child(3) { animation-delay: 0.3s; }
+        .bento-stat:nth-child(4) { animation-delay: 0.4s; }
+
+        /* Enhanced Hover States */
+        .client-item {
+            cursor: pointer;
+            border-left: 4px solid transparent;
+            transition: all 0.4s var(--bounce) !important;
+        }
+        .client-item:hover {
+            background: rgba(16, 185, 129, 0.08) !important;
+            transform: translateX(8px) scale(1.02);
+            border-left-color: #10b981;
+            box-shadow: 10px 10px 30px rgba(0,0,0,0.05);
+        }
+        .client-item.active {
+            background: rgba(16, 185, 129, 0.12) !important;
+            border-left: 6px solid #10b981;
+            transform: translateX(12px) scale(1.03);
+            box-shadow: 15px 15px 40px rgba(16, 185, 129, 0.1);
+        }
+
+        .bento-stat {
+            transition: all 0.5s var(--bounce) !important;
+        }
+        .bento-stat:hover {
+            transform: translateY(-12px) scale(1.05);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        }
+
+        .meal-row {
+            transition: all 0.4s var(--bounce) !important;
+            cursor: pointer;
+        }
+        .meal-row:hover {
+            transform: scale(1.02) translateX(5px);
+            background: #ffffff !important;
+            border-color: #10b981 !important;
+            box-shadow: 0 15px 30px rgba(16, 185, 129, 0.08);
+        }
+
+        .premium-clinical-btn {
+            transition: all 0.4s var(--bounce) !important;
+            overflow: hidden;
+            position: relative;
+        }
+        .premium-clinical-btn:hover {
+            transform: translateY(-4px) scale(1.05);
+            background: #10b981 !important;
+            color: white !important;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        }
+        .premium-clinical-btn:active {
+            transform: translateY(0) scale(0.95);
+        }
+
+        /* Glassmorphism Polish */
+        .client-list-sidebar, .diary-brief, .feedback-container {
+            backdrop-filter: blur(25px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
+            background: rgba(255, 255, 255, 0.7) !important;
+            border: 1px solid rgba(255, 255, 255, 0.4) !important;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07) !important;
+        }
+
+        /* Scrolling Polish */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(16, 185, 129, 0.2);
+            border-radius: 10px;
+            transition: background 0.3s;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(16, 185, 129, 0.4); }
+
+        /* Report Preview Animation */
+        .report-preview-panel {
+            transition: all 0.6s var(--bounce) !important;
+            opacity: 0;
+            visibility: hidden;
+            transform: translate(-50%, -40%) scale(0.8);
+        }
+        .report-preview-panel.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* Date Picker Polish */
+        .date-picker-nav a {
+            width: 40px;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s var(--bounce);
+        }
+        .date-picker-nav a:hover {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            transform: scale(1.2);
+        }
+
         .split-layout {
             display: grid;
             grid-template-columns: 320px 1fr;
@@ -117,14 +277,9 @@ $nav_links = getNavigationLinks($_SESSION['user_role'], 'staff-client-diary.php'
             margin-top: 20px;
         }
         .client-list-sidebar {
-            background: var(--glass-bg) !important;
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border) !important;
-            border-radius: 24px;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            box-shadow: var(--glass-shadow);
         }
         .client-items {
             flex: 1;
@@ -132,8 +287,6 @@ $nav_links = getNavigationLinks($_SESSION['user_role'], 'staff-client-diary.php'
             -webkit-overflow-scrolling: touch;
             padding-bottom: 20px;
         }
-        .client-items::-webkit-scrollbar { width: 4px; }
-        .client-items::-webkit-scrollbar-thumb { background: rgba(16, 185, 129, 0.2); border-radius: 10px; }
         .monitor-content {
             display: flex;
             flex-direction: column;
@@ -143,12 +296,8 @@ $nav_links = getNavigationLinks($_SESSION['user_role'], 'staff-client-diary.php'
             background: transparent !important;
         }
         .diary-brief {
-            background: var(--glass-bg) !important;
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border) !important;
             border-radius: 32px;
             padding: 32px;
-            box-shadow: var(--glass-shadow);
         }
         .meal-row {
             background: var(--bg-surface);
@@ -159,9 +308,7 @@ $nav_links = getNavigationLinks($_SESSION['user_role'], 'staff-client-diary.php'
             display: flex;
             align-items: center;
             gap: 20px;
-            transition: all 0.3s ease;
         }
-        .meal-row:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
         .meal-row h4 { width: 120px; font-weight: 700; color: #1e293b; margin: 0; }
         
         .report-preview-panel {
@@ -169,20 +316,185 @@ $nav_links = getNavigationLinks($_SESSION['user_role'], 'staff-client-diary.php'
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) scale(0.9);
-            width: 800px;
+            width: 900px;
             max-width: 95vw;
-            height: 80vh;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(30px);
-            border: 1px solid rgba(255,255,255,0.6);
+            height: 90vh;
+            background: white;
             border-radius: 32px;
             z-index: 10000;
             display: none;
             flex-direction: column;
             box-shadow: 0 50px 100px -20px rgba(0,0,0,0.2);
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            overflow: hidden;
         }
         .report-preview-panel.active { display: flex; transform: translate(-50%, -50%) scale(1); }
+
+        /* Clinical Report Core Styles */
+        .clinical-report-container {
+            width: 100%;
+            max-width: 820px;
+            margin: 0 auto;
+            font-family: 'Inter', sans-serif;
+            background: white;
+            border-radius: 20px;
+            padding: 48px;
+            box-sizing: border-box;
+        }
+
+        .report-header-grid {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 36px;
+            border-bottom: 3px solid #10b981;
+            padding-bottom: 24px;
+            gap: 20px;
+        }
+
+        .report-info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 36px;
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 24px;
+        }
+
+        .macro-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 36px;
+        }
+
+        .signature-block-grid {
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px solid #e2e8f0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        @media screen and (max-width: 768px) {
+            .report-preview-panel {
+                width: 100% !important;
+                height: 100% !important;
+                max-width: 100vw !important;
+                max-height: 100vh !important;
+                top: 0 !important;
+                left: 0 !important;
+                transform: none !important;
+                border-radius: 0 !important;
+            }
+            .report-preview-panel.active { transform: none !important; }
+
+            .preview-body-container {
+                padding: 8px !important;
+                background: #f1f5f9 !important;
+                overflow-x: hidden !important;
+            }
+
+            .clinical-report-container {
+                padding: 12px !important;
+                border-radius: 12px !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                box-shadow: none !important;
+                overflow-x: hidden !important;
+            }
+
+            .report-header-grid {
+                flex-direction: column !important;
+                align-items: center !important;
+                text-align: center !important;
+                gap: 12px !important;
+                padding-bottom: 12px !important;
+                margin-bottom: 15px !important;
+            }
+            .report-header-grid > div { 
+                width: 100% !important; 
+                text-align: center !important; 
+            }
+            .report-header-grid div[style*="text-align: right"] { 
+                text-align: center !important; 
+            }
+
+            .report-info-grid {
+                display: block !important;
+                padding: 12px !important;
+                background: #f8fafc !important;
+                border-radius: 12px !important;
+                margin-bottom: 15px !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            .report-info-grid > div {
+                width: 100% !important;
+                text-align: left !important;
+                margin-bottom: 12px !important;
+                display: block !important;
+            }
+            .report-info-grid > div:last-child { margin-bottom: 0 !important; }
+            .report-info-grid p, .report-info-grid input {
+                width: 100% !important;
+                box-sizing: border-box !important;
+                font-size: 0.85rem !important;
+            }
+
+            .macro-summary-grid {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+                gap: 8px !important;
+                margin-bottom: 20px !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            .macro-summary-grid > div {
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 10px 4px !important;
+                min-width: 0 !important;
+                box-sizing: border-box !important;
+            }
+            .macro-summary-grid p {
+                font-size: 0.6rem !important;
+                white-space: normal !important;
+                line-height: 1.2 !important;
+                overflow: visible !important;
+                text-overflow: clip !important;
+            }
+            .macro-summary-grid p[style*="font-weight: 900"] {
+                font-size: 0.95rem !important;
+            }
+
+            .signature-block-grid {
+                grid-template-columns: 1fr !important;
+                gap: 20px !important;
+                margin-top: 25px !important;
+            }
+
+            .table-responsive-report {
+                margin: 0 -4px !important;
+                width: calc(100% + 8px) !important;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .preview-action-footer {
+                flex-direction: column !important;
+                gap: 6px !important;
+                padding: 10px !important;
+            }
+            .preview-action-footer button { 
+                width: 100% !important; 
+                margin: 0 !important; 
+                padding: 10px !important;
+                font-size: 0.85rem !important;
+            }
+        }
 
         .bento-grid {
             display: grid;
@@ -576,11 +888,11 @@ $nav_links = getNavigationLinks($_SESSION['user_role'], 'staff-client-diary.php'
                 <i class="fas fa-times"></i>
             </button>
         </div>
-        <div style="flex: 1; overflow-y: auto; padding: 40px; background: #f8fafc;">
-            <div id="reportPrintArea" style="max-width: 820px; margin: 0 auto; font-family: 'Inter', sans-serif; background: white; border-radius: 20px; padding: 48px; box-shadow: 0 4px 24px rgba(0,0,0,0.06);">
+        <div style="flex: 1; overflow-y: auto; padding: 40px; background: #f8fafc;" class="preview-body-container">
+            <div id="reportPrintArea" class="clinical-report-container">
 
                 <!-- Header -->
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 36px; border-bottom: 3px solid #10b981; padding-bottom: 24px;">
+                <div class="report-header-grid">
                     <div>
                         <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 6px;">
                             <img src="assets/img/logo.png" style="width: 40px; height: 40px; border-radius: 10px;" alt="NutriDeq">
@@ -589,31 +901,32 @@ $nav_links = getNavigationLinks($_SESSION['user_role'], 'staff-client-diary.php'
                         <p style="color: #64748b; margin: 0; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Official Clinical Diagnostic Report</p>
                     </div>
                     <div style="text-align: right;">
-                        <p style="font-weight: 700; color: #1e293b; margin: 0; font-size: 1rem;"><?php echo date('F j, Y'); ?></p>
-                        <p style="color: #94a3b8; margin: 4px 0; font-size: 0.8rem;">Report ID: #<?php echo bin2hex(random_bytes(4)); ?></p>
+                        <p style="font-weight: 700; color: #1e293b; margin: 0; font-size: 1rem;"><?php echo date('F j, Y', strtotime($saved_report['created_at'] ?? 'now')); ?></p>
+                        <p style="color: #94a3b8; margin: 4px 0; font-size: 0.8rem;">Report ID: #<?php echo htmlspecialchars($saved_report['report_id'] ?? bin2hex(random_bytes(4))); ?></p>
                         <div style="margin-top: 8px; background: #ecfdf5; color: #10b981; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; display: inline-block;">✓ Clinically Verified</div>
                     </div>
                 </div>
 
                 <!-- Patient + Date Info -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-bottom: 36px; background: #f8fafc; border-radius: 14px; padding: 20px;">
+                <div class="report-info-grid">
                     <div>
                         <p style="color: #10b981; text-transform: uppercase; font-size: 0.7rem; font-weight: 700; margin: 0 0 6px; letter-spacing: 0.5px;">Patient Name</p>
-                        <p style="font-size: 1rem; font-weight: 700; margin: 0; color: #1e293b;"><?php echo htmlspecialchars($selected_client['name'] ?? 'N/A'); ?></p>
+                        <input type="text" id="report_patient_name" value="<?php echo htmlspecialchars($saved_report['patient_name'] ?? $selected_client['name'] ?? 'N/A'); ?>" 
+                            style="width: 100%; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px; font-size: 0.9rem; font-weight: 700; color: #1e293b; background: white;">
                     </div>
                     <div>
                         <p style="color: #10b981; text-transform: uppercase; font-size: 0.7rem; font-weight: 700; margin: 0 0 6px; letter-spacing: 0.5px;">Patient Email</p>
-                        <p style="font-size: 0.9rem; color: #64748b; margin: 0;"><?php echo htmlspecialchars($selected_client['email'] ?? 'N/A'); ?></p>
+                        <p style="font-size: 0.9rem; color: #64748b; margin: 0; padding: 8px 0;"><?php echo htmlspecialchars($selected_client['email'] ?? 'N/A'); ?></p>
                     </div>
                     <div>
                         <p style="color: #10b981; text-transform: uppercase; font-size: 0.7rem; font-weight: 700; margin: 0 0 6px; letter-spacing: 0.5px;">Review Date</p>
-                        <p style="font-size: 1rem; font-weight: 700; margin: 0; color: #1e293b;"><?php echo date('M j, Y', strtotime($selected_date)); ?></p>
+                        <p style="font-size: 1rem; font-weight: 700; margin: 0; color: #1e293b; padding: 8px 0;"><?php echo date('M j, Y', strtotime($selected_date)); ?></p>
                     </div>
                 </div>
 
                 <!-- Macro Summary -->
                 <h4 style="color: #1e293b; font-size: 0.85rem; font-weight: 700; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.5px;">📊 Daily Nutritional Summary</h4>
-                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 36px;">
+                <div class="macro-summary-grid">
                     <?php
                     $dailyRef = ['calories' => 2000, 'protein' => 50, 'carbs' => 275, 'fat' => 78];
                     $macroColors = ['calories' => '#ef4444', 'protein' => '#3b82f6', 'carbs' => '#f59e0b', 'fat' => '#8b5cf6'];
@@ -659,6 +972,7 @@ $nav_links = getNavigationLinks($_SESSION['user_role'], 'staff-client-diary.php'
                     <?php if (empty($items)): ?>
                     <div style="padding: 18px; text-align: center; color: #cbd5e1; font-size: 0.85rem; font-style: italic;">No foods logged for this meal.</div>
                     <?php else: ?>
+                    <div class="table-responsive-report">
                     <table style="width: 100%; border-collapse: collapse; font-size: 0.82rem;">
                         <thead>
                             <tr style="background: #f8fafc; color: #64748b; font-weight: 600; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.3px;">
@@ -683,6 +997,7 @@ $nav_links = getNavigationLinks($_SESSION['user_role'], 'staff-client-diary.php'
                             <?php endforeach; ?>
                         </tbody>
                     </table>
+                    </div>
                     <?php endif; ?>
                 </div>
                 <?php endforeach; ?>
@@ -726,18 +1041,20 @@ $nav_links = getNavigationLinks($_SESSION['user_role'], 'staff-client-diary.php'
                 <?php endforeach; endif; ?>
 
                 <!-- Signature Block -->
-                <div style="margin-top: 48px; padding-top: 24px; border-top: 1px solid #e2e8f0; display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+                <div class="signature-block-grid">
                     <div>
-                        <p style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 50px;">Reviewed & Prepared By</p>
+                        <p style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 20px;">Reviewed & Prepared By</p>
                         <div style="border-top: 1px solid #1e293b; padding-top: 8px;">
-                            <p style="font-size: 0.85rem; color: #1e293b; font-weight: 700; margin: 0;"><?php echo htmlspecialchars($logged_in_staff_name); ?></p>
+                            <input type="text" id="report_staff_name" value="<?php echo htmlspecialchars($saved_report['dietician_name'] ?? $logged_in_staff_name); ?>" 
+                                style="width: 100%; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px; font-size: 0.85rem; color: #1e293b; font-weight: 700; margin: 0; background: white;">
                             <p style="font-size: 0.72rem; color: #64748b; margin: 2px 0 0;"><?php echo $is_admin ? 'Administrator' : 'Licensed Dietitian / Practitioner'; ?></p>
                         </div>
                     </div>
                     <div>
-                        <p style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 50px;">Acknowledged By Patient</p>
+                        <p style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 20px;">Acknowledged By Patient</p>
                         <div style="border-top: 1px solid #1e293b; padding-top: 8px;">
-                            <p style="font-size: 0.85rem; color: #1e293b; font-weight: 700; margin: 0;"><?php echo htmlspecialchars($selected_client['name'] ?? ''); ?></p>
+                            <input type="text" id="report_patient_sig_name" value="<?php echo htmlspecialchars($saved_report['patient_name'] ?? $selected_client['name'] ?? ''); ?>" 
+                                style="width: 100%; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px; font-size: 0.85rem; color: #1e293b; font-weight: 700; margin: 0; background: white;">
                             <p style="font-size: 0.72rem; color: #64748b; margin: 2px 0 0;"><?php echo htmlspecialchars($selected_client['email'] ?? ''); ?></p>
                         </div>
                     </div>
@@ -749,8 +1066,14 @@ $nav_links = getNavigationLinks($_SESSION['user_role'], 'staff-client-diary.php'
                 </div>
             </div>
         </div>
-        <div style="padding: 20px 32px; border-top: 1px solid rgba(0,0,0,0.05); display: flex; justify-content: flex-end; gap: 16px; background: rgba(255,255,255,0.9);">
+        <div style="padding: 20px 32px; border-top: 1px solid rgba(0,0,0,0.05); display: flex; justify-content: flex-end; gap: 16px; background: rgba(255,255,255,0.9);" class="preview-action-footer">
             <button class="btn-dash-action" onclick="toggleReportPreview(false)" style="padding:12px 24px; border-radius: 12px; border: 1.5px solid #e2e8f0;">Close Preview</button>
+            <?php if (!$is_admin): ?>
+            <button class="btn-dash-action" id="saveReportBtn" style="padding:12px 24px; border-radius: 12px; background: #3b82f6; color: white; border: none; font-weight: 700; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);"
+                onclick="saveClinicalReport()">
+                <i class="fas fa-save"></i> Save Report
+            </button>
+            <?php endif; ?>
             <button class="btn-dash-action" style="padding:12px 24px; border-radius: 12px; background: #10b981; color: white; border: none; font-weight: 700; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);"
                 onclick="generateClinicalReport('#reportPrintArea', 'Diagnostic-Report-P<?php echo $selected_client_id; ?>.pdf')">
                 <i class="fas fa-file-medical"></i> Generate PDF Document
@@ -770,6 +1093,14 @@ $nav_links = getNavigationLinks($_SESSION['user_role'], 'staff-client-diary.php'
         
         // Client Search Filtering Engine
         document.addEventListener('DOMContentLoaded', function() {
+            // Sync patient name fields
+            const pNameTop = document.getElementById('report_patient_name');
+            const pNameSig = document.getElementById('report_patient_sig_name');
+            if (pNameTop && pNameSig) {
+                pNameTop.addEventListener('input', () => pNameSig.value = pNameTop.value);
+                pNameSig.addEventListener('input', () => pNameTop.value = pNameSig.value);
+            }
+
             const searchInput = document.getElementById('clientSearchInput');
             if (searchInput) {
                 searchInput.addEventListener('input', function() {
@@ -788,11 +1119,128 @@ $nav_links = getNavigationLinks($_SESSION['user_role'], 'staff-client-diary.php'
             }
         });
 
+        // Save Report Logic
+        function saveClinicalReport() {
+            const btn = document.getElementById('saveReportBtn');
+            const originalHTML = btn.innerHTML;
+            
+            // Get data
+            const patientName = document.getElementById('report_patient_name').value;
+            const staffName = document.getElementById('report_staff_name').value;
+            const clientUserId = <?php echo json_encode($client_user_id); ?>;
+            const logDate = <?php echo json_encode($selected_date); ?>;
+            
+            // Prepare content - we'll clone the print area and replace inputs with text for saving
+            const printArea = document.getElementById('reportPrintArea').cloneNode(true);
+            const pNameInput = printArea.querySelector('#report_patient_name');
+            const sNameInput = printArea.querySelector('#report_staff_name');
+            const pSigNameInput = printArea.querySelector('#report_patient_sig_name');
+            
+            if (pNameInput) {
+                const span = document.createElement('span');
+                span.textContent = pNameInput.value;
+                span.style.fontWeight = '700';
+                pNameInput.parentNode.replaceChild(span, pNameInput);
+            }
+            if (sNameInput) {
+                const span = document.createElement('span');
+                span.textContent = sNameInput.value;
+                span.style.fontWeight = '700';
+                sNameInput.parentNode.replaceChild(span, sNameInput);
+            }
+            if (pSigNameInput) {
+                const span = document.createElement('span');
+                span.textContent = pSigNameInput.value;
+                span.style.fontWeight = '700';
+                pSigNameInput.parentNode.replaceChild(span, pSigNameInput);
+            }
+            
+            const reportContent = printArea.innerHTML;
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+            const formData = new FormData();
+            formData.append('user_id', clientUserId);
+            formData.append('log_date', logDate);
+            formData.append('patient_name', patientName);
+            formData.append('dietician_name', staffName);
+            formData.append('report_content', reportContent);
+
+            fetch('api/save_clinical_report.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    btn.innerHTML = '<i class="fas fa-check"></i> Saved Successfully';
+                    btn.style.background = '#059669';
+                    setTimeout(() => {
+                        btn.innerHTML = originalHTML;
+                        btn.style.background = '#3b82f6';
+                        btn.disabled = false;
+                    }, 3000);
+                } else {
+                    alert(data.message || 'Error saving report');
+                    btn.innerHTML = originalHTML;
+                    btn.disabled = false;
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Connection error');
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            });
+        }
+
         // PDF Generation Engine
         function generateClinicalReport(targetSelector, filename) {
             const element = document.querySelector(targetSelector);
             if (!element) return alert("Error: Report content not found.");
             
+            // Temporarily replace inputs with text for PDF generation
+             const pInput = element.querySelector('#report_patient_name');
+             const sInput = element.querySelector('#report_staff_name');
+             const pSigInput = element.querySelector('#report_patient_sig_name');
+             
+             const pVal = pInput ? pInput.value : '';
+             const sVal = sInput ? sInput.value : '';
+             const pSigVal = pSigInput ? pSigInput.value : '';
+             
+             let pPlaceholder, sPlaceholder, pSigPlaceholder;
+             
+             if (pInput) {
+                 pPlaceholder = document.createElement('span');
+                 pPlaceholder.textContent = pVal;
+                 pPlaceholder.style.fontWeight = '700';
+                 pPlaceholder.style.display = 'block';
+                 pPlaceholder.style.padding = '8px 0';
+                 pInput.style.display = 'none';
+                 pInput.parentNode.insertBefore(pPlaceholder, pInput);
+             }
+             
+             if (sInput) {
+                 sPlaceholder = document.createElement('span');
+                 sPlaceholder.textContent = sVal;
+                 sPlaceholder.style.fontWeight = '700';
+                 sPlaceholder.style.display = 'block';
+                 sPlaceholder.style.padding = '8px 0';
+                 sInput.style.display = 'none';
+                 sInput.parentNode.insertBefore(sPlaceholder, sInput);
+             }
+
+             if (pSigInput) {
+                 pSigPlaceholder = document.createElement('span');
+                 pSigPlaceholder.textContent = pSigVal;
+                 pSigPlaceholder.style.fontWeight = '700';
+                 pSigPlaceholder.style.display = 'block';
+                 pSigPlaceholder.style.padding = '8px 0';
+                 pSigInput.style.display = 'none';
+                 pSigInput.parentNode.insertBefore(pSigPlaceholder, pSigInput);
+             }
+
             // Show loading state on button
             const btn = event.currentTarget || document.activeElement;
             const originalText = btn.innerHTML;
@@ -811,6 +1259,21 @@ $nav_links = getNavigationLinks($_SESSION['user_role'], 'staff-client-diary.php'
             html2pdf().set(opt).from(element).save().then(() => {
                 btn.innerHTML = '<i class="fas fa-check"></i> Document Saved';
                 btn.style.backgroundColor = '#059669';
+                
+                // Restore inputs
+                 if (pInput) {
+                     pInput.style.display = 'block';
+                     pPlaceholder.remove();
+                 }
+                 if (sInput) {
+                     sInput.style.display = 'block';
+                     sPlaceholder.remove();
+                 }
+                 if (pSigInput) {
+                     pSigInput.style.display = 'block';
+                     pSigPlaceholder.remove();
+                 }
+
                 setTimeout(() => {
                     btn.innerHTML = originalText;
                     btn.style.opacity = '1';
@@ -820,6 +1283,21 @@ $nav_links = getNavigationLinks($_SESSION['user_role'], 'staff-client-diary.php'
             }).catch(err => {
                 console.error("PDF generation error: ", err);
                 btn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Generation Failed';
+                
+                // Restore inputs
+                if (pInput) {
+                    pInput.style.display = 'block';
+                    pPlaceholder.remove();
+                }
+                if (sInput) {
+                    sInput.style.display = 'block';
+                    sPlaceholder.remove();
+                }
+                if (pSigInput) {
+                    pSigInput.style.display = 'block';
+                    pSigPlaceholder.remove();
+                }
+
                 setTimeout(() => {
                     btn.innerHTML = originalText;
                     btn.style.opacity = '1';

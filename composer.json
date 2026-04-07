@@ -1,0 +1,14 @@
+{
+    "name": "nutrideq/nutrideq",
+    "description": "NutriDeq Clinical Platform",
+    "type": "project",
+    "require": {
+        "php": ">=8.1",
+        "phpmailer/phpmailer": "^6.9"
+    },
+    "autoload": {
+        "psr-4": {
+            "Nutrideq\\": "src/"
+        }
+    }
+}

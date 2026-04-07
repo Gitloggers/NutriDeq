@@ -58,6 +58,36 @@ foreach ($logs as $log) {
     $totals['fat'] += (float)$log['fat'];
 }
 
+// Fetch clinical report if exists
+try {
+    $report_stmt = $conn->prepare("SELECT * FROM clinical_reports WHERE user_id = ? AND log_date = ?");
+    $report_stmt->execute([$user_id, $selected_date]);
+    $saved_report = $report_stmt->fetch(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    if ($e->getCode() == '42S02') {
+        $conn->exec("CREATE TABLE IF NOT EXISTS clinical_reports (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NOT NULL,
+            staff_id INT NOT NULL,
+            log_date DATE NOT NULL,
+            dietician_name VARCHAR(255),
+            patient_name VARCHAR(255),
+            report_id VARCHAR(50),
+            report_content LONGTEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            INDEX (user_id),
+            INDEX (staff_id),
+            INDEX (log_date)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+        
+        $report_stmt = $conn->prepare("SELECT * FROM clinical_reports WHERE user_id = ? AND log_date = ?");
+        $report_stmt->execute([$user_id, $selected_date]);
+        $saved_report = $report_stmt->fetch(PDO::FETCH_ASSOC);
+    } else {
+        throw $e;
+    }
+}
+
 $nav_links = getNavigationLinks($user_role, 'user-diary.php');
 ?>
 
@@ -77,6 +107,7 @@ $nav_links = getNavigationLinks($user_role, 'user-diary.php');
     <!-- Platform Specific Styles -->
     <link rel="stylesheet" href="css/desktop-style.css" media="all and (min-width: 1025px)">
     <link rel="stylesheet" href="css/mobile-style.css" media="all and (max-width: 1024px)">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="stylesheet" href="css/logout-modal.css">
     <script src="scripts/dashboard.js" defer></script>
     <style>
@@ -88,6 +119,173 @@ $nav_links = getNavigationLinks($user_role, 'user-diary.php');
             flex-wrap: wrap;
             gap: 15px;
         }
+
+        /* Mobile Clinical Report Responsiveness */
+        .clinical-report-container {
+            width: 100%;
+            max-width: 820px;
+            margin: 0 auto;
+            font-family: 'Inter', sans-serif;
+            background: white;
+            border-radius: 20px;
+            padding: 48px;
+            box-sizing: border-box;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+        }
+
+        .report-header-grid {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 36px;
+            border-bottom: 3px solid #10b981;
+            padding-bottom: 24px;
+            gap: 20px;
+        }
+
+        .report-info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 36px;
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 24px;
+        }
+
+        .macro-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 36px;
+        }
+
+        .signature-block-grid {
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px solid #e2e8f0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        @media screen and (max-width: 768px) {
+            #clinicalReportModal .modal-overlay > div {
+                width: 100% !important;
+                height: 100% !important;
+                max-width: 100vw !important;
+                max-height: 100vh !important;
+                margin: 0 !important;
+                border-radius: 0 !important;
+                display: flex !important;
+                flex-direction: column !important;
+            }
+            
+            #reportContentArea {
+                padding: 10px !important;
+                flex: 1 !important;
+                overflow-y: auto !important;
+                background: #f1f5f9 !important;
+            }
+
+            .clinical-report-container {
+                padding: 15px !important;
+                border-radius: 12px !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                box-shadow: none !important;
+            }
+
+            .report-header-grid {
+                flex-direction: column !important;
+                align-items: center !important;
+                text-align: center !important;
+                gap: 15px !important;
+                padding-bottom: 15px !important;
+                margin-bottom: 20px !important;
+            }
+            .report-header-grid > div { 
+                width: 100% !important; 
+                text-align: center !important; 
+            }
+            .report-header-grid div[style*="text-align: right"] { 
+                text-align: center !important; 
+            }
+
+            .report-info-grid {
+                display: block !important;
+                padding: 12px !important;
+                background: #f8fafc !important;
+                border-radius: 12px !important;
+                margin-bottom: 15px !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            .report-info-grid > div {
+                width: 100% !important;
+                text-align: left !important;
+                margin-bottom: 12px !important;
+                display: block !important;
+            }
+            .report-info-grid > div:last-child { margin-bottom: 0 !important; }
+
+            .macro-summary-grid {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+                gap: 10px !important;
+                margin-bottom: 20px !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            .macro-summary-grid > div {
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 15px 10px !important;
+                min-width: 0 !important;
+                box-sizing: border-box !important;
+                background: #f8fafc !important;
+                border-radius: 12px !important;
+                border: 1px solid #e2e8f0 !important;
+            }
+            .macro-summary-grid p {
+                font-size: 0.7rem !important;
+                white-space: normal !important;
+                line-height: 1.3 !important;
+                margin-bottom: 4px !important;
+            }
+            .macro-summary-grid p[style*="font-weight: 900"] {
+                font-size: 1.1rem !important;
+                margin: 4px 0 !important;
+            }
+
+            .signature-block-grid {
+                grid-template-columns: 1fr !important;
+                gap: 25px !important;
+                margin-top: 30px !important;
+            }
+
+            .table-responsive-report {
+                margin: 0 -5px !important;
+                width: calc(100% + 10px) !important;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .table-responsive-report table { min-width: 500px; }
+
+            .modal-footer-report {
+                flex-direction: column !important;
+                gap: 8px !important;
+                padding: 12px !important;
+            }
+            .modal-footer-report button { 
+                width: 100% !important; 
+                margin: 0 !important; 
+                padding: 12px !important;
+                font-size: 0.9rem !important;
+            }
+        }
+
         .date-nav {
             display: flex;
             align-items: center;
@@ -320,6 +518,17 @@ $nav_links = getNavigationLinks($user_role, 'user-diary.php');
                         <h2><?php echo $date_label; ?></h2>
                         <a href="?date=<?php echo $next_date; ?>"><i class="fas fa-chevron-right"></i></a>
                     </div>
+
+                    <div style="display: flex; gap: 10px;">
+                        <?php if ($saved_report): ?>
+                            <button class="btn-primary" onclick="viewClinicalReport()" style="background: #10b981; border: none; border-radius: 12px; padding: 10px 20px; font-weight: 600; display: flex; align-items: center; gap: 8px; color: white; cursor: pointer;">
+                                <i class="fas fa-file-medical"></i> View Clinical Report
+                            </button>
+                        <?php endif; ?>
+                        <button class="btn-primary" onclick="openFctModal('Breakfast')" style="background: var(--primary); color: white; border: none; border-radius: 12px; padding: 10px 20px; font-weight: 600; cursor: pointer;">
+                            <i class="fas fa-plus"></i> Add Log
+                        </button>
+                    </div>
                 </div>
 
                 <div class="summary-cards">
@@ -411,11 +620,7 @@ $nav_links = getNavigationLinks($user_role, 'user-diary.php');
                         <div style="display:flex; align-items:center; gap:10px; color:var(--primary); font-weight:600;">
                             <i class="fas fa-user-md"></i>
                             <span>Dietitian's Remarks</span>
-                        </div>
-                        <button onclick="toggleUserReport(true)" style="background:linear-gradient(135deg,#10b981,#059669); color:white; border:none; padding:10px 20px; border-radius:12px; font-weight:700; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; gap:8px; box-shadow:0 4px 15px rgba(16,185,129,0.3);">
-                            <i class="fas fa-file-medical"></i> My Health Report
-                        </button>
-                    </div>
+                        
                     <?php if (empty($feedbacks)): ?>
                         <p style="color: #ccc; font-style: italic; font-size: 0.9rem;">No remarks for this day yet.</p>
                     <?php else: ?>
@@ -647,6 +852,77 @@ $nav_links = getNavigationLinks($user_role, 'user-diary.php');
             </div>
         </div>
     </div>
+
+    <!-- Clinical Report Modal -->
+    <?php if ($saved_report): ?>
+    <div id="clinicalReportModal" class="modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:10000; overflow-y:auto; padding: 20px;">
+        <div style="background: white; max-width: 900px; margin: 40px auto; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.2);">
+            <div style="padding: 20px 32px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; background: #f8fafc;">
+                <h3 style="margin:0; font-family: 'Poppins', sans-serif; color: #1e293b;"><i class="fas fa-file-medical" style="color:#10b981;"></i> Clinical Diagnostic Report</h3>
+                <button onclick="closeClinicalReport()" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:#94a3b8;"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="reportContentArea" style="padding: 40px; background: #f1f5f9;">
+                <div style="background: white; border-radius: 16px; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+                    <?php echo $saved_report['report_content']; ?>
+                </div>
+            </div>
+            <div style="padding: 20px 32px; border-top: 1px solid #eee; display: flex; justify-content: flex-end; gap: 12px; background: #f8fafc;" class="modal-footer-report">
+                <button onclick="closeClinicalReport()" style="padding: 10px 24px; border-radius: 10px; border: 1px solid #e2e8f0; background: white; cursor: pointer; font-weight: 600;">Close</button>
+                <button id="downloadPdfBtn" onclick="generateUserPDF()" style="padding: 10px 24px; border-radius: 10px; background: #10b981; color: white; border: none; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-file-download"></i> Download PDF Report
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        function viewClinicalReport() {
+            document.getElementById('clinicalReportModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+        function closeClinicalReport() {
+            document.getElementById('clinicalReportModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        function generateUserPDF() {
+            const element = document.querySelector('#reportContentArea > div');
+            if (!element) return alert("Error: Report content not found.");
+            
+            const btn = document.getElementById('downloadPdfBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+            btn.style.opacity = '0.7';
+            btn.style.pointerEvents = 'none';
+
+            const opt = {
+                margin:       10,
+                filename:     'NutriDeq-Clinical-Report-<?php echo $selected_date; ?>.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                btn.innerHTML = '<i class="fas fa-check"></i> Downloaded';
+                btn.style.backgroundColor = '#059669';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.opacity = '1';
+                    btn.style.pointerEvents = 'auto';
+                    btn.style.backgroundColor = '#10b981';
+                }, 3000);
+            }).catch(err => {
+                console.error("PDF generation error: ", err);
+                btn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Failed';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.opacity = '1';
+                    btn.style.pointerEvents = 'auto';
+                }, 3000);
+            });
+        }
+    </script>
+    <?php endif; ?>
 
     <script>
         const currentUserRole = '<?php echo $user_role; ?>';

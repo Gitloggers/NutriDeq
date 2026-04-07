@@ -1,10 +1,10 @@
 <?php
+session_start();
 // Database configuration
 require_once '../database.php';
 
 // Process login if form is submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    session_start();
     // FORCE NO-CACHE - SECURITY FIX
     header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
     header("Cache-Control: post-check=0, pre-check=0", false);
@@ -48,13 +48,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header("Location: ../dashboard.php");
                 exit();
             } else {
-                $_SESSION['error'] = "Invalid email or password";
+                $_SESSION['error'] = "Incorrect password. Please try again.";
                 $_SESSION['login_email'] = $email;
                 header("Location: " . $_SERVER['PHP_SELF']);
                 exit();
             }
         } else {
-            $_SESSION['error'] = "No account found with this email";
+            $_SESSION['error'] = "No account found with this email address.";
             $_SESSION['login_email'] = $email;
             header("Location: " . $_SERVER['PHP_SELF']);
             exit();
@@ -97,6 +97,8 @@ if (isset($_SESSION['error'])) {
             --accent: #f59e0b; 
             --accent-alt: #3b82f6; 
             --glass-border: rgba(255, 255, 255, 0.8);
+            --bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --smooth: cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         body {
@@ -141,6 +143,7 @@ if (isset($_SESSION['error'])) {
             border: 1px solid rgba(255, 255, 255, 0.9); box-shadow: 0 10px 30px rgba(0,0,0,0.05);
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
             font-size: 24px; color: var(--primary); z-index: 0; pointer-events: none;
+            transition: all 0.8s var(--bounce);
         }
         .obj-1 { width: 80px; height: 80px; top: 20%; left: 20%; animation: floatObj 8s infinite alternate; }
         .obj-2 { width: 60px; height: 60px; bottom: 20%; right: 20%; animation: floatObj 6s infinite alternate-reverse; color: var(--accent-alt);}
@@ -157,9 +160,12 @@ if (isset($_SESSION['error'])) {
             backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
             border: 1px solid rgba(255,255,255,1); border-radius: 36px;
             box-shadow: 0 30px 80px rgba(0,0,0,0.1), inset 0 0 0 2px rgba(255,255,255,0.8);
-            transform-style: preserve-3d; transition: transform 0.1s ease;
+            transform-style: preserve-3d; transition: transform 0.1s ease, box-shadow 0.4s var(--smooth);
             position: relative; 
-            max-height: 90vh; display: flex; flex-direction: column;
+            max-height: 95vh; display: flex; flex-direction: column;
+        }
+        .auth-card:hover {
+            box-shadow: 0 40px 100px rgba(0,0,0,0.15), inset 0 0 0 2px rgba(255,255,255,1);
         }
 
         .auth-card-inner {
@@ -170,14 +176,15 @@ if (isset($_SESSION['error'])) {
         .auth-card-inner::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
 
         /* Animating load-in */
-        .tilt-wrapper { animation: popIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(30px) scale(0.95); }
+        .tilt-wrapper { animation: popIn 1s var(--bounce) forwards; opacity: 0; transform: translateY(40px) scale(0.9); }
         @keyframes popIn { to { transform: translateY(0) scale(1); opacity: 1; } }
 
         /* Logo & Header */
         .auth-header { text-align: center; margin-bottom: 40px; }
-        .logo-link { display: inline-flex; align-items: center; justify-content: center; gap: 12px; text-decoration: none; margin-bottom: 24px; position: relative; }
-        .logo-link img { height: 40px; border-radius: 10px; transition: 0.5s; }
-        .logo-link:hover img { transform: rotate(15deg) scale(1.1); }
+        .logo-link { display: inline-flex; align-items: center; justify-content: center; gap: 12px; text-decoration: none; margin-bottom: 24px; position: relative; transition: all 0.4s var(--bounce); }
+        .logo-link img { height: 40px; border-radius: 10px; transition: 0.5s var(--bounce); }
+        .logo-link:hover { transform: scale(1.05); }
+        .logo-link:hover img { transform: rotate(15deg) scale(1.2); }
         .logo-text { font-family: 'Outfit', sans-serif; font-size: 28px; font-weight: 900; color: var(--text-dark); }
         .logo-text span { color: var(--primary); }
 
@@ -186,62 +193,85 @@ if (isset($_SESSION['error'])) {
 
         /* Form styling */
         .form-group { margin-bottom: 20px; position: relative; }
-        .form-group label { display: block; font-size: 0.9rem; font-weight: 700; color: #334155; margin-bottom: 8px; }
+        .form-group label { display: block; font-size: 0.9rem; font-weight: 700; color: #334155; margin-bottom: 8px; transition: color 0.3s; }
         
         .input-wrapper { position: relative; display: flex; align-items: center; }
-        .input-icon { position: absolute; left: 16px; color: #94a3b8; font-size: 16px; transition: 0.3s; pointer-events: none; }
+        .input-icon { position: absolute; left: 16px; color: #94a3b8; font-size: 16px; transition: 0.4s var(--bounce); pointer-events: none; }
         
         .form-control {
             width: 100%; padding: 14px 16px 14px 44px;
             background: rgba(255,255,255,0.8); border: 2px solid #e2e8f0; border-radius: 16px;
             font-size: 15px; font-family: 'Inter'; color: var(--text-dark);
-            transition: all 0.3s ease; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            transition: all 0.4s var(--bounce); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
         }
 
         .form-control::placeholder { color: #94a3b8; font-weight: 400; }
-        .form-control:focus { outline: none; border-color: var(--primary); background: #ffffff; box-shadow: 0 4px 15px rgba(16,185,129,0.1); transform: translateY(-2px); }
-        .form-control:focus + .input-icon { color: var(--primary); transform: scale(1.1); }
+        .form-control:focus { outline: none; border-color: var(--primary); background: #ffffff; box-shadow: 0 8px 20px rgba(16,185,129,0.1); transform: translateY(-3px); }
+        .form-control:focus + .input-icon { color: var(--primary); transform: scale(1.2) rotate(-5deg); }
+        .form-group:focus-within label { color: var(--primary); }
+
+        /* Password Toggle */
+        .password-toggle {
+            position: absolute;
+            right: 16px;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: 0.3s var(--bounce);
+            padding: 5px;
+            z-index: 10;
+        }
+        .password-toggle:hover { color: var(--primary); transform: scale(1.2); }
 
         /* Options */
         .form-options { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; font-size: 0.9rem; }
-        .remember-me { display: flex; align-items: center; gap: 8px; color: #475569; font-weight: 500; cursor: pointer; user-select: none; }
+        .remember-me { display: flex; align-items: center; gap: 8px; color: #475569; font-weight: 500; cursor: pointer; user-select: none; transition: 0.3s; }
+        .remember-me:hover { color: var(--primary); }
         
         .checkbox-custom {
             appearance: none; width: 20px; height: 20px; border: 2px solid #cbd5e1; border-radius: 6px;
-            display: inline-flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s; position: relative;
+            display: inline-flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.3s var(--bounce); position: relative;
         }
-        .checkbox-custom:checked { background: var(--primary); border-color: var(--primary); }
+        .checkbox-custom:checked { background: var(--primary); border-color: var(--primary); transform: scale(1.1); }
         .checkbox-custom:checked::after { content: '\f00c'; font-family: 'Font Awesome 5 Free'; font-weight: 900; color: white; font-size: 12px; position: absolute; }
 
         .forgot-link { color: var(--primary); font-weight: 700; text-decoration: none; transition: 0.3s; }
-        .forgot-link:hover { color: var(--primary-dark); }
+        .forgot-link:hover { color: var(--primary-dark); text-decoration: underline; }
 
         /* Submit Button Glow Effect */
         .btn-submit {
             width: 100%; padding: 16px; font-size: 16px; font-weight: 700;
             background: var(--primary); color: white; border: none; border-radius: 16px;
-            cursor: pointer; transition: all 0.4s ease; box-shadow: 0 10px 25px rgba(16,185,129,0.3);
+            cursor: pointer; transition: all 0.5s var(--bounce); box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
             position: relative; overflow: hidden;
         }
-        .btn-submit::after { content: ''; position: absolute; top:0; left:-100%; width: 100%; height:100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); transition: 0.5s; }
-        .btn-submit:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 15px 35px rgba(16,185,129,0.4); }
+        .btn-submit::after { content: ''; position: absolute; top:0; left:-100%; width: 100%; height:100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); transition: 0.6s; }
+        .btn-submit:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 20px 40px rgba(16, 185, 129, 0.4); }
         .btn-submit:hover::after { left: 100%; }
+        .btn-submit:active { transform: translateY(0) scale(0.98); }
 
         .auth-footer { margin-top: 30px; text-align: center; color: #64748b; font-size: 0.95rem; }
-        .auth-footer a { color: var(--primary); font-weight: 800; text-decoration: none; }
-        .auth-footer a:hover { text-decoration: underline; }
+        .auth-footer a { color: var(--primary); font-weight: 800; text-decoration: none; transition: 0.3s; }
+        .auth-footer a:hover { text-decoration: underline; color: var(--primary-dark); }
 
-        .error-message { background: #fef2f2; border: 1px solid #fecaca; color: #ef4444; padding: 14px; border-radius: 12px; margin-bottom: 24px; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; animation: shake 0.5s; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.1);}
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        .error-message { 
+            background: #fff1f2; border: 1px solid #fecdd3; color: #e11d48; 
+            padding: 16px; border-radius: 16px; margin-bottom: 24px; 
+            font-weight: 600; font-size: 0.95rem; display: flex; 
+            align-items: center; gap: 12px; animation: shake 0.6s var(--bounce); 
+            box-shadow: 0 10px 20px rgba(225, 29, 72, 0.1);
+        }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-8px); } 40% { transform: translateX(8px); } 60% { transform: translateX(-5px); } 80% { transform: translateX(5px); } }
+
+        .back-home-btn:hover { color: var(--primary) !important; transform: translateX(-5px); }
 
         /* Form Stagger Reveals */
-        .stagger { opacity: 0; transform: translateY(15px) translateZ(40px); animation: fadeUp 0.5s ease forwards; }
-        .d-1 { animation-delay: 0.3s; } .d-2 { animation-delay: 0.4s; } .d-3 { animation-delay: 0.5s; } .d-4 { animation-delay: 0.6s; }
+        .stagger { opacity: 0; transform: translateY(20px) translateZ(40px); animation: fadeUp 0.6s var(--bounce) forwards; }
+        .d-1 { animation-delay: 0.2s; } .d-2 { animation-delay: 0.3s; } .d-3 { animation-delay: 0.4s; } .d-4 { animation-delay: 0.5s; }
         @keyframes fadeUp { to { opacity: 1; transform: translateY(0) translateZ(40px); } }
 
         @media (max-width: 480px) {
             .tilt-wrapper { padding: 16px; perspective: none; }
-            .auth-card { border-radius: 24px; transform: none !important;}
+            .auth-card { border-radius: 24px; transform: none !important; max-height: 100vh;}
             .auth-card-inner { padding: 40px 24px; transform: none !important;}
             .auth-header h1 { font-size: 1.8rem; }
             .spotlight, .floating-object { display: none; }
@@ -296,8 +326,9 @@ if (isset($_SESSION['error'])) {
                         <div class="form-group stagger d-3">
                             <label for="password">Password</label>
                             <div class="input-wrapper">
-                                <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required>
+                                <input type="password" id="password" name="password" class="form-control" style="padding-right: 50px;" placeholder="••••••••" required>
                                 <i class="fas fa-fingerprint input-icon"></i>
+                                <i class="fas fa-eye password-toggle" id="togglePassword"></i>
                             </div>
                         </div>
 
@@ -306,7 +337,7 @@ if (isset($_SESSION['error'])) {
                                 <input type="checkbox" name="remember" class="checkbox-custom">
                                 Remember me
                             </label>
-                            <a href="#" class="forgot-link">Forgot password?</a>
+                            <a href="forgot-password.php" class="forgot-link">Forgot password?</a>
                         </div>
 
                         <div class="stagger d-4">
@@ -357,6 +388,27 @@ if (isset($_SESSION['error'])) {
                     });
                 });
             });
+
+            // Password Toggle Logic
+            const togglePassword = document.querySelector('#togglePassword');
+            const passwordInput = document.querySelector('#password');
+
+            if (togglePassword && passwordInput) {
+                togglePassword.addEventListener('click', function() {
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+                    
+                    // Toggle icon
+                    this.classList.toggle('fa-eye');
+                    this.classList.toggle('fa-eye-slash');
+                    
+                    // Add bouncy feedback
+                    this.style.transform = 'scale(1.4)';
+                    setTimeout(() => {
+                        this.style.transform = 'scale(1)';
+                    }, 200);
+                });
+            }
         });
 
         // Register Service Worker for PWA
