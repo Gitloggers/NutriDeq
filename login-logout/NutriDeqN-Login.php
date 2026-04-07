@@ -245,11 +245,35 @@ if (isset($_SESSION['error'])) {
             position: relative; overflow: hidden;
         }
         .btn-submit::after { content: ''; position: absolute; top:0; left:-100%; width: 100%; height:100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); transition: 0.6s; }
-        .btn-submit:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 20px 40px rgba(16, 185, 129, 0.4); }
-        .btn-submit:hover::after { left: 100%; }
-        .btn-submit:active { transform: translateY(0) scale(0.98); }
+        .btn-submit:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 20px 40px rgba(16, 185, 129, 0.4); }
+        .btn-submit:active { transform: translateY(-1px); }
 
-        .auth-footer { margin-top: 30px; text-align: center; color: #64748b; font-size: 0.95rem; }
+        /* Google Login Button */
+        .google-auth-separator {
+            display: flex; align-items: center; text-align: center;
+            margin: 25px 0; color: var(--text-muted); font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .google-auth-separator::before, .google-auth-separator::after {
+            content: ''; flex: 1; border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        .google-auth-separator:not(:empty)::before { margin-right: 15px; }
+        .google-auth-separator:not(:empty)::after { margin-left: 15px; }
+
+        .btn-google {
+            width: 100%; padding: 14px; background: white; color: var(--text-dark);
+            border: 1px solid #e2e8f0; border-radius: 20px; font-weight: 600;
+            display: flex; align-items: center; justify-content: center; gap: 12px;
+            cursor: pointer; transition: all 0.3s var(--bounce);
+            text-decoration: none; font-size: 0.95rem;
+        }
+        .btn-google img { width: 20px; height: 20px; }
+        .btn-google:hover {
+            background: #f8fafc; border-color: #cbd5e1;
+            transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+
+        .auth-footer { margin-top: 35px; text-align: center; color: var(--text-muted); font-size: 0.95rem; }
         .auth-footer a { color: var(--primary); font-weight: 800; text-decoration: none; transition: 0.3s; }
         .auth-footer a:hover { text-decoration: underline; color: var(--primary-dark); }
 
@@ -341,9 +365,16 @@ if (isset($_SESSION['error'])) {
                         </div>
 
                         <div class="stagger d-4">
-                            <button type="submit" class="btn-submit">Sign In</button>
+                            <button type="submit" class="btn-submit">Authenticate Portal</button>
                         </div>
                     </form>
+
+                    <div class="google-auth-separator stagger d-4">OR</div>
+
+                    <a href="google-callback.php" class="btn-google stagger d-4">
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo">
+                        Continue with Google
+                    </a>
 
                     <div class="auth-footer stagger d-4">
                         Don't have an account? <a href="NutriDeqN-Signup.php">Create an Account</a>

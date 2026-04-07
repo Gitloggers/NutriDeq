@@ -77,10 +77,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $mail->Password   = $smtpPass;
                     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                     $mail->Port       = $smtpPort;
+                    
+                    // Technical Debugging
+                    if (isset($_GET['debug'])) {
+                        $mail->SMTPDebug = 3;
+                        $mail->Debugoutput = function($str, $level) {
+                            echo "<pre style='font-size:10px; color: #444; background: #eee; padding: 10px;'>$str</pre>";
+                        };
+                    }
 
-                    // Recipients
-                    $mail->setFrom($smtpUser ?: 'support@nutrideq.com', 'NutriDeq Support');
+                    // Recipients - CRITICAL: From address MUST match Gmail Username
+                    $mail->setFrom($smtpUser, 'NutriDeq Support');
                     $mail->addAddress($email, $user['name']);
+                    $mail->addReplyTo($smtpUser, 'NutriDeq Support');
                     
                     // Content
                     $mail->isHTML(true);
@@ -99,10 +108,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                     ";
                     
-                    $mail->send();
-                    $mailSent = true;
+                    if($mail->send()) {
+                        $mailSent = true;
+                    }
                 } catch (Exception $e) {
-                    $error = "Mail Error: " . $mail->ErrorInfo;
+                    $error = "<strong>Mail Error:</strong> " . $mail->ErrorInfo;
+                    if (isset($_GET['debug'])) {
+                        $error .= "<br>Detail: " . $e->getMessage();
+                    }
                 }
             }
 
@@ -123,6 +136,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             // Security: Generic message
             $message = "If an account exists for that email address, a reset link has been generated.";
+            if (isset($_GET['debug'])) {
+                $error = "<strong>DEBUG:</strong> No user found with the email: $email. Please check your database.";
+            }
         }
     } catch (Exception $e) {
         $error = "Error processing request: " . $e->getMessage();
