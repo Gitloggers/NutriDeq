@@ -83,6 +83,28 @@ if (isset($_SESSION['user_id'])) {
                     <a href="<?php echo $link['href']; ?>" class="<?php echo !empty($link['active']) ? 'active' : ''; ?>" title="<?php echo $link['text']; ?>">
                         <i class="<?php echo $link['icon']; ?>"></i>
                         <span class="nav-text"><?php echo $link['text']; ?></span>
+                        <?php 
+                        // Show badge for pending reset requests if this is User Management
+                        if (strpos($link['href'], 'admin-user-management.php') !== false && ($sidebar_user_role === 'admin' || $sidebar_user_role === 'staff')):
+                            try {
+                                if (!isset($pdo)) {
+                                    require_once 'database.php';
+                                    $sidebar_db = new Database();
+                                    $pdo = $sidebar_db->getConnection();
+                                }
+                                $reset_stmt = $pdo->prepare("SELECT COUNT(*) FROM password_reset_requests WHERE status = 'pending' " . ($sidebar_user_role === 'staff' ? "AND staff_id = ?" : ""));
+                                if ($sidebar_user_role === 'staff') {
+                                    $reset_stmt->execute([$_SESSION['user_id']]);
+                                } else {
+                                    $reset_stmt->execute();
+                                }
+                                $reset_count = $reset_stmt->fetchColumn();
+                                if ($reset_count > 0):
+                                    echo '<span class="badge" style="background: #ef4444; color: white; padding: 2px 6px; border-radius: 10px; font-size: 0.7rem; margin-left: 5px;">' . $reset_count . '</span>';
+                                endif;
+                            } catch (Exception $e) {}
+                        endif; 
+                        ?>
                     </a>
                 </li>
             <?php endif; ?>

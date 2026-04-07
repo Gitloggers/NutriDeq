@@ -53,13 +53,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 // Hash password
                 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+                
+                // Generate Recovery Key: ND-XXXX-XXXX
+                $recovery_key = 'ND-' . strtoupper(bin2hex(random_bytes(2))) . '-' . strtoupper(bin2hex(random_bytes(2)));
 
                 // Insert user into database - automatically set as 'user' role
-                $insert_sql = "INSERT INTO users (name, email, password, role, status, created_at, updated_at) VALUES (?, ?, ?, 'regular', 'active', NOW(), NOW())";
+                $insert_sql = "INSERT INTO users (name, email, password, role, status, recovery_key, created_at, updated_at) VALUES (?, ?, ?, 'regular', 'active', ?, NOW(), NOW())";
                 $insert_stmt = $conn->prepare($insert_sql);
 
-                if ($insert_stmt->execute([$name, $email, $hashed_password])) {
+                if ($insert_stmt->execute([$name, $email, $hashed_password, $recovery_key])) {
                     $user_id = $conn->lastInsertId();
+                    
+                    // Store recovery key in session to show once on registration success
+                    $_SESSION['new_recovery_key'] = $recovery_key;
 
                     // If a clients row already exists for this email (imported/unlinked), attach it to the new user
                     $attach_stmt = $conn->prepare("SELECT id FROM clients WHERE email = ? LIMIT 1");

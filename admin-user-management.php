@@ -173,15 +173,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     } else {
                         $_SESSION['error'] = "User not found in delete history";
                     }
-
-                    header("Location: admin-user-management.php?tab=delete_history");
-                    exit();
                 } catch (PDOException $e) {
                     $conn->rollBack();
                     $_SESSION['error'] = "Database error: " . $e->getMessage();
-                    header("Location: admin-user-management.php?tab=delete_history");
-                    exit();
                 }
+                header("Location: admin-user-management.php?tab=delete_history");
+                exit();
+                break;
+
+            case 'approve_reset':
+                $request_id = $_POST['request_id'];
+                $temp_password = "Nutri" . rand(1000, 9999) . "!";
+                $hashed = password_hash($temp_password, PASSWORD_DEFAULT);
+
+                try {
+                    $conn->beginTransaction();
+                    
+                    // Get user info
+                    $stmt = $conn->prepare("SELECT u.id, u.email FROM users u JOIN password_reset_requests prr ON u.id = prr.user_id WHERE prr.id = ?");
+                    $stmt->execute([$request_id]);
+                    $user = $stmt->fetch();
+
+                    if ($user) {
+                        // Update password
+                        $upd = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
+                        $upd->execute([$hashed, $user['id']]);
+
+                        // Mark request as completed
+                        $upd_req = $conn->prepare("UPDATE password_reset_requests SET status = 'completed' WHERE id = ?");
+                        $upd_req->execute([$request_id]);
+
+                        $conn->commit();
+                        $_SESSION['success'] = "Password reset approved! Temporary password for {$user['email']}: <strong>{$temp_password}</strong>";
+                    }
+                } catch (Exception $e) {
+                    $conn->rollBack();
+                    $_SESSION['error'] = "Error: " . $e->getMessage();
+                }
+                header("Location: admin-user-management.php?tab=reset_requests");
+                exit();
+                break;
+
+            case 'reject_reset':
+                $request_id = $_POST['request_id'];
+                $stmt = $conn->prepare("UPDATE password_reset_requests SET status = 'cancelled' WHERE id = ?");
+                $stmt->execute([$request_id]);
+                $_SESSION['success'] = "Reset request cancelled.";
+                header("Location: admin-user-management.php?tab=reset_requests");
+                exit();
                 break;
 
             case 'update_role':
@@ -350,7 +389,10 @@ try {
     $deleted_users_stmt->execute();
     $deleted_users = $deleted_users_stmt->fetchAll();
 
-
+    // Get reset requests
+    $resets_stmt = $conn->prepare("SELECT prr.id, u.name, u.email, prr.created_at, prr.status FROM password_reset_requests prr JOIN users u ON prr.user_id = u.id WHERE prr.status = 'pending' ORDER BY prr.created_at DESC");
+    $resets_stmt->execute();
+    $reset_requests = $resets_stmt->fetchAll();
 
 } catch (PDOException $e) {
     $error = "Database error: " . $e->getMessage();
@@ -439,6 +481,7 @@ try {
         <!-- Tabs -->
         <div class="mgmt-tabs">
             <button class="mgmt-tab-btn <?php echo $current_tab==='active_users'?'active':''; ?>" onclick="window.location='?tab=active_users'"><i class="fas fa-users"></i> Active Users</button>
+            <button class="mgmt-tab-btn <?php echo $current_tab==='reset_requests'?'active':''; ?>" onclick="window.location='?tab=reset_requests'"><i class="fas fa-key"></i> Reset Requests <?php if(count($reset_requests)>0) echo '<span style="background:#f59e0b;color:white;border-radius:50px;padding:1px 8px;font-size:0.72rem;">'.count($reset_requests).'</span>'; ?></button>
             <button class="mgmt-tab-btn <?php echo $current_tab==='delete_history'?'active':''; ?>" onclick="window.location='?tab=delete_history'"><i class="fas fa-history"></i> Delete History <?php if($stats['deleted_users']>0) echo '<span style="background:#f43f5e;color:white;border-radius:50px;padding:1px 8px;font-size:0.72rem;">'.$stats['deleted_users'].'</span>'; ?></button>
         </div>
 
@@ -478,8 +521,43 @@ try {
             <?php endif; ?>
         </div>
 
+        <!-- Reset Requests -->
+        <div class="mgmt-tab-panel <?php echo $current_tab==='reset_requests'?'active':''; ?>">
+            <div class="mgmt-section-label" style="margin-bottom:20px;"><i class="fas fa-key"></i> Password Reset Requests</div>
+            <?php if(empty($reset_requests)): ?>
+            <div class="mgmt-empty"><div class="mgmt-empty-icon"><i class="fas fa-check-circle"></i></div><h3>No pending requests</h3><p>All password reset requests have been processed.</p></div>
+            <?php else: ?>
+            <div class="deleted-grid">
+                <?php foreach($reset_requests as $req): ?>
+                <div class="deleted-card">
+                    <div class="deleted-avatar"><?php echo getInitials($req['name']); ?></div>
+                    <div class="deleted-info">
+                        <div class="deleted-name"><?php echo htmlspecialchars($req['name']); ?></div>
+                        <div class="deleted-meta">
+                            <span><?php echo htmlspecialchars($req['email']); ?></span>
+                            <span>Requested: <?php echo date('M j, Y H:i', strtotime($req['created_at'])); ?></span>
+                        </div>
+                    </div>
+                    <div class="deleted-actions">
+                        <form method="POST" class="inline-form" onsubmit="return confirm('Approve reset and generate temporary password?')">
+                            <input type="hidden" name="action" value="approve_reset">
+                            <input type="hidden" name="request_id" value="<?php echo $req['id']; ?>">
+                            <button type="submit" class="card-action restore" title="Approve"><i class="fas fa-check"></i></button>
+                        </form>
+                        <form method="POST" class="inline-form" onsubmit="return confirm('Reject this reset request?')">
+                            <input type="hidden" name="action" value="reject_reset">
+                            <input type="hidden" name="request_id" value="<?php echo $req['id']; ?>">
+                            <button type="submit" class="card-action delete" title="Reject"><i class="fas fa-times"></i></button>
+                        </form>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <?php endif; ?>
+        </div>
+
         <!-- Delete History -->
-        <div class="mgmt-tab-panel <?php echo $current_tab==='delete_history'?'active':''; ?>">
+        <div class="mgmt-tab-panel <?php echo $current_tab==='delete_history'?'active':''; ">
             <div class="mgmt-section-label" style="margin-bottom:20px;"><i class="fas fa-history"></i> Deleted User Archive</div>
             <?php if(empty($deleted_users)): ?>
             <div class="mgmt-empty"><div class="mgmt-empty-icon"><i class="fas fa-history"></i></div><h3>No deleted users</h3><p>Deleted users are kept for 30 days before being purged.</p></div>

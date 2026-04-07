@@ -107,6 +107,32 @@ $pdo = $database->getConnection();
     <link rel="stylesheet" href="css/info-modal.css">
     <script src="scripts/info-system.js" defer></script>
     <script src="scripts/premium-effects.js" defer></script>
+    <style>
+        .recovery-key-banner {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2);
+            animation: slideInDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .recovery-key-banner i { font-size: 40px; opacity: 0.9; }
+        .recovery-key-val {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-weight: 800;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            border: 1px dashed rgba(255,255,255,0.5);
+        }
+        @keyframes slideInDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    </style>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#2e8b57">
@@ -182,6 +208,19 @@ $pdo = $database->getConnection();
             <div id="organicCursor"></div>
             <div class="glow-aura" id="cursorAura"></div>
             <div class="page-container">
+            <!-- New Recovery Key Banner -->
+            <?php if (isset($_SESSION['new_recovery_key'])): ?>
+                <div class="recovery-key-banner">
+                    <i class="fas fa-shield-check"></i>
+                    <div style="flex: 1;">
+                        <h3 style="margin: 0 0 5px 0; font-weight: 700;">Save Your Recovery Key!</h3>
+                        <p style="margin: 0; font-size: 0.9rem; opacity: 0.9;">You will need this key if you ever forget your password. Write it down or save it somewhere safe.</p>
+                    </div>
+                    <div class="recovery-key-val"><?php echo $_SESSION['new_recovery_key']; ?></div>
+                </div>
+                <?php unset($_SESSION['new_recovery_key']); ?>
+            <?php endif; ?>
+
             <!-- Role-specific Dashboard Content -->
             <?php if ($user_role === 'admin'): ?>
                 <?php
