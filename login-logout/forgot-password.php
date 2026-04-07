@@ -79,12 +79,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $mail->Port       = $smtpPort;
                     
                     // Technical Debugging
-                    if (isset($_GET['debug'])) {
-                        $mail->SMTPDebug = 3;
-                        $mail->Debugoutput = function($str, $level) {
-                            echo "<pre style='font-size:10px; color: #444; background: #eee; padding: 10px;'>$str</pre>";
-                        };
-                    }
+                    $mail->SMTPDebug = 3; // ALWAYS ON FOR NOW TO FIND THE ERROR
+                    $mail->Debugoutput = function($str, $level) {
+                        file_put_contents(__DIR__ . '/../smtp_debug.log', $str . PHP_EOL, FILE_APPEND);
+                    };
 
                     // Recipients - CRITICAL: From address MUST match Gmail Username
                     $mail->setFrom($smtpUser, 'NutriDeq Support');
@@ -292,6 +290,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </script>
         <?php else: ?>
             <p>Enter your email address and we'll send you a secure link to reset your password.</p>
+
+            <div class="resend-container" style="border-top: none; margin-bottom: 25px; padding-top: 0;">
+                <span class="resend-text" style="font-weight: 600;">Forgot your password?</span>
+                <a href="google-callback.php" class="btn-google">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo">
+                    Recover with Google
+                </a>
+                <div class="google-auth-separator">OR USE EMAIL</div>
+            </div>
             
             <?php if ($error): ?>
                 <div class="alert alert-error">
