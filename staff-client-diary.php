@@ -14,6 +14,12 @@ $is_admin = ($_SESSION['user_role'] === 'admin');
 $db = new Database();
 $conn = $db->getConnection();
 
+// Fetch logged-in staff/admin name for report signature
+$staff_name_row = $conn->prepare("SELECT name FROM users WHERE id = ?");
+$staff_name_row->execute([$staff_id]);
+$staff_row = $staff_name_row->fetch(PDO::FETCH_ASSOC);
+$logged_in_staff_name = $staff_row['name'] ?? $_SESSION['name'] ?? 'Licensed Practitioner';
+
 // Fetch Clients
 $clients = [];
 try {
@@ -724,13 +730,15 @@ $nav_links = getNavigationLinks($_SESSION['user_role'], 'staff-client-diary.php'
                     <div>
                         <p style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 50px;">Reviewed & Prepared By</p>
                         <div style="border-top: 1px solid #1e293b; padding-top: 8px;">
-                            <p style="font-size: 0.8rem; color: #1e293b; font-weight: 600; margin: 0;">Licensed Dietitian / Practitioner</p>
+                            <p style="font-size: 0.85rem; color: #1e293b; font-weight: 700; margin: 0;"><?php echo htmlspecialchars($logged_in_staff_name); ?></p>
+                            <p style="font-size: 0.72rem; color: #64748b; margin: 2px 0 0;"><?php echo $is_admin ? 'Administrator' : 'Licensed Dietitian / Practitioner'; ?></p>
                         </div>
                     </div>
                     <div>
                         <p style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 50px;">Acknowledged By Patient</p>
                         <div style="border-top: 1px solid #1e293b; padding-top: 8px;">
-                            <p style="font-size: 0.8rem; color: #1e293b; font-weight: 600; margin: 0;"><?php echo htmlspecialchars($selected_client['name'] ?? ''); ?></p>
+                            <p style="font-size: 0.85rem; color: #1e293b; font-weight: 700; margin: 0;"><?php echo htmlspecialchars($selected_client['name'] ?? ''); ?></p>
+                            <p style="font-size: 0.72rem; color: #64748b; margin: 2px 0 0;"><?php echo htmlspecialchars($selected_client['email'] ?? ''); ?></p>
                         </div>
                     </div>
                 </div>

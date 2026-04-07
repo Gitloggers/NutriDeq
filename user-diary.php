@@ -15,6 +15,14 @@ $user_role = $_SESSION['user_role'] ?? 'user';
 $db = new Database();
 $conn = $db->getConnection();
 $fct = new FCTHelper();
+
+// Fetch the logged-in user's real name for the report
+$user_name_stmt = $conn->prepare("SELECT name, email FROM users WHERE id = ?");
+$user_name_stmt->execute([$user_id]);
+$user_name_row = $user_name_stmt->fetch(PDO::FETCH_ASSOC);
+$current_user_name  = $user_name_row['name']  ?? $_SESSION['name'] ?? 'NutriDeq User';
+$current_user_email = $user_name_row['email'] ?? '';
+
 // Date selection
 $selected_date = $_GET['date'] ?? date('Y-m-d');
 $today = date('Y-m-d');
@@ -454,7 +462,8 @@ $nav_links = getNavigationLinks($user_role, 'user-diary.php');
                     <div style="background:#f8fafc; border-radius:12px; padding:16px 20px; margin-bottom:28px; display:flex; gap:40px;">
                         <div>
                             <p style="color:#10b981; font-size:0.68rem; font-weight:700; text-transform:uppercase; margin:0 0 4px;">Patient</p>
-                            <p style="font-weight:700; margin:0; color:#1e293b;"><?php echo htmlspecialchars($_SESSION['name'] ?? $_SESSION['user_name'] ?? 'NutriDeq User'); ?></p>
+                            <p style="font-weight:700; margin:0; color:#1e293b;"><?php echo htmlspecialchars($current_user_name); ?></p>
+                            <p style="font-size:0.75rem; color:#64748b; margin:2px 0 0;"><?php echo htmlspecialchars($current_user_email); ?></p>
                         </div>
                         <div>
                             <p style="color:#10b981; font-size:0.68rem; font-weight:700; text-transform:uppercase; margin:0 0 4px;">Review Date</p>
