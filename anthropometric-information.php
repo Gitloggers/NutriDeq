@@ -419,7 +419,7 @@ if (isset($_GET['tab'])) {
                     else                      { $bmi_label = 'Obese';       $bmi_class = 'danger'; }
                 }
                 if (!empty($sc['waist_circumference']) && !empty($sc['hip_circumference']) && $sc['hip_circumference'] > 0) {
-                    $whr_val  = number_format($sc['waist_circumference'] / $sc['hip_circumference'], 2);
+                    $whr_val  = number_format(($sc['waist_circumference'] ?? 0) / ($sc['hip_circumference'] ?? 1), 2);
                     $gender   = $sc['gender'] ?? '';
                     $whr_risk = ($gender === 'male') ? (($sc['waist_circumference'] / $sc['hip_circumference'] <= 0.9) ? 'Low Risk' : 'High Risk')
                                                      : (($sc['waist_circumference'] / $sc['hip_circumference'] <= 0.85) ? 'Low Risk' : 'High Risk');
@@ -805,7 +805,7 @@ if (isset($_GET['tab'])) {
                         
                         <div class="bmi-chart-wrapper">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                                <h3 style="font-family: 'Outfit'; font-size: 1rem; color: #1e293b; margin: 0; font-weight: 700;"><i class="fas fa-history" style="color: var(--primary); margin-right: 8px;"></i> Progress History</h3>
+                                <h3 style="font-family: 'Outfit'; font-size: 1rem; color: #1e293b; margin: 0; font-weight: 700;"><i class="fas fa-history" style="color: var(--primary); margin-right: 8px;"></i> Progress Statistics</h3>
                                 <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 600;">Last 15 recordings</span>
                             </div>
                             <div style="height: 220px; position: relative;">

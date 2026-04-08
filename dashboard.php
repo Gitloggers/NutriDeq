@@ -991,11 +991,11 @@ $pdo = $database->getConnection();
                                 <div style="display: flex; gap: 10px; margin-bottom: 20px;">
                                     <div style="background: #f8fafc; padding: 10px 15px; border-radius: 12px; flex: 1; text-align: center; border: 1px solid #e2e8f0;">
                                         <div style="font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; font-weight: 700; margin-bottom: 2px;">Weight</div>
-                                        <div style="font-size: 0.95rem; font-weight: 800; color: #1e293b;"><?php echo number_format($selected_bmi_client['weight'], 2); ?> <small style="font-size: 0.7em; opacity: 0.6;">kg</small></div>
+                                        <div style="font-size: 0.95rem; font-weight: 800; color: #1e293b;"><?php echo number_format($selected_bmi_client['weight'] ?? 0, 2); ?> <small style="font-size: 0.7em; opacity: 0.6;">kg</small></div>
                                     </div>
                                     <div style="background: #f8fafc; padding: 10px 15px; border-radius: 12px; flex: 1; text-align: center; border: 1px solid #e2e8f0;">
                                         <div style="font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; font-weight: 700; margin-bottom: 2px;">Height</div>
-                                        <div style="font-size: 0.95rem; font-weight: 800; color: #1e293b;"><?php echo number_format($selected_bmi_client['height'], 2); ?> <small style="font-size: 0.7em; opacity: 0.6;">cm</small></div>
+                                        <div style="font-size: 0.95rem; font-weight: 800; color: #1e293b;"><?php echo number_format($selected_bmi_client['height'] ?? 0, 2); ?> <small style="font-size: 0.7em; opacity: 0.6;">cm</small></div>
                                     </div>
                                 </div>
 
