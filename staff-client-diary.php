@@ -698,28 +698,33 @@ $nav_links = getNavigationLinks($_SESSION['user_role'], 'staff-client-diary.php'
                                                 <?php if (empty($items)): ?>
                                                     <span style="opacity: 0.4; font-size: 0.9rem;">No patient logs recorded</span>
                                                 <?php else: ?>
-                                                    <?php foreach ($items as $item): ?>
-                                                        <div class="food-entry-row" style="display: flex; align-items: center; gap: 15px; padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,0.03);">
+                                                    <?php foreach ($items as $item): 
+                                                        $is_missing = ($item['calories'] == 0 || $item['protein'] == 0 || $item['carbs'] == 0 || $item['fat'] == 0);
+                                                    ?>
+                                                        <div class="food-entry-row" style="display: flex; align-items: center; gap: 15px; padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,0.03); <?php echo $is_missing ? 'background: rgba(245, 158, 11, 0.05);' : ''; ?>">
                                                             <div style="flex: 1;">
                                                                 <span style="font-weight: 600; color: #334155;"><?php echo htmlspecialchars($item['food_name']); ?></span>
-                                                                <span style="font-size: 0.75rem; color: #94a3b8; margin-left: 8px;">(<?php echo number_format($item['serving_size'], 0); ?>g)</span>
+                                                                <?php if ($is_missing): ?>
+                                                                    <span style="font-size: 0.65rem; background: #f59e0b; color: white; padding: 2px 6px; border-radius: 4px; margin-left: 8px; vertical-align: middle;">Needs Review</span>
+                                                                <?php endif; ?>
+                                                                <span style="font-size: 0.75rem; color: #94a3b8; display: block;">(<?php echo number_format($item['serving_size'], 0); ?>g)</span>
                                                             </div>
                                                             <div class="entry-macros" style="display: flex; gap: 10px; align-items: center;">
                                                                 <div style="text-align: center; min-width: 50px;">
                                                                     <div style="font-size: 0.65rem; color: #94a3b8; text-transform: uppercase;">Cals</div>
-                                                                    <input type="number" step="0.1" class="macro-edit-input" data-id="<?php echo $item['id']; ?>" data-field="calories" value="<?php echo $item['calories']; ?>" style="width: 50px; padding: 4px; border: 1px solid #e2e8f0; border-radius: 4px; font-size: 0.85rem; text-align: center;">
+                                                                    <input type="number" step="any" class="macro-edit-input" data-id="<?php echo $item['id']; ?>" data-field="calories" value="<?php echo $item['calories']; ?>" style="width: 50px; padding: 4px; border: 1px solid <?php echo $item['calories'] == 0 ? '#f59e0b' : '#e2e8f0'; ?>; border-radius: 4px; font-size: 0.85rem; text-align: center; background: <?php echo $item['calories'] == 0 ? '#fffbeb' : 'white'; ?>;">
                                                                 </div>
                                                                 <div style="text-align: center; min-width: 50px;">
                                                                     <div style="font-size: 0.65rem; color: #94a3b8; text-transform: uppercase;">Prot</div>
-                                                                    <input type="number" step="0.1" class="macro-edit-input" data-id="<?php echo $item['id']; ?>" data-field="protein" value="<?php echo $item['protein']; ?>" style="width: 50px; padding: 4px; border: 1px solid #e2e8f0; border-radius: 4px; font-size: 0.85rem; text-align: center;">
+                                                                    <input type="number" step="any" class="macro-edit-input" data-id="<?php echo $item['id']; ?>" data-field="protein" value="<?php echo $item['protein']; ?>" style="width: 50px; padding: 4px; border: 1px solid <?php echo $item['protein'] == 0 ? '#f59e0b' : '#e2e8f0'; ?>; border-radius: 4px; font-size: 0.85rem; text-align: center; background: <?php echo $item['protein'] == 0 ? '#fffbeb' : 'white'; ?>;">
                                                                 </div>
                                                                 <div style="text-align: center; min-width: 50px;">
                                                                     <div style="font-size: 0.65rem; color: #94a3b8; text-transform: uppercase;">Carb</div>
-                                                                    <input type="number" step="0.1" class="macro-edit-input" data-id="<?php echo $item['id']; ?>" data-field="carbs" value="<?php echo $item['carbs']; ?>" style="width: 50px; padding: 4px; border: 1px solid #e2e8f0; border-radius: 4px; font-size: 0.85rem; text-align: center;">
+                                                                    <input type="number" step="any" class="macro-edit-input" data-id="<?php echo $item['id']; ?>" data-field="carbs" value="<?php echo $item['carbs']; ?>" style="width: 50px; padding: 4px; border: 1px solid <?php echo $item['carbs'] == 0 ? '#f59e0b' : '#e2e8f0'; ?>; border-radius: 4px; font-size: 0.85rem; text-align: center; background: <?php echo $item['carbs'] == 0 ? '#fffbeb' : 'white'; ?>;">
                                                                 </div>
                                                                 <div style="text-align: center; min-width: 50px;">
                                                                     <div style="font-size: 0.65rem; color: #94a3b8; text-transform: uppercase;">Fat</div>
-                                                                    <input type="number" step="0.1" class="macro-edit-input" data-id="<?php echo $item['id']; ?>" data-field="fat" value="<?php echo $item['fat']; ?>" style="width: 50px; padding: 4px; border: 1px solid #e2e8f0; border-radius: 4px; font-size: 0.85rem; text-align: center;">
+                                                                    <input type="number" step="any" class="macro-edit-input" data-id="<?php echo $item['id']; ?>" data-field="fat" value="<?php echo $item['fat']; ?>" style="width: 50px; padding: 4px; border: 1px solid <?php echo $item['fat'] == 0 ? '#f59e0b' : '#e2e8f0'; ?>; border-radius: 4px; font-size: 0.85rem; text-align: center; background: <?php echo $item['fat'] == 0 ? '#fffbeb' : 'white'; ?>;">
                                                                 </div>
                                                                 <button class="btn-save-macro" onclick="saveMacro(this, <?php echo $item['id']; ?>)" style="background: #10b981; color: white; border: none; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 0.8rem; margin-left: 5px;">
                                                                     <i class="fas fa-check"></i>
@@ -915,6 +920,24 @@ $nav_links = getNavigationLinks($_SESSION['user_role'], 'staff-client-diary.php'
 
                                     const result = await response.json();
                                     if (result.success) {
+                                        // Update UI styles if values are no longer zero
+                                        inputs.forEach(input => {
+                                            if (parseFloat(input.value) > 0) {
+                                                input.style.borderColor = '#e2e8f0';
+                                                input.style.backgroundColor = 'white';
+                                            }
+                                        });
+                                        
+                                        // Remove "Needs Review" badge if all macros are filled
+                                        const entryRow = btn.closest('.food-entry-row');
+                                        let allFilled = true;
+                                        inputs.forEach(input => { if(parseFloat(input.value) === 0) allFilled = false; });
+                                        if (allFilled) {
+                                            entryRow.style.backgroundColor = 'transparent';
+                                            const badge = entryRow.querySelector('span[style*="background: #f59e0b"]');
+                                            if (badge) badge.remove();
+                                        }
+
                                         // Show success state briefly
                                         btn.innerHTML = '<i class="fas fa-check-double"></i>';
                                         btn.style.background = '#059669';
@@ -922,8 +945,6 @@ $nav_links = getNavigationLinks($_SESSION['user_role'], 'staff-client-diary.php'
                                             btn.innerHTML = originalBtn;
                                             btn.style.background = '#10b981';
                                             btn.disabled = false;
-                                            // Optional: reload to update total cards
-                                            // location.reload(); 
                                         }, 2000);
                                     } else {
                                         alert(result.message || 'Error updating values');

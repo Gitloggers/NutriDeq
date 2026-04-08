@@ -137,6 +137,67 @@ $pdo = $database->getConnection();
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#2e8b57">
     <style>
+        /* BMI Chart Container Styles */
+        .bmi-visual-container {
+            display: flex;
+            align-items: stretch;
+            gap: 30px;
+            padding: 30px;
+            background: white;
+            border-radius: 20px;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+        }
+        
+        .bmi-status-info {
+            flex: 1;
+            padding-right: 30px;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .bmi-chart-wrapper {
+            flex: 2;
+            position: relative;
+            min-height: 250px;
+        }
+
+        .bmi-big-value {
+            font-size: 3.5rem;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+            line-height: 1;
+            margin-bottom: 10px;
+            color: #1e293b;
+        }
+        
+        .bmi-status-badge {
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 6px 16px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        
+        .status-underweight { background: #eff6ff; color: #3b82f6; border: 1px solid #bfdbfe; }
+        .status-normal { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+        .status-overweight { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+        .status-obese { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+        .status-unknown { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
+
+        .clinical-insight-card {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+            margin-bottom: 15px;
+        }
+        
         /* Dashboard-specific refined mobile metrics */
         @media screen and (max-width: 768px) {
             .main-content {
@@ -619,15 +680,90 @@ $pdo = $database->getConnection();
 
                 // Active Clients
                 try {
-                    $active_clients = $pdo->prepare("
-            SELECT COUNT(*) as count 
-            FROM clients 
-            WHERE staff_id = ? AND status = 'active'
-        ");
-                    $active_clients->execute([$staff_id]);
-                    $clients_count = $active_clients->fetchColumn();
+                    $active_clients_stmt = $pdo->prepare("
+                        SELECT id, name, weight, height 
+                        FROM clients 
+                        WHERE staff_id = ? AND status = 'active'
+                        ORDER BY name ASC
+                    ");
+                    $active_clients_stmt->execute([$staff_id]);
+                    $staff_clients = $active_clients_stmt->fetchAll(PDO::FETCH_ASSOC);
+                    $clients_count = count($staff_clients);
                 } catch (Exception $e) {
+                    $staff_clients = [];
                     $clients_count = 0;
+                }
+
+                // Get selected client for BMI view (default to first one)
+                $selected_bmi_client_id = $_GET['bmi_client_id'] ?? ($staff_clients[0]['id'] ?? null);
+                $selected_bmi_client = null;
+                $staff_bmi_history = [];
+                
+                if ($selected_bmi_client_id) {
+                    foreach ($staff_clients as $sc) {
+                        if ($sc['id'] == $selected_bmi_client_id) {
+                            $selected_bmi_client = $sc;
+                            break;
+                        }
+                    }
+                }
+                
+                $staff_bmi = 0;
+                $staff_bmi_status = 'Unknown';
+                
+                if ($selected_bmi_client) {
+                    // Calculate from client table first
+                    if ($selected_bmi_client['height'] > 0 && $selected_bmi_client['weight'] > 0) {
+                        $h_m = $selected_bmi_client['height'] / 100;
+                        $staff_bmi = round($selected_bmi_client['weight'] / ($h_m * $h_m), 1);
+                    }
+                    
+                    // Fetch BMI History for selected client
+                    try {
+                        // Try by user_id first
+                        $c_user_id_stmt = $pdo->prepare("SELECT user_id, email FROM clients WHERE id = ?");
+                        $c_user_id_stmt->execute([$selected_bmi_client['id']]);
+                        $client_meta = $c_user_id_stmt->fetch(PDO::FETCH_ASSOC);
+                        $c_user_id = $client_meta['user_id'] ?? 0;
+                        $c_email = $client_meta['email'] ?? '';
+                        
+                        if ($c_user_id > 0) {
+                            $hist_stmt = $pdo->prepare("SELECT bmi, DATE_FORMAT(recorded_at, '%b %d') as date_label FROM client_bmi_history WHERE user_id = ? ORDER BY recorded_at ASC LIMIT 15");
+                            $hist_stmt->execute([$c_user_id]);
+                            $staff_bmi_history = $hist_stmt->fetchAll(PDO::FETCH_ASSOC);
+                        } elseif (!empty($c_email)) {
+                            // Try to find user by email to get their ID
+                            $u_stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+                            $u_stmt->execute([$c_email]);
+                            $found_uid = $u_stmt->fetchColumn();
+                            if ($found_uid) {
+                                $hist_stmt = $pdo->prepare("SELECT bmi, DATE_FORMAT(recorded_at, '%b %d') as date_label FROM client_bmi_history WHERE user_id = ? ORDER BY recorded_at ASC LIMIT 15");
+                                $hist_stmt->execute([$found_uid]);
+                                $staff_bmi_history = $hist_stmt->fetchAll(PDO::FETCH_ASSOC);
+                                $c_user_id = $found_uid;
+                            }
+                        }
+                        
+                        // Fallback: If still no history, seed the first history point to make graph appear
+                        if (empty($staff_bmi_history) && $staff_bmi > 0) {
+                            // If we have a user_id, save it to DB
+                            if ($c_user_id > 0) {
+                                try {
+                                    $pdo->prepare("INSERT INTO client_bmi_history (user_id, weight, height, bmi) VALUES (?, ?, ?, ?)")->execute([$c_user_id, $selected_bmi_client['weight'], $selected_bmi_client['height'], $staff_bmi]);
+                                } catch (Exception $e) {}
+                            }
+                            // Always provide at least one point for the JS chart
+                            $staff_bmi_history = [['bmi' => $staff_bmi, 'date_label' => date('M d')]];
+                        }
+                    } catch (Exception $e) {}
+                    
+                    // Set status based on the final staff_bmi
+                    if ($staff_bmi > 0) {
+                        if ($staff_bmi < 18.5) $staff_bmi_status = 'Underweight';
+                        elseif ($staff_bmi < 25) $staff_bmi_status = 'Normal';
+                        elseif ($staff_bmi < 30) $staff_bmi_status = 'Overweight';
+                        else $staff_bmi_status = 'Obese';
+                    }
                 }
 
                 // Weekly Progress Entries
@@ -810,6 +946,92 @@ $pdo = $database->getConnection();
                     </div>
                 </div>
 
+                <!-- ── Staff BMI Body Insight Row ── -->
+                <div class="dash-row stagger d-3" style="grid-template-columns: 1fr; margin-top: 30px;">
+                    <div class="dash-panel nutri-glass" style="padding: 30px;">
+                        <div class="dash-panel-header" style="margin-bottom: 25px;">
+                            <h2 class="dash-panel-title"><i class="fas fa-child-reaching" style="color: #10b981;"></i> Body Composition Insight</h2>
+                            <div style="display: flex; gap: 20px; align-items: center;">
+                                <div style="font-size: 0.85rem; color: #64748b; font-weight: 600;">Based on your latest anthropometrics</div>
+                                <div style="display: flex; gap: 10px; align-items: center; background: rgba(0,0,0,0.03); padding: 5px 15px; border-radius: 50px; border: 1px solid rgba(0,0,0,0.05);">
+                                    <span style="font-size: 0.75rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Switch Client:</span>
+                                    <select onchange="window.location.href='?bmi_client_id=' + this.value" style="background: transparent; border: none; font-family: 'Outfit'; font-weight: 700; color: #1e293b; outline: none; cursor: pointer; font-size: 0.85rem;">
+                                        <?php foreach ($staff_clients as $sc): ?>
+                                            <option value="<?php echo $sc['id']; ?>" <?php echo $sc['id'] == $selected_bmi_client_id ? 'selected' : ''; ?>>
+                                                <?php echo htmlspecialchars($sc['name']); ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <?php if ($selected_bmi_client): ?>
+                        <div class="bmi-visual-container">
+                            <div class="bmi-status-info">
+                                <h4 style="margin: 0 0 5px 0; color: #64748b; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;">Current BMI</h4>
+                                <div class="bmi-big-value"><?php echo $staff_bmi ?: '--'; ?></div>
+                                <div class="bmi-status-badge status-<?php echo strtolower($staff_bmi_status); ?>">
+                                    <?php echo $staff_bmi_status; ?>
+                                </div>
+                                
+                                <div class="clinical-insight-card">
+                                    <h4 style="margin: 0 0 8px 0; color: #1e293b; font-weight: 700; font-size: 0.8rem; text-transform: uppercase;">Health Insight</h4>
+                                    <p style="font-size: 0.88rem; color: #64748b; line-height: 1.5; margin: 0;">
+                                        <?php 
+                                            if ($staff_bmi_status === 'Underweight') echo "Your BMI is in the underweight category. Your dietician can help you create a sustainable plan for reaching your health goals.";
+                                            elseif ($staff_bmi_status === 'Normal') echo "Your BMI is in the healthy range. Your dietician can help you create a sustainable plan for reaching your health goals.";
+                                            elseif ($staff_bmi_status === 'Overweight') echo "Your BMI is in the overweight category. Your dietician can help you create a sustainable plan for reaching your health goals.";
+                                            elseif ($staff_bmi_status === 'Obese') echo "Your BMI is in the obesity category. Your dietician can help you create a sustainable plan for reaching your health goals.";
+                                            else echo "Record the client's height and weight to generate a BMI analysis and clinical insight.";
+                                        ?>
+                                    </p>
+                                </div>
+
+                                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                                    <div style="background: #f8fafc; padding: 10px 15px; border-radius: 12px; flex: 1; text-align: center; border: 1px solid #e2e8f0;">
+                                        <div style="font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; font-weight: 700; margin-bottom: 2px;">Weight</div>
+                                        <div style="font-size: 0.95rem; font-weight: 800; color: #1e293b;"><?php echo number_format($selected_bmi_client['weight'], 2); ?> <small style="font-size: 0.7em; opacity: 0.6;">kg</small></div>
+                                    </div>
+                                    <div style="background: #f8fafc; padding: 10px 15px; border-radius: 12px; flex: 1; text-align: center; border: 1px solid #e2e8f0;">
+                                        <div style="font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; font-weight: 700; margin-bottom: 2px;">Height</div>
+                                        <div style="font-size: 0.95rem; font-weight: 800; color: #1e293b;"><?php echo number_format($selected_bmi_client['height'], 2); ?> <small style="font-size: 0.7em; opacity: 0.6;">cm</small></div>
+                                    </div>
+                                </div>
+
+                                <div style="margin-top: 15px; display: flex; gap: 10px;">
+                                    <button onclick="location.href='anthropometric-information.php?client_id=<?php echo $selected_bmi_client['id']; ?>&tab=body-stats'" 
+                                            style="border-radius: 12px; padding: 12px 15px; font-weight: 700; font-size: 0.85rem; flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: all 0.2s; background: transparent; color: #10b981; border: 1.5px solid #10b981; font-family: 'Outfit';">
+                                        <i class="fas fa-history"></i> View Statistics
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="bmi-chart-wrapper">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                    <h3 style="font-family: 'Outfit'; font-size: 1rem; color: #1e293b; margin: 0; font-weight: 700;"><i class="fas fa-history" style="color: var(--primary); margin-right: 8px;"></i> Progress History</h3>
+                                    <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 600;">Last 15 recordings</span>
+                                </div>
+                                <div style="height: 250px; position: relative; width: 100%;">
+                                    <canvas id="staffBmiHistoryChart" style="width: 100%; height: 100%;"></canvas>
+                                    <?php if (empty($staff_bmi_history)): ?>
+                                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #94a3b8; font-size: 0.9rem; text-align: center; width: 100%;">
+                                        <i class="fas fa-chart-line" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.3;"></i>
+                                        <p>No BMI history data available yet.</p>
+                                    </div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                        <?php else: ?>
+                            <div style="text-align: center; padding: 40px; color: #94a3b8;">
+                                <i class="fas fa-users-slash" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5;"></i>
+                                <p>No active clients found to display BMI data.</p>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
                 <!-- Staff Command Tiles -->
                 <div class="management-section stagger d-3" style="margin-top: 30px; margin-bottom: 30px;">
                     <div class="section-header">
@@ -873,6 +1095,92 @@ $pdo = $database->getConnection();
                     modal.style.display = 'none';
                     document.body.style.overflow = 'auto';
                 }
+                
+                function openQuickUpdateModal() {
+                    const modal = document.getElementById('modalOverlay');
+                    const title = document.getElementById('modalTitle');
+                    const content = document.getElementById('modalContent');
+                    
+                    title.innerHTML = '<i class="fas fa-bolt" style="color:#10b981; margin-right:10px;"></i>Quick Body Update';
+                    content.innerHTML = `
+                        <form method="POST" id="quickUpdateForm">
+                            <input type="hidden" name="action" value="quick_body_update">
+                            <div style="margin-bottom: 20px;">
+                                <label style="display:block; margin-bottom:8px; font-weight:600; color:#475569;">Current Weight (kg)</label>
+                                <div style="position:relative;">
+                                    <i class="fas fa-weight" style="position:absolute; left:15px; top:50%; transform:translateY(-50%); color:#94a3b8;"></i>
+                                    <input type="number" step="any" name="weight" id="quickWeight" value="<?php echo $client['weight'] ?? ''; ?>" 
+                                        style="width:100%; padding:12px 12px 12px 40px; border-radius:12px; border:1.5px solid #e2e8f0; font-family:'Outfit'; font-weight:600; outline:none; transition:all 0.2s;"
+                                        onfocus="this.style.borderColor='#10b981'; this.style.boxShadow='0 0 0 3px rgba(16,185,129,0.1)';"
+                                        onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';"
+                                        oninput="calculateLiveBMI()">
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 25px;">
+                                <label style="display:block; margin-bottom:8px; font-weight:600; color:#475569;">Height (cm)</label>
+                                <div style="position:relative;">
+                                    <i class="fas fa-ruler-vertical" style="position:absolute; left:15px; top:50%; transform:translateY(-50%); color:#94a3b8;"></i>
+                                    <input type="number" step="any" name="height" id="quickHeight" value="<?php echo $client['height'] ?? ''; ?>" 
+                                        style="width:100%; padding:12px 12px 12px 40px; border-radius:12px; border:1.5px solid #e2e8f0; font-family:'Outfit'; font-weight:600; outline:none; transition:all 0.2s;"
+                                        onfocus="this.style.borderColor='#10b981'; this.style.boxShadow='0 0 0 3px rgba(16,185,129,0.1)';"
+                                        onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none';"
+                                        oninput="calculateLiveBMI()">
+                                </div>
+                            </div>
+                            
+                            <div id="liveBmiResult" style="background:#f8fafc; padding:15px; border-radius:15px; margin-bottom:25px; text-align:center; transition:all 0.3s ease;">
+                                <div style="font-size:0.8rem; color:#64748b; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:5px;">Estimated BMI</div>
+                                <div id="liveBmiValue" style="font-size:2rem; font-weight:800; color:#1e293b;">--</div>
+                                <div id="liveBmiStatus" style="font-size:0.85rem; font-weight:700; margin-top:5px; padding:4px 12px; border-radius:10px; display:inline-block;">UNKNOWN</div>
+                            </div>
+                            
+                            <div style="display:flex; gap:12px;">
+                                <button type="button" class="btn btn-outline" onclick="closeModal()" style="flex:1; border-radius:12px; padding:12px; font-weight:700;">Cancel</button>
+                                <button type="submit" class="btn btn-primary" style="flex:2; border-radius:12px; padding:12px; font-weight:700; background:#10b981; border:none; box-shadow:0 4px 15px rgba(16,185,129,0.2);">Update Measurements</button>
+                            </div>
+                        </form>
+                    `;
+                    
+                    modal.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                    calculateLiveBMI();
+                }
+                
+                function calculateLiveBMI() {
+                    const weight = parseFloat(document.getElementById('quickWeight').value);
+                    const height = parseFloat(document.getElementById('quickHeight').value);
+                    const valueDiv = document.getElementById('liveBmiValue');
+                    const statusDiv = document.getElementById('liveBmiStatus');
+                    
+                    if (weight > 0 && height > 0) {
+                        const hM = height / 100;
+                        const bmi = (weight / (hM * hM)).toFixed(1);
+                        valueDiv.textContent = bmi;
+                        
+                        let status = 'UNKNOWN';
+                        let color = '#94a3b8';
+                        let bgColor = '#f1f5f9';
+                        
+                        if (bmi < 18.5) { status = 'UNDERWEIGHT'; color = '#3b82f6'; bgColor = '#eff6ff'; }
+                        else if (bmi < 25) { status = 'NORMAL'; color = '#10b981'; bgColor = '#ecfdf5'; }
+                        else if (bmi < 30) { status = 'OVERWEIGHT'; color = '#f59e0b'; bgColor = '#fffbeb'; }
+                        else { status = 'OBESE'; color = '#ef4444'; bgColor = '#fef2f2'; }
+                        
+                        statusDiv.textContent = status;
+                        statusDiv.style.color = color;
+                        statusDiv.style.backgroundColor = bgColor;
+                        valueDiv.style.color = color;
+                        
+                        // PREVIEW TRANSFORMATION
+                        // (Removed SVG Morph logic - simply update the DOM text)
+                    } else {
+                        valueDiv.textContent = '--';
+                        statusDiv.textContent = 'UNKNOWN';
+                        statusDiv.style.color = '#94a3b8';
+                        statusDiv.style.backgroundColor = '#f1f5f9';
+                        valueDiv.style.color = '#1e293b';
+                    }
+                }
                 window.onclick = function(event) {
                     if (event.target == document.getElementById('modalOverlay')) closeModal();
                 }
@@ -886,17 +1194,86 @@ $pdo = $database->getConnection();
             $pdo = $database->getConnection();
 
             $user_id = $_SESSION['user_id'];
+            $user_email = $_SESSION['user_email'] ?? '';
 
-            // Get client data
+            // Create BMI History table if it doesn't exist
             try {
+                $pdo->exec("CREATE TABLE IF NOT EXISTS client_bmi_history (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    user_id INT NOT NULL,
+                    weight DECIMAL(5,2),
+                    height DECIMAL(5,2),
+                    bmi DECIMAL(5,1),
+                    recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )");
+            } catch (Exception $e) {
+                // Table might already exist or permission issue, proceed anyway
+            }
+
+            // HANDLE QUICK UPDATE
+            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'quick_body_update') {
+                $weight = !empty($_POST['weight']) ? (float)$_POST['weight'] : null;
+                $height = !empty($_POST['height']) ? (float)$_POST['height'] : null;
+                
+                try {
+                    // Update by user_id first
+                    $upd = $pdo->prepare("UPDATE clients SET weight = ?, height = ?, updated_at = NOW() WHERE user_id = ?");
+                    $upd->execute([$weight, $height, $user_id]);
+                    
+                    if ($upd->rowCount() === 0 && !empty($user_email)) {
+                        $upd = $pdo->prepare("UPDATE clients SET weight = ?, height = ?, updated_at = NOW(), user_id = ? WHERE email = ? AND (user_id IS NULL OR user_id = 0)");
+                        $upd->execute([$weight, $height, $user_id, $user_email]);
+                        
+                        if ($upd->rowCount() === 0) {
+                            $user_name = $_SESSION['user_name'] ?? 'User';
+                            $ins = $pdo->prepare("INSERT INTO clients (user_id, name, email, weight, height, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, 'active', NOW(), NOW())");
+                            $ins->execute([$user_id, $user_name, $user_email, $weight, $height]);
+                        }
+                    } elseif ($upd->rowCount() === 0) {
+                        $user_name = $_SESSION['user_name'] ?? 'User';
+                        $ins = $pdo->prepare("INSERT INTO clients (user_id, name, email, weight, height, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, 'active', NOW(), NOW())");
+                        $ins->execute([$user_id, $user_name, $user_email, $weight, $height]);
+                    }
+                    
+                    // Record in BMI History
+                    if ($weight > 0 && $height > 0) {
+                        $height_m = $height / 100;
+                        $bmi = round($weight / ($height_m * $height_m), 1);
+                        $hist = $pdo->prepare("INSERT INTO client_bmi_history (user_id, weight, height, bmi) VALUES (?, ?, ?, ?)");
+                        $hist->execute([$user_id, $weight, $height, $bmi]);
+                    }
+                    
+                    $_SESSION['quick_update_success'] = true;
+                    header("Location: dashboard.php");
+                    exit();
+                } catch (Exception $e) {}
+            }
+
+            // Get client data with fallback to email if user_id link is missing
+            try {
+                // Try searching by user_id
                 $client_data = $pdo->prepare("
-            SELECT c.*, s.name as staff_name 
-            FROM clients c 
-            LEFT JOIN staff s ON c.staff_id = s.id 
-            WHERE c.user_id = ?
-        ");
+                    SELECT c.*, s.name as staff_name 
+                    FROM clients c 
+                    LEFT JOIN staff s ON c.staff_id = s.id 
+                    WHERE c.user_id = ?
+                    LIMIT 1
+                ");
                 $client_data->execute([$user_id]);
                 $client = $client_data->fetch(PDO::FETCH_ASSOC);
+
+                // Fallback to email if not found (some users were registered before being linked to clients)
+                if (!$client && !empty($user_email)) {
+                    $client_data = $pdo->prepare("
+                        SELECT c.*, s.name as staff_name 
+                        FROM clients c 
+                        LEFT JOIN staff s ON c.staff_id = s.id 
+                        WHERE c.email = ?
+                        LIMIT 1
+                    ");
+                    $client_data->execute([$user_email]);
+                    $client = $client_data->fetch(PDO::FETCH_ASSOC);
+                }
             } catch (Exception $e) {
                 $client = null;
             }
@@ -949,6 +1326,45 @@ $pdo = $database->getConnection();
                 $unread_count = 0;
             }
 
+            // Get client height/weight for BMI
+            $user_bmi = 0;
+            $user_bmi_status = 'Unknown';
+            if ($client && $client['height'] > 0 && $client['weight'] > 0) {
+                $height_m = $client['height'] / 100;
+                $user_bmi = round($client['weight'] / ($height_m * $height_m), 1);
+                
+                if ($user_bmi < 18.5) $user_bmi_status = 'Underweight';
+                elseif ($user_bmi < 25) $user_bmi_status = 'Normal';
+                elseif ($user_bmi < 30) $user_bmi_status = 'Overweight';
+                else $user_bmi_status = 'Obese';
+            }
+
+            // Fetch BMI history for chart
+            $bmi_history_data = [];
+            try {
+                $hist_stmt = $pdo->prepare("SELECT bmi, DATE_FORMAT(recorded_at, '%b %d') as date_label FROM client_bmi_history WHERE user_id = ? ORDER BY recorded_at ASC LIMIT 15");
+                $hist_stmt->execute([$user_id]);
+                $bmi_history_data = $hist_stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                // If user_bmi is still 0 (maybe client profile not fully created), fallback to latest history record
+                if ($user_bmi == 0 && !empty($bmi_history_data)) {
+                    $latest_record = end($bmi_history_data);
+                    $user_bmi = (float)$latest_record['bmi'];
+                    if ($user_bmi < 18.5) $user_bmi_status = 'Underweight';
+                    elseif ($user_bmi < 25) $user_bmi_status = 'Normal';
+                    elseif ($user_bmi < 30) $user_bmi_status = 'Overweight';
+                    else $user_bmi_status = 'Obese';
+                }
+
+                // If history is empty but we have a current BMI, seed the first point
+                if (empty($bmi_history_data) && $user_bmi > 0) {
+                    $pdo->prepare("INSERT INTO client_bmi_history (user_id, weight, height, bmi) VALUES (?, ?, ?, ?)")->execute([$user_id, $client['weight'], $client['height'], $user_bmi]);
+                    $bmi_history_data = [['bmi' => $user_bmi, 'date_label' => date('M d')]];
+                }
+            } catch (Exception $e) {
+                // Ignore if table doesn't exist yet
+            }
+
             // Get recent messages
             try {
                 $recent_messages = $pdo->prepare("
@@ -989,6 +1405,20 @@ $pdo = $database->getConnection();
                 } catch (Exception $e) {}
             ?>
             <div class="dash-hero-ribbon stagger d-1">
+                <?php if (isset($_SESSION['quick_update_success'])): ?>
+                <div style="position: absolute; top: -20px; left: 50%; transform: translateX(-50%); background: #10b981; color: white; padding: 10px 25px; border-radius: 30px; font-weight: 700; font-size: 0.9rem; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3); z-index: 100; display: flex; align-items: center; gap: 10px; animation: slideDown 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+                    <i class="fas fa-check-circle"></i>
+                    Measurements updated!
+                </div>
+                <?php unset($_SESSION['quick_update_success']); ?>
+                <style>
+                    @keyframes slideDown {
+                        from { transform: translate(-50%, -50px); opacity: 0; }
+                        to { transform: translate(-50%, 0); opacity: 1; }
+                    }
+                </style>
+                <script>setTimeout(() => { document.querySelector('[style*="slideDown"]').style.opacity = '0'; document.querySelector('[style*="slideDown"]').style.transition = 'all 0.5s ease'; }, 3000);</script>
+                <?php endif; ?>
                 <div class="dash-hero-content">
                     <h1>Welcome back, <?php echo htmlspecialchars($user_name); ?>!</h1>
                     <p>You have consumed <b><?php echo $calories_today; ?> kcal</b> today. Keep tracking!</p>
@@ -1089,6 +1519,62 @@ $pdo = $database->getConnection();
                         <div style="display: flex; justify-content: center; gap: 15px; margin-top: 15px;">
                             <button class="btn btn-outline" style="width: 40px; height: 40px; border-radius: 50%; padding: 0;" onclick="updateWater('remove')"><i class="fas fa-minus"></i></button>
                             <button class="btn btn-primary" style="width: 40px; height: 40px; border-radius: 50%; padding: 0; background: #4facfe;" onclick="updateWater('add')"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── BMI Body Insight Row ── -->
+            <div class="dash-row stagger d-4" style="grid-template-columns: 1fr; margin-bottom: 30px;">
+                <div class="dash-panel nutri-glass" style="padding: 30px;">
+                        <div class="dash-panel-header">
+                            <h2 class="dash-panel-title"><i class="fas fa-child-reaching" style="color: #10b981;"></i> Body Composition Insight</h2>
+                            <div style="font-size: 0.85rem; color: #64748b; font-weight: 600;">Based on your latest anthropometrics</div>
+                        </div>
+                    
+                        <div class="bmi-visual-container">
+                            <div class="bmi-status-info">
+                                <h4 style="margin: 0 0 5px 0; color: #64748b; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Current BMI</h4>
+                                <div class="bmi-big-value" id="userBmiValueDisplay"><?php echo $user_bmi ?: '--'; ?></div>
+                                <div class="bmi-status-badge status-<?php echo strtolower($user_bmi_status); ?>" id="userBmiStatusDisplay">
+                                    <?php echo $user_bmi_status; ?>
+                                </div>
+                                
+                                <div class="clinical-insight-card">
+                                    <h4 style="margin: 0 0 8px 0; color: #1e293b; font-weight: 700; font-size: 0.85rem; text-transform: uppercase;">Health Insight</h4>
+                                    <p style="font-size: 0.9rem; color: #64748b; line-height: 1.5; margin: 0;" id="userBmiInsightDisplay">
+                                        <?php 
+                                            if ($user_bmi_status === 'Underweight') echo "Your BMI indicates you may be underweight. We recommend consulting with your dietician to ensure you're meeting your nutritional needs.";
+                                            elseif ($user_bmi_status === 'Normal') echo "Great job! Your BMI falls within the healthy range. Maintaining a balanced diet and regular physical activity will help keep you here.";
+                                            elseif ($user_bmi_status === 'Overweight') echo "Your BMI is in the overweight category. Your dietician can help you create a sustainable plan for reaching your health goals.";
+                                            elseif ($user_bmi_status === 'Obese') echo "Your BMI indicates obesity. This can increase health risks, but our team is here to support you with a personalized clinical nutrition plan.";
+                                            else echo "Please update your height and weight in the Body Stats section to see your BMI analysis.";
+                                        ?>
+                                    </p>
+                                </div>
+                                
+                                <div style="margin-top: 15px; display: flex; gap: 10px;">
+                                    <button class="btn btn-outline" onclick="location.href='user-health-tracker.php?tab=body-stats'" style="border-radius: 10px; padding: 10px 15px; font-weight: 700; font-size: 0.85rem; flex: 1;">
+                                        <i class="fas fa-history" style="margin-right: 6px;"></i> View Statistics
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="bmi-chart-wrapper">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                    <h3 style="font-family: 'Outfit'; font-size: 1rem; color: #1e293b; margin: 0; font-weight: 700;"><i class="fas fa-history" style="color: var(--primary); margin-right: 8px;"></i> Progress History</h3>
+                                    <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 600;">Last 15 recordings</span>
+                                </div>
+                                <div style="height: 220px; position: relative;">
+                                    <canvas id="bmiHistoryChart"></canvas>
+                                    <?php if (empty($bmi_history_data)): ?>
+                                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #94a3b8; font-size: 0.9rem; text-align: center; width: 100%;">
+                                        <i class="fas fa-chart-line" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.3;"></i>
+                                        <p>No BMI history data available yet.</p>
+                                    </div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1442,7 +1928,136 @@ $pdo = $database->getConnection();
                 </div>
             <?php endif; ?>
 
-            <script src="scripts/dashboard.js"></script>
+            <script>
+        // Initialize visuals on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const userBmi = <?php echo floatval($user_bmi ?: 0); ?>;
+            
+            // Initialize Chart.js for User BMI History (if applicable)
+            const userBmiHistoryData = <?php echo json_encode($bmi_history_data ?? []); ?>;
+            const userBmiCtx = document.getElementById('bmiHistoryChart');
+            
+            if (userBmiCtx && userBmiHistoryData.length > 0) {
+                const labels = userBmiHistoryData.map(item => item.date_label);
+                const data = userBmiHistoryData.map(item => parseFloat(item.bmi));
+                
+                new Chart(userBmiCtx.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'BMI',
+                            data: data,
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            borderWidth: 3,
+                            tension: 0.4,
+                            fill: true,
+                            pointBackgroundColor: '#ffffff',
+                            pointBorderColor: '#10b981',
+                            pointBorderWidth: 2,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                                backgroundColor: '#1e293b',
+                                padding: 12,
+                                titleFont: { family: 'Outfit', size: 13, weight: '700' },
+                                bodyFont: { family: 'Inter', size: 12 },
+                                cornerRadius: 10,
+                                callbacks: {
+                                    label: (context) => ' BMI: ' + context.parsed.y
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                suggestedMin: 15,
+                                suggestedMax: 35,
+                                grid: { color: 'rgba(0,0,0,0.05)', drawBorder: false },
+                                ticks: { font: { family: 'Inter', size: 11, weight: '600' }, color: '#94a3b8' }
+                            },
+                            x: { 
+                                grid: { display: false },
+                                ticks: { font: { family: 'Inter', size: 11, weight: '600' }, color: '#94a3b8' }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Initialize Chart.js for Staff BMI History (if applicable)
+            const staffBmiHistoryData = <?php echo json_encode($staff_bmi_history ?? []); ?>;
+            const staffBmiCtx = document.getElementById('staffBmiHistoryChart');
+            
+            if (staffBmiCtx && staffBmiHistoryData.length > 0) {
+                const labels = staffBmiHistoryData.map(item => item.date_label);
+                const data = staffBmiHistoryData.map(item => parseFloat(item.bmi));
+                
+                new Chart(staffBmiCtx.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'BMI',
+                            data: data,
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            borderWidth: 3,
+                            tension: 0.4,
+                            fill: true,
+                            pointBackgroundColor: '#ffffff',
+                            pointBorderColor: '#10b981',
+                            pointBorderWidth: 2,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                                backgroundColor: '#1e293b',
+                                padding: 12,
+                                titleFont: { family: 'Outfit', size: 13, weight: '700' },
+                                bodyFont: { family: 'Inter', size: 12 },
+                                cornerRadius: 10,
+                                callbacks: {
+                                    label: (context) => ' BMI: ' + context.parsed.y
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                suggestedMin: 15,
+                                suggestedMax: 35,
+                                grid: { color: 'rgba(0,0,0,0.05)', drawBorder: false },
+                                ticks: { font: { family: 'Inter', size: 11, weight: '600' }, color: '#94a3b8' }
+                            },
+                            x: { 
+                                grid: { display: false },
+                                ticks: { font: { family: 'Inter', size: 11, weight: '600' }, color: '#94a3b8' }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+
+    <script src="scripts/dashboard.js"></script>
             <?php if ($user_role === 'admin'): ?>
                 <script src="scripts/admin.js"></script>
             <?php elseif ($user_role === 'staff'): ?>
@@ -1498,13 +2113,12 @@ $pdo = $database->getConnection();
             </script>
 
             <!-- Realtime Support & Reports -->
-            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
                     // 1. Staff Weekly Chart (Health Logs)
-                    const staffCtx = document.getElementById('staffWeeklyChart');
-                    if (staffCtx) {
-                        new Chart(staffCtx, {
+                    const weeklyCtx = document.getElementById('staffWeeklyChart');
+                    if (weeklyCtx) {
+                        new Chart(weeklyCtx, {
                             type: 'line',
                             data: {
                                 labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],

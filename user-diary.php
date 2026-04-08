@@ -525,9 +525,7 @@ $nav_links = getNavigationLinks($user_role, 'user-diary.php');
                                 <i class="fas fa-file-medical"></i> View Clinical Report
                             </button>
                         <?php endif; ?>
-                        <button class="btn-primary" onclick="openCustomMealModal('Breakfast')" style="background: #4a90e2; color: white; border: none; border-radius: 12px; padding: 10px 20px; font-weight: 600; cursor: pointer;">
-                            <i class="fas fa-edit"></i> Custom Meal
-                        </button>
+                     
                         <button class="btn-primary" onclick="openFctModal('Breakfast')" style="background: var(--primary); color: white; border: none; border-radius: 12px; padding: 10px 20px; font-weight: 600; cursor: pointer;">
                             <i class="fas fa-plus"></i> Add Log
                         </button>
@@ -806,19 +804,19 @@ $nav_links = getNavigationLinks($user_role, 'user-diary.php');
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <div style="margin-bottom: 15px;">
                         <label style="display: block; margin-bottom: 5px; font-weight: 500;">Calories (kcal)</label>
-                        <input type="number" step="0.1" name="calories" class="form-control" placeholder="0" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                        <input type="number" step="any" name="calories" class="form-control" placeholder="0" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
                     </div>
                     <div style="margin-bottom: 15px;">
                         <label style="display: block; margin-bottom: 5px; font-weight: 500;">Protein (g)</label>
-                        <input type="number" step="0.1" name="protein" class="form-control" placeholder="0" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                        <input type="number" step="any" name="protein" class="form-control" placeholder="0" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
                     </div>
                     <div style="margin-bottom: 15px;">
                         <label style="display: block; margin-bottom: 5px; font-weight: 500;">Carbs (g)</label>
-                        <input type="number" step="0.1" name="carbs" class="form-control" placeholder="0" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                        <input type="number" step="any" name="carbs" class="form-control" placeholder="0" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
                     </div>
                     <div style="margin-bottom: 15px;">
                         <label style="display: block; margin-bottom: 5px; font-weight: 500;">Fat (g)</label>
-                        <input type="number" step="0.1" name="fat" class="form-control" placeholder="0" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                        <input type="number" step="any" name="fat" class="form-control" placeholder="0" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
                     </div>
                 </div>
 

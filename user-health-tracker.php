@@ -161,7 +161,80 @@ $nav_links = [
 ];
 
 // Check for active tab in session
-$active_tab = $_SESSION['active_health_tracker_tab'] ?? 'personal-info';
+// Tab handling
+$active_tab = $_GET['tab'] ?? ($_SESSION['active_health_tracker_tab'] ?? 'personal-info');
+$_SESSION['active_health_tracker_tab'] = $active_tab;
+
+// Handle POST actions for updating body stats
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update_body_stats') {
+    $weight = !empty($_POST['weight']) ? (float)$_POST['weight'] : null;
+    $height = !empty($_POST['height']) ? (float)$_POST['height'] : null;
+    $waist = !empty($_POST['waist']) ? (float)$_POST['waist'] : null;
+    $hip = !empty($_POST['hip']) ? (float)$_POST['hip'] : null;
+    
+    try {
+        // Try updating by user_id first
+        $update_stmt = $pdo->prepare("
+            UPDATE clients 
+            SET weight = ?, height = ?, waist_circumference = ?, hip_circumference = ?, updated_at = NOW() 
+            WHERE user_id = ?
+        ");
+        $update_stmt->execute([$weight, $height, $waist, $hip, $user_id]);
+        
+        // If no rows were updated by user_id, try updating by email
+        if ($update_stmt->rowCount() === 0 && !empty($user_email)) {
+            $update_stmt = $pdo->prepare("
+                UPDATE clients 
+                SET weight = ?, height = ?, waist_circumference = ?, hip_circumference = ?, user_id = ?, updated_at = NOW() 
+                WHERE email = ? AND (user_id IS NULL OR user_id = 0)
+            ");
+            $update_stmt->execute([$weight, $height, $waist, $hip, $user_id, $user_email]);
+            
+            // If STILL no rows, it means the user doesn't have a client profile at all. Let's create one.
+            if ($update_stmt->rowCount() === 0) {
+                $insert_stmt = $pdo->prepare("
+                    INSERT INTO clients (user_id, name, email, weight, height, waist_circumference, hip_circumference, status, created_at, updated_at) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, 'active', NOW(), NOW())
+                ");
+                $insert_stmt->execute([$user_id, $user_name, $user_email, $weight, $height, $waist, $hip]);
+            }
+        } elseif ($update_stmt->rowCount() === 0) {
+            // If email is empty, just insert
+            $insert_stmt = $pdo->prepare("
+                INSERT INTO clients (user_id, name, email, weight, height, waist_circumference, hip_circumference, status, created_at, updated_at) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, 'active', NOW(), NOW())
+            ");
+            $insert_stmt->execute([$user_id, $user_name, $user_email, $weight, $height, $waist, $hip]);
+        }
+        
+        // Also add entry to client_bmi_history table if possible
+        if ($weight > 0 && $height > 0) {
+            try {
+                // Ensure table exists
+                $pdo->exec("CREATE TABLE IF NOT EXISTS client_bmi_history (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    user_id INT NOT NULL,
+                    weight DECIMAL(5,2),
+                    height DECIMAL(5,2),
+                    bmi DECIMAL(5,1),
+                    recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )");
+                
+                $height_m = $height / 100;
+                $bmi = round($weight / ($height_m * $height_m), 1);
+                $hist_stmt = $pdo->prepare("INSERT INTO client_bmi_history (user_id, weight, height, bmi) VALUES (?, ?, ?, ?)");
+                $hist_stmt->execute([$user_id, $weight, $height, $bmi]);
+            } catch (Exception $e) {
+                // Ignore if permission issue
+            }
+        }
+        
+        header("Location: user-health-tracker.php?tab=body-stats&success=1");
+        exit();
+    } catch (PDOException $e) {
+        $error_msg = "Error updating statistics: " . $e->getMessage();
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -487,81 +560,77 @@ $active_tab = $_SESSION['active_health_tracker_tab'] ?? 'personal-info';
                         id="body-stats">
                         <div class="section-header">
                             <h2>My Body Measurements</h2>
-                            <div class="section-actions">
-                            </div>
                         </div>
 
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="currentWeight"><i class="fas fa-weight" style="color:var(--primary);margin-right:8px;"></i>Current Weight (kg)</label>
-                                <input type="text" class="form-control" id="currentWeight"
-                                    value="<?php echo !empty($user_client['weight']) ? htmlspecialchars($user_client['weight']) . ' kg' : 'Not recorded'; ?>"
-                                    readonly>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="targetWeight"><i class="fas fa-bullseye" style="color:#f5a623;margin-right:8px;"></i>Optimal Weight Range (kg)</label>
-                                <?php
-                                $optimal_weight = 'Need height data';
-                                if (isset($user_client['height']) && $user_client['height'] > 0) {
-                                    $height = (float) $user_client['height'];
-                                    $height_in_meters = $height / 100;
-
-                                    // Calculate healthy BMI range (18.5 - 24.9)
-                                    $bmi_low = 18.5 * ($height_in_meters * $height_in_meters);
-                                    $bmi_high = 24.9 * ($height_in_meters * $height_in_meters);
-
-                                    $optimal_weight = number_format($bmi_low, 1) . " - " . number_format($bmi_high, 1) . " kg";
-                                }
-                                ?>
-                                <input type="text" class="form-control" id="targetWeight"
-                                    value="<?php echo $optimal_weight; ?>" readonly>
-                                <small class="form-text text-muted">Healthy BMI Range (18.5 - 24.9)</small>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="height"><i class="fas fa-ruler-vertical" style="color:var(--secondary);margin-right:8px;"></i>Height (cm)</label>
-                                <input type="text" class="form-control" id="height"
-                                    value="<?php echo $user_client['height'] ? $user_client['height'] . ' cm' : 'Not recorded'; ?>"
-                                    readonly>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="bmi"><i class="fas fa-percentage" style="color:#d0021b;margin-right:8px;"></i>My BMI</label>
-                                <input type="text" class="form-control" id="bmi" value="<?php
-                                if (isset($user_client['weight']) && isset($user_client['height'])) {
-                                    $height_in_meters = (float) $user_client['height'] / 100;
-                                    $weight = (float) $user_client['weight'];
-                                    $bmi = $weight / ($height_in_meters * $height_in_meters);
-                                    echo number_format($bmi, 1);
-                                } else {
-                                    echo 'Not calculated';
-                                }
-                                ?>" readonly>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="waist">Waist Circumference (cm)</label>
-                                <input type="text" class="form-control" id="waist" value="<?php
-                                if (isset($user_client['waist_circumference'])) {
-                                    echo $user_client['waist_circumference'] . ' cm';
-                                } else {
-                                    echo 'Not recorded';
-                                }
-                                ?>" readonly>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="hip">Hip Circumference (cm)</label>
-                                <input type="text" class="form-control" id="hip" value="<?php
-                                if (isset($user_client['hip_circumference'])) {
-                                    echo $user_client['hip_circumference'] . ' cm';
-                                } else {
-                                    echo 'Not recorded';
-                                }
-                                ?>" readonly>
-                            </div>
+                        <?php if (isset($_GET['success'])): ?>
+                        <div style="background: #ecfdf5; color: #065f46; padding: 12px 20px; border-radius: 12px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 0.9rem; border: 1px solid #10b98133;">
+                            <i class="fas fa-check-circle"></i> Measurements updated successfully!
                         </div>
+                        <?php endif; ?>
+
+                        <form id="statsForm" method="POST">
+                            <input type="hidden" name="action" value="update_body_stats">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="weight_input"><i class="fas fa-weight" style="color:var(--primary);margin-right:8px;"></i>Current Weight (kg)</label>
+                                    <input type="number" step="any" class="form-control stats-input" name="weight" id="weight_input"
+                                        value="<?php echo htmlspecialchars($user_client['weight'] ?? ''); ?>" readonly>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="targetWeight"><i class="fas fa-bullseye" style="color:#f5a623;margin-right:8px;"></i>Optimal Weight Range (kg)</label>
+                                    <?php
+                                    $optimal_weight = 'Need height data';
+                                    if (isset($user_client['height']) && $user_client['height'] > 0) {
+                                        $height = (float) $user_client['height'];
+                                        $height_in_meters = $height / 100;
+
+                                        // Calculate healthy BMI range (18.5 - 24.9)
+                                        $bmi_low = 18.5 * ($height_in_meters * $height_in_meters);
+                                        $bmi_high = 24.9 * ($height_in_meters * $height_in_meters);
+
+                                        $optimal_weight = number_format($bmi_low, 1) . " - " . number_format($bmi_high, 1) . " kg";
+                                    }
+                                    ?>
+                                    <input type="text" class="form-control" id="targetWeight"
+                                        value="<?php echo $optimal_weight; ?>" readonly>
+                                    <small class="form-text text-muted">Healthy BMI Range (18.5 - 24.9)</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="height_input"><i class="fas fa-ruler-vertical" style="color:var(--secondary);margin-right:8px;"></i>Height (cm)</label>
+                                    <input type="number" step="any" class="form-control stats-input" name="height" id="height_input"
+                                        value="<?php echo htmlspecialchars($user_client['height'] ?? ''); ?>" readonly>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="bmi"><i class="fas fa-percentage" style="color:#d0021b;margin-right:8px;"></i>My BMI</label>
+                                    <input type="text" class="form-control" id="bmi" value="<?php
+                                    if (!empty($user_client['weight']) && !empty($user_client['height'])) {
+                                        $height_in_meters = (float) $user_client['height'] / 100;
+                                        $weight = (float) $user_client['weight'];
+                                        $bmi = $weight / ($height_in_meters * $height_in_meters);
+                                        echo number_format($bmi, 1);
+                                    } else {
+                                        echo 'Not calculated';
+                                    }
+                                    ?>" readonly>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="waist_input">Waist Circumference (cm)</label>
+                                    <input type="number" step="any" class="form-control stats-input" name="waist" id="waist_input"
+                                        value="<?php echo htmlspecialchars($user_client['waist_circumference'] ?? ''); ?>" readonly>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="hip_input">Hip Circumference (cm)</label>
+                                    <input type="number" step="any" class="form-control stats-input" name="hip" id="hip_input"
+                                        value="<?php echo htmlspecialchars($user_client['hip_circumference'] ?? ''); ?>" readonly>
+                                </div>
+                            </div>
+
+                        </form>
 
                         <div class="stats-grid">
                             <?php

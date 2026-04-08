@@ -910,19 +910,19 @@ $nav_links_array = getNavigationLinks($user_role, 'user-management-staff.php');
                     <div class="ndq-field-grid">
                         <div class="ndq-field">
                             <label>Weight</label>
-                            <div class="ndq-input-wrap"><i class="fas fa-weight-hanging"></i><input type="number" name="weight" step="0.1" min="1" placeholder="kg"><span class="ndq-unit">kg</span></div>
+                            <div class="ndq-input-wrap"><i class="fas fa-weight-hanging"></i><input type="number" name="weight" step="any" min="1" placeholder="kg"><span class="ndq-unit">kg</span></div>
                         </div>
                         <div class="ndq-field">
                             <label>Height</label>
-                            <div class="ndq-input-wrap"><i class="fas fa-ruler-vertical"></i><input type="number" name="height" step="0.1" min="1" placeholder="cm"><span class="ndq-unit">cm</span></div>
+                            <div class="ndq-input-wrap"><i class="fas fa-ruler-vertical"></i><input type="number" name="height" step="any" min="1" placeholder="cm"><span class="ndq-unit">cm</span></div>
                         </div>
                         <div class="ndq-field">
                             <label>Waist Circumference</label>
-                            <div class="ndq-input-wrap"><i class="fas fa-circle-notch"></i><input type="number" name="waist_circumference" step="0.1" min="0" placeholder="cm"><span class="ndq-unit">cm</span></div>
+                            <div class="ndq-input-wrap"><i class="fas fa-circle-notch"></i><input type="number" name="waist_circumference" step="any" min="0" placeholder="cm"><span class="ndq-unit">cm</span></div>
                         </div>
                         <div class="ndq-field">
                             <label>Hip Circumference</label>
-                            <div class="ndq-input-wrap"><i class="fas fa-circle-notch"></i><input type="number" name="hip_circumference" step="0.1" min="0" placeholder="cm"><span class="ndq-unit">cm</span></div>
+                            <div class="ndq-input-wrap"><i class="fas fa-circle-notch"></i><input type="number" name="hip_circumference" step="any" min="0" placeholder="cm"><span class="ndq-unit">cm</span></div>
                         </div>
                     </div>
                 </div>
@@ -1021,19 +1021,19 @@ $nav_links_array = getNavigationLinks($user_role, 'user-management-staff.php');
                     <div class="ndq-field-grid">
                         <div class="ndq-field">
                             <label>Weight</label>
-                            <div class="ndq-input-wrap"><i class="fas fa-weight-hanging"></i><input type="number" id="edit_weight" name="weight" step="0.1" min="1"><span class="ndq-unit">kg</span></div>
+                            <div class="ndq-input-wrap"><i class="fas fa-weight-hanging"></i><input type="number" id="edit_weight" name="weight" step="any" min="1"><span class="ndq-unit">kg</span></div>
                         </div>
                         <div class="ndq-field">
                             <label>Height</label>
-                            <div class="ndq-input-wrap"><i class="fas fa-ruler-vertical"></i><input type="number" id="edit_height" name="height" step="0.1" min="1"><span class="ndq-unit">cm</span></div>
+                            <div class="ndq-input-wrap"><i class="fas fa-ruler-vertical"></i><input type="number" id="edit_height" name="height" step="any" min="1"><span class="ndq-unit">cm</span></div>
                         </div>
                         <div class="ndq-field">
                             <label>Waist</label>
-                            <div class="ndq-input-wrap"><i class="fas fa-circle-notch"></i><input type="number" id="edit_waist_circumference" name="waist_circumference" step="0.1" min="0"><span class="ndq-unit">cm</span></div>
+                            <div class="ndq-input-wrap"><i class="fas fa-circle-notch"></i><input type="number" id="edit_waist_circumference" name="waist_circumference" step="any" min="0"><span class="ndq-unit">cm</span></div>
                         </div>
                         <div class="ndq-field">
                             <label>Hip</label>
-                            <div class="ndq-input-wrap"><i class="fas fa-circle-notch"></i><input type="number" id="edit_hip_circumference" name="hip_circumference" step="0.1" min="0"><span class="ndq-unit">cm</span></div>
+                            <div class="ndq-input-wrap"><i class="fas fa-circle-notch"></i><input type="number" id="edit_hip_circumference" name="hip_circumference" step="any" min="0"><span class="ndq-unit">cm</span></div>
                         </div>
                     </div>
                 </div>

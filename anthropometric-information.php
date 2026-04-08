@@ -110,6 +110,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
                 $upd = $pdo->prepare($upd_sql);
                 $upd->execute($upd_params);
+                
+                // Add to bmi history if possible
+                if ($weight > 0 && $height > 0) {
+                    try {
+                        $pdo->exec("CREATE TABLE IF NOT EXISTS client_bmi_history (
+                            id INT AUTO_INCREMENT PRIMARY KEY,
+                            user_id INT NOT NULL,
+                            weight DECIMAL(5,2),
+                            height DECIMAL(5,2),
+                            bmi DECIMAL(5,1),
+                            recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        )");
+                        
+                        // Find user_id
+                        $u_stmt = $pdo->prepare("SELECT user_id FROM clients WHERE id = ?");
+                        $u_stmt->execute([$client_id_post]);
+                        $c_user_id = $u_stmt->fetchColumn();
+                        
+                        if ($c_user_id) {
+                            $height_m = $height / 100;
+                            $bmi = round($weight / ($height_m * $height_m), 1);
+                            $pdo->prepare("INSERT INTO client_bmi_history (user_id, weight, height, bmi) VALUES (?, ?, ?, ?)")
+                                ->execute([$c_user_id, $weight, $height, $bmi]);
+                        }
+                    } catch (Exception $e) {}
+                }
+                
                 header("Location: anthropometric-information.php?client_id=" . urlencode($client_id_post) . "&tab=body-stats");
                 exit();
             }
@@ -266,6 +293,7 @@ if (isset($_GET['tab'])) {
     <!-- Choices.js for searchable dropdowns -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Core styles -->
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/sidebar.css">
@@ -275,6 +303,94 @@ if (isset($_GET['tab'])) {
     <link rel="stylesheet" href="css/anthropometric-premium.css">
     <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="css/mobile-style.css">
+    <style>
+        .stats-input[readonly] {
+            background-color: #f8fafc !important;
+            border-color: #e2e8f0 !important;
+            color: #475569 !important;
+            cursor: default;
+        }
+        .stats-input:not([readonly]) {
+            background-color: #ffffff !important;
+            border-color: var(--primary) !important;
+            box-shadow: 0 0 0 3px rgba(16,185,129,0.1) !important;
+        }
+        
+        /* BMI Chart Container Styles */
+        .bmi-visual-container {
+            display: flex;
+            align-items: stretch;
+            gap: 30px;
+            padding: 30px;
+            background: white;
+            border-radius: 20px;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            margin-bottom: 30px;
+        }
+        
+        .bmi-status-info {
+            flex: 1;
+            padding-right: 30px;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .bmi-chart-wrapper {
+            flex: 2;
+            position: relative;
+            min-height: 250px;
+        }
+
+        .bmi-big-value {
+            font-size: 3.5rem;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+            line-height: 1;
+            margin-bottom: 10px;
+            color: #1e293b;
+        }
+        
+        .bmi-status-badge {
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 6px 16px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        
+        .status-underweight { background: #eff6ff; color: #3b82f6; border: 1px solid #bfdbfe; }
+        .status-normal { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
+        .status-overweight { background: #fffbeb; color: #f59e0b; border: 1px solid #fde68a; }
+        .status-obese { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
+        .status-unknown { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
+
+        .clinical-insight-card {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        @media (max-width: 992px) {
+            .bmi-visual-container {
+                flex-direction: column;
+            }
+            .bmi-status-info {
+                padding-right: 0;
+                border-right: none;
+                border-bottom: 1px solid #e2e8f0;
+                padding-bottom: 30px;
+                margin-bottom: 30px;
+            }
+        }
+    </style>
     <script>const BASE_URL = '<?= rtrim(dirname($_SERVER['PHP_SELF']), '/') ?>/';</script>
 </head>
 
@@ -315,6 +431,27 @@ if (isset($_GET['tab'])) {
                     $optimal_low  = number_format(18.5 * $hm2 * $hm2, 1);
                     $optimal_high = number_format(24.9 * $hm2 * $hm2, 1);
                 }
+                
+                // Fetch BMI history for chart
+                $bmi_history_data = [];
+                try {
+                    $user_q = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+                    $user_q->execute([$sc['email']]);
+                    $uid = $user_q->fetchColumn();
+                    
+                    if ($uid) {
+                        $hist_stmt = $pdo->prepare("SELECT bmi, DATE_FORMAT(recorded_at, '%b %d') as date_label FROM client_bmi_history WHERE user_id = ? ORDER BY recorded_at ASC LIMIT 15");
+                        $hist_stmt->execute([$uid]);
+                        $bmi_history_data = $hist_stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                        // Seed history if empty but current BMI exists
+                        if (empty($bmi_history_data) && $bmi_val > 0) {
+                            $pdo->prepare("INSERT INTO client_bmi_history (user_id, weight, height, bmi) VALUES (?, ?, ?, ?)")
+                                ->execute([$uid, $sc['weight'], $sc['height'], $bmi_val]);
+                            $bmi_history_data = [['bmi' => $bmi_val, 'date_label' => date('M d')]];
+                        }
+                    }
+                } catch (Exception $e) {}
             }
             ?>
 
@@ -585,10 +722,10 @@ if (isset($_GET['tab'])) {
                                     <option value="custom" selected>Custom</option>
                                 </select>
                                 <input type="text" name="food_name" placeholder="Food name" required>
-                                <input type="number" step="0.1" name="calories" placeholder="kcal">
-                                <input type="number" step="0.1" name="protein" placeholder="Protein g">
-                                <input type="number" step="0.1" name="carbs" placeholder="Carbs g">
-                                <input type="number" step="0.1" name="fat" placeholder="Fat g">
+                                <input type="number" step="any" name="calories" placeholder="kcal">
+                                <input type="number" step="any" name="protein" placeholder="Protein g">
+                                <input type="number" step="any" name="carbs" placeholder="Carbs g">
+                                <input type="number" step="any" name="fat" placeholder="Fat g">
                                 <button type="submit" class="ai-btn-add"><i class="fas fa-plus"></i> Add</button>
                             </div>
                         </form>
@@ -621,88 +758,228 @@ if (isset($_GET['tab'])) {
 
                 <!-- ── TAB 3: Body Statistics ── -->
                 <div class="ai-tab-panel tab-content <?= $active_tab === 'body-stats' ? 'active' : '' ?>" id="body-stats">
-                    <div class="ai-section-header">
-                        <h2 class="ai-section-title"><i class="fas fa-chart-line"></i> Body Measurements &amp; Statistics</h2>
+                    <div class="ai-section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                        <h2 class="ai-section-title" style="margin-bottom: 0;"><i class="fas fa-chart-line"></i> Body Measurements &amp; Statistics</h2>
+                        <button class="ai-btn-save" id="editStatsBtn" onclick="toggleStatsEdit()" style="background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-edit"></i> Edit Measurements
+                        </button>
                     </div>
 
-                    <p class="ai-group-label"><i class="fas fa-eye"></i> Current Measurements (Read-Only)</p>
-                    <div class="ai-form-grid">
-                        <div class="ai-field">
-                            <label>Current Weight</label>
-                            <div class="ai-field-inner"><div class="ai-field-icon"><i class="fas fa-weight"></i></div>
-                            <input type="text" value="<?= $sc['weight'] ? $sc['weight'].' kg' : 'Not recorded' ?>" readonly></div>
-                        </div>
-                        <div class="ai-field">
-                            <label>Height</label>
-                            <div class="ai-field-inner"><div class="ai-field-icon"><i class="fas fa-ruler-vertical"></i></div>
-                            <input type="text" value="<?= $sc['height'] ? $sc['height'].' cm' : 'Not recorded' ?>" readonly></div>
-                        </div>
-                        <div class="ai-field">
-                            <label>BMI</label>
-                            <div class="ai-field-inner"><div class="ai-field-icon"><i class="fas fa-chart-bar"></i></div>
-                            <input type="text" value="<?= $bmi_val ?: 'Not calculated' ?>" readonly></div>
-                            <?php if ($bmi_val): ?><div class="ai-field-hint">Classification: <strong><?= $bmi_label ?></strong></div><?php endif; ?>
-                        </div>
-                        <div class="ai-field">
-                            <label>Optimal Weight Range</label>
-                            <div class="ai-field-inner"><div class="ai-field-icon"><i class="fas fa-bullseye"></i></div>
-                            <input type="text" value="<?= ($optimal_low && $optimal_high) ? "{$optimal_low} – {$optimal_high} kg" : 'Need height data' ?>" readonly></div>
-                            <div class="ai-field-hint">Healthy BMI range: 18.5 – 24.9</div>
-                        </div>
-                        <div class="ai-field">
-                            <label>Waist Circumference</label>
-                            <div class="ai-field-inner"><div class="ai-field-icon"><i class="fas fa-circle-dot"></i></div>
-                            <input type="text" value="<?= !empty($sc['waist_circumference']) ? $sc['waist_circumference'].' cm' : 'Not recorded' ?>" readonly></div>
-                        </div>
-                        <div class="ai-field">
-                            <label>Hip Circumference</label>
-                            <div class="ai-field-inner"><div class="ai-field-icon"><i class="fas fa-circle-dot"></i></div>
-                            <input type="text" value="<?= !empty($sc['hip_circumference']) ? $sc['hip_circumference'].' cm' : 'Not recorded' ?>" readonly></div>
-                        </div>
-                        <div class="ai-field">
-                            <label>Waist-Hip Ratio</label>
-                            <div class="ai-field-inner"><div class="ai-field-icon"><i class="fas fa-arrows-left-right"></i></div>
-                            <input type="text" value="<?= $whr_val ?>" readonly></div>
-                            <?php if ($whr_risk !== 'N/A'): ?><div class="ai-field-hint">Risk level: <strong><?= $whr_risk ?></strong></div><?php endif; ?>
-                        </div>
-                        <div class="ai-field">
-                            <label>Client Since</label>
-                            <div class="ai-field-inner"><div class="ai-field-icon"><i class="fas fa-calendar"></i></div>
-                            <input type="text" value="<?= !empty($sc['created_at']) ? date('M j, Y', strtotime($sc['created_at'])) : 'N/A' ?>" readonly></div>
-                        </div>
-                    </div>
+                    <!-- BMI History Chart Section -->
+                    <div class="bmi-visual-container">
+                        <div class="bmi-status-info">
+                            <h4 style="margin: 0 0 5px 0; color: #64748b; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;">Current BMI</h4>
+                            <div class="bmi-big-value"><?= $bmi_val ?: '--' ?></div>
+                            <div class="bmi-status-badge status-<?= strtolower($bmi_label) ?>">
+                                <?= $bmi_label ?>
+                            </div>
+                            
+                            <div class="clinical-insight-card">
+                                <h4 style="margin: 0 0 8px 0; color: #1e293b; font-weight: 700; font-size: 0.8rem; text-transform: uppercase;">Health Insight</h4>
+                                <p style="font-size: 0.88rem; color: #64748b; line-height: 1.5; margin: 0;">
+                                    <?php 
+                                        if ($bmi_label === 'Underweight') echo "Client BMI indicates they may be underweight. Focus on nutrient-dense meals and consistent caloric surplus.";
+                                        elseif ($bmi_label === 'Normal') echo "Client is in the healthy BMI range. Focus on weight maintenance and balanced clinical nutrition.";
+                                        elseif ($bmi_label === 'Overweight') echo "Client is in the overweight category. Recommend a sustainable caloric deficit and increased physical activity.";
+                                        elseif ($bmi_label === 'Obese') echo "Client indicates obesity. Requires a specialized clinical nutrition plan to manage associated health risks.";
+                                        else echo "Record the client's height and weight to generate a BMI analysis and clinical insight.";
+                                    ?>
+                                </p>
+                            </div>
 
-                    <!-- Update form -->
-                    <div class="ai-update-section">
-                        <h3><i class="fas fa-pen-to-square"></i> Update Body Measurements</h3>
-                        <form method="POST" id="updateBodyStatsForm">
-                            <input type="hidden" name="action" value="update_body_stats">
-                            <input type="hidden" name="client_id" value="<?= htmlspecialchars($sc['id']) ?>">
-                            <div class="ai-form-grid">
-                                <div class="ai-field">
-                                    <label for="upd_weight">Weight (kg)</label>
-                                    <div class="ai-field-inner"><div class="ai-field-icon"><i class="fas fa-weight"></i></div>
-                                    <input type="number" step="0.1" id="upd_weight" name="weight" value="<?= htmlspecialchars($sc['weight'] ?? '') ?>" placeholder="e.g. 65.0"></div>
+                            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                                <div style="background: #f8fafc; padding: 10px 15px; border-radius: 12px; flex: 1; text-align: center; border: 1px solid #e2e8f0;">
+                                    <div style="font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; font-weight: 700; margin-bottom: 2px;">Weight</div>
+                                    <div style="font-size: 0.95rem; font-weight: 800; color: #1e293b;"><?= $sc['weight'] ?: '--' ?> <small style="font-size: 0.7em; opacity: 0.6;">kg</small></div>
                                 </div>
-                                <div class="ai-field">
-                                    <label for="upd_height">Height (cm)</label>
-                                    <div class="ai-field-inner"><div class="ai-field-icon"><i class="fas fa-ruler-vertical"></i></div>
-                                    <input type="number" step="0.1" id="upd_height" name="height" value="<?= htmlspecialchars($sc['height'] ?? '') ?>" placeholder="e.g. 165"></div>
-                                </div>
-                                <div class="ai-field">
-                                    <label for="upd_waist">Waist (cm)</label>
-                                    <div class="ai-field-inner"><div class="ai-field-icon"><i class="fas fa-circle-dot"></i></div>
-                                    <input type="number" step="0.1" id="upd_waist" name="waist_circumference" value="<?= htmlspecialchars($sc['waist_circumference'] ?? '') ?>" placeholder="e.g. 82"></div>
-                                </div>
-                                <div class="ai-field">
-                                    <label for="upd_hip">Hip (cm)</label>
-                                    <div class="ai-field-inner"><div class="ai-field-icon"><i class="fas fa-circle-dot"></i></div>
-                                    <input type="number" step="0.1" id="upd_hip" name="hip_circumference" value="<?= htmlspecialchars($sc['hip_circumference'] ?? '') ?>" placeholder="e.g. 95"></div>
+                                <div style="background: #f8fafc; padding: 10px 15px; border-radius: 12px; flex: 1; text-align: center; border: 1px solid #e2e8f0;">
+                                    <div style="font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; font-weight: 700; margin-bottom: 2px;">Height</div>
+                                    <div style="font-size: 0.95rem; font-weight: 800; color: #1e293b;"><?= $sc['height'] ?: '--' ?> <small style="font-size: 0.7em; opacity: 0.6;">cm</small></div>
                                 </div>
                             </div>
-                            <button type="submit" class="ai-btn-save"><i class="fas fa-save"></i> Save Measurements</button>
-                        </form>
+
+                            <div style="margin-top: 15px; display: flex; gap: 10px;">
+                                
+                            </div>
+                        </div>
+                        
+                        <div class="bmi-chart-wrapper">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                <h3 style="font-family: 'Outfit'; font-size: 1rem; color: #1e293b; margin: 0; font-weight: 700;"><i class="fas fa-history" style="color: var(--primary); margin-right: 8px;"></i> Progress History</h3>
+                                <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 600;">Last 15 recordings</span>
+                            </div>
+                            <div style="height: 220px; position: relative;">
+                                <canvas id="bmiHistoryChart"></canvas>
+                                <?php if (empty($bmi_history_data)): ?>
+                                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #94a3b8; font-size: 0.9rem; text-align: center; width: 100%;">
+                                    <i class="fas fa-chart-line" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.3;"></i>
+                                    <p>No BMI history data available yet.</p>
+                                </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
                     </div>
+
+                    <form id="statsForm" method="POST">
+                        <input type="hidden" name="action" value="update_body_stats">
+                        <input type="hidden" name="client_id" value="<?= htmlspecialchars($sc['id']) ?>">
+                        
+                        <div class="ai-form-grid">
+                            <div class="ai-field">
+                                <label>Current Weight (kg)</label>
+                                <div class="ai-field-inner">
+                                    <div class="ai-field-icon"><i class="fas fa-weight"></i></div>
+                                    <input type="number" step="any" name="weight" class="stats-input" value="<?= htmlspecialchars($sc['weight'] ?? '') ?>" readonly>
+                                </div>
+                            </div>
+                            <div class="ai-field">
+                                <label>Height (cm)</label>
+                                <div class="ai-field-inner">
+                                    <div class="ai-field-icon"><i class="fas fa-ruler-vertical"></i></div>
+                                    <input type="number" step="any" name="height" class="stats-input" value="<?= htmlspecialchars($sc['height'] ?? '') ?>" readonly>
+                                </div>
+                            </div>
+                            <div class="ai-field">
+                                <label>BMI</label>
+                                <div class="ai-field-inner">
+                                    <div class="ai-field-icon"><i class="fas fa-chart-bar"></i></div>
+                                    <input type="text" value="<?= $bmi_val ?: 'Not calculated' ?>" readonly style="background: #f8fafc;">
+                                </div>
+                                <?php if ($bmi_val): ?><div class="ai-field-hint">Classification: <strong><?= $bmi_label ?></strong></div><?php endif; ?>
+                            </div>
+                            <div class="ai-field">
+                                <label>Optimal Weight Range</label>
+                                <div class="ai-field-inner">
+                                    <div class="ai-field-icon"><i class="fas fa-bullseye"></i></div>
+                                    <input type="text" value="<?= ($optimal_low && $optimal_high) ? "{$optimal_low} – {$optimal_high} kg" : 'Need height data' ?>" readonly style="background: #f8fafc;">
+                                </div>
+                                <div class="ai-field-hint">Healthy BMI range: 18.5 – 24.9</div>
+                            </div>
+                            <div class="ai-field">
+                                <label>Waist Circumference (cm)</label>
+                                <div class="ai-field-inner">
+                                    <div class="ai-field-icon"><i class="fas fa-circle-dot"></i></div>
+                                    <input type="number" step="any" name="waist_circumference" class="stats-input" value="<?= htmlspecialchars($sc['waist_circumference'] ?? '') ?>" readonly>
+                                </div>
+                            </div>
+                            <div class="ai-field">
+                                <label>Hip Circumference (cm)</label>
+                                <div class="ai-field-inner">
+                                    <div class="ai-field-icon"><i class="fas fa-circle-dot"></i></div>
+                                    <input type="number" step="any" name="hip_circumference" class="stats-input" value="<?= htmlspecialchars($sc['hip_circumference'] ?? '') ?>" readonly>
+                                </div>
+                            </div>
+                            <div class="ai-field">
+                                <label>Waist-Hip Ratio</label>
+                                <div class="ai-field-inner">
+                                    <div class="ai-field-icon"><i class="fas fa-arrows-left-right"></i></div>
+                                    <input type="text" value="<?= $whr_val ?>" readonly style="background: #f8fafc;">
+                                </div>
+                                <?php if ($whr_risk !== 'N/A'): ?><div class="ai-field-hint">Risk level: <strong><?= $whr_risk ?></strong></div><?php endif; ?>
+                            </div>
+                            <div class="ai-field">
+                                <label>Client Since</label>
+                                <div class="ai-field-inner">
+                                    <div class="ai-field-icon"><i class="fas fa-calendar"></i></div>
+                                    <input type="text" value="<?= !empty($sc['created_at']) ? date('M j, Y', strtotime($sc['created_at'])) : 'N/A' ?>" readonly style="background: #f8fafc;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="statsActions" style="display:none; margin-top: 25px; gap: 12px; justify-content: flex-end;">
+                            <button type="button" class="ai-btn-save" onclick="toggleStatsEdit()" style="background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0;">Cancel</button>
+                            <button type="submit" class="ai-btn-save"><i class="fas fa-save"></i> Save Measurements</button>
+                        </div>
+                    </form>
+
+                    <script>
+                        function toggleStatsEdit() {
+                            const inputs = document.querySelectorAll('.stats-input');
+                            const actions = document.getElementById('statsActions');
+                            const editBtn = document.getElementById('editStatsBtn');
+                            const isReadonly = inputs[0].hasAttribute('readonly');
+
+                            inputs.forEach(input => {
+                                if (isReadonly) {
+                                    input.removeAttribute('readonly');
+                                    input.style.backgroundColor = '#fff';
+                                    input.style.borderColor = 'var(--primary)';
+                                    input.style.boxShadow = '0 0 0 3px rgba(16,185,129,0.1)';
+                                } else {
+                                    input.setAttribute('readonly', true);
+                                    input.style.backgroundColor = '';
+                                    input.style.borderColor = '';
+                                    input.style.boxShadow = '';
+                                }
+                            });
+
+                            actions.style.display = isReadonly ? 'flex' : 'none';
+                            editBtn.style.display = isReadonly ? 'none' : 'flex';
+                        }
+
+                        // Initialize BMI Chart
+                        document.addEventListener('DOMContentLoaded', () => {
+                            const bmiData = <?= json_encode($bmi_history_data) ?>;
+                            const ctx = document.getElementById('bmiHistoryChart');
+                            
+                            if (ctx && bmiData.length > 0) {
+                                const labels = bmiData.map(item => item.date_label);
+                                const data = bmiData.map(item => parseFloat(item.bmi));
+                                
+                                new Chart(ctx.getContext('2d'), {
+                                     type: 'line',
+                                     data: {
+                                         labels: labels,
+                                         datasets: [{
+                                             label: 'BMI',
+                                             data: data,
+                                             borderColor: '#10b981',
+                                             backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                                             borderWidth: 3,
+                                             tension: 0.4,
+                                             fill: true,
+                                             pointBackgroundColor: '#ffffff',
+                                             pointBorderColor: '#10b981',
+                                             pointBorderWidth: 2,
+                                             pointRadius: 4,
+                                             pointHoverRadius: 6
+                                         }]
+                                     },
+                                     options: {
+                                         responsive: true,
+                                         maintainAspectRatio: false,
+                                         plugins: {
+                                             legend: { display: false },
+                                             tooltip: {
+                                                 mode: 'index',
+                                                 intersect: false,
+                                                 backgroundColor: '#1e293b',
+                                                 padding: 12,
+                                                 titleFont: { family: 'Outfit', size: 13, weight: '700' },
+                                                 bodyFont: { family: 'Inter', size: 12 },
+                                                 cornerRadius: 10,
+                                                 callbacks: {
+                                                     label: (context) => ' BMI: ' + context.parsed.y
+                                                 }
+                                             }
+                                         },
+                                         scales: {
+                                             y: {
+                                                 suggestedMin: Math.min(...data) - 2,
+                                                 suggestedMax: Math.max(...data) + 2,
+                                                 grid: { color: 'rgba(0,0,0,0.05)', drawBorder: false },
+                                                 ticks: { font: { family: 'Inter', size: 11, weight: '600' }, color: '#94a3b8' }
+                                             },
+                                             x: { 
+                                                 grid: { display: false },
+                                                 ticks: { font: { family: 'Inter', size: 11, weight: '600' }, color: '#94a3b8' }
+                                             }
+                                         }
+                                     }
+                                 });
+                             }
+                        });
+                    </script>
                 </div>
 
                 <!-- ── TAB 4: Meal Planner (Food Exchange List) ── -->

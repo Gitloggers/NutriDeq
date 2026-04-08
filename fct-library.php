@@ -597,7 +597,7 @@ endforeach; ?>
                     <div class="fct-form-group">
                         <label>Serving Size (grams)</label>
                         <div style="display: flex; align-items: center; gap: 10px;">
-                            <input type="number" name="serving_size" class="fct-input" value="100" min="1" step="0.1" required>
+                            <input type="number" name="serving_size" class="fct-input" value="100" min="1" step="any" required>
                             <span style="color: var(--gray);">g</span>
                         </div>
                     </div>
