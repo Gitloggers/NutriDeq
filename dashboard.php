@@ -1968,7 +1968,7 @@ $pdo = $database->getConnection();
             const userBmi = <?php echo floatval($user_bmi ?: 0); ?>;
             
             // Initialize Chart.js for User BMI History (if applicable)
-            const userBmiHistoryData = <?php echo json_encode($bmi_history_data ?? []); ?>;
+            const userBmiHistoryData = <?php echo @json_encode($bmi_history_data ?? []); ?>;
             const userBmiCtx = document.getElementById('bmiHistoryChart');
             window.userBmiChart = null;
             
@@ -2030,7 +2030,7 @@ $pdo = $database->getConnection();
             }
             
             // Initialize Chart.js for Staff BMI History (if applicable)
-            const staffBmiHistoryData = <?php echo json_encode($staff_bmi_history ?? []); ?>;
+            const staffBmiHistoryData = <?php echo @json_encode($staff_bmi_history ?? []); ?>;
             const staffBmiCtx = document.getElementById('staffBmiHistoryChart');
             
             if (staffBmiCtx && staffBmiHistoryData.length > 0) {

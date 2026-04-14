@@ -1,11 +1,11 @@
 <?php
+error_reporting(0);
+ini_set('display_errors', 0);
 // get_messages.php
 session_start();
 header('Content-Type: application/json');
 
 require_once '../database.php';
-error_reporting(0);
-ini_set('display_errors', 0);
 
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     http_response_code(401);

@@ -1,15 +1,18 @@
 // STAFF JavaScript
-document.getElementById('refreshActivity').addEventListener('click', function() {
-    const btn = this;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
-    
-    setTimeout(() => {
-        document.getElementById('newUsersToday').textContent = Math.floor(Math.random() * 5) + 10;
-        document.getElementById('activeTrackers').textContent = Math.floor(Math.random() * 50) + 820;
-        document.getElementById('avgCalories').textContent = (Math.floor(Math.random() * 200) + 1700).toLocaleString();
-        btn.innerHTML = '<i class="fas fa-sync"></i> Refresh';
-    }, 1000);
-});
+const refreshBtn = document.getElementById('refreshActivity');
+if (refreshBtn) {
+    refreshBtn.addEventListener('click', function() {
+        const btn = this;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+        
+        setTimeout(() => {
+            document.getElementById('newUsersToday').textContent = Math.floor(Math.random() * 5) + 10;
+            document.getElementById('activeTrackers').textContent = Math.floor(Math.random() * 50) + 820;
+            document.getElementById('avgCalories').textContent = (Math.floor(Math.random() * 200) + 1700).toLocaleString();
+            btn.innerHTML = '<i class="fas fa-sync"></i> Refresh';
+        }, 1000);
+    });
+}
 
 // Staff Charts
 const progressCtx = document.getElementById('userProgressChart')?.getContext('2d');

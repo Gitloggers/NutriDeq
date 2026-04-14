@@ -24,13 +24,22 @@ class ChatController {
             this.startPolling();
         }
 
-        // Enter to Send
+        // Enter to Send (Keyboard)
         if (this.inputArea) {
             this.inputArea.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
                     this.sendMessage();
                 }
+            });
+        }
+        
+        // Button to Send (Form Submission Prevent Default)
+        const messageForm = document.getElementById('messageForm');
+        if (messageForm) {
+            messageForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.sendMessage();
             });
         }
 
