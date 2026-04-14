@@ -152,7 +152,7 @@ $pdo = $database->getConnection();
         }
     </style>
     <script>
-        const BASE_URL = '<?= rtrim(dirname($_SERVER['PHP_SELF']), '/') ?>/';
+        const BASE_URL = '';
         
         // Ghost Scrolling Preventer Framework
         document.addEventListener('DOMContentLoaded', () => {

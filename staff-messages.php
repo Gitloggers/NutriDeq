@@ -401,7 +401,7 @@ if ($selected_client_id) {
         }
     </style>
     <script>
-        const BASE_URL = '<?= rtrim(dirname($_SERVER['PHP_SELF']), '/') ?>/';
+        const BASE_URL = '';
     </script>
 </head>
 <body>

@@ -391,7 +391,7 @@ if (isset($_GET['tab'])) {
             }
         }
     </style>
-    <script>const BASE_URL = '<?= rtrim(dirname($_SERVER['PHP_SELF']), '/') ?>/';</script>
+    <script>const BASE_URL = '';</script>
 </head>
 
 <body>

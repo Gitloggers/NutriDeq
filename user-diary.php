@@ -494,7 +494,7 @@ $nav_links = getNavigationLinks($user_role, 'user-diary.php');
             }
         }
     </style>
-    <script>const BASE_URL = '<?= rtrim(dirname($_SERVER['PHP_SELF']), '/') ?>/';</script>
+    <script>const BASE_URL = '';</script>
 </head>
 <body>
     <div class="main-layout">

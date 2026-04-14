@@ -263,7 +263,7 @@ if ($selected_staff_id) {
             </div>
 
             <?php if ($selected_staff_id): ?>
-                <script>const BASE_URL = '<?= rtrim(dirname($_SERVER['PHP_SELF']), '/') ?>/';</script>
+                <script>const BASE_URL = '';</script>
                 <script src="scripts/chat-controller.js?v=101"></script>
                 <script>
                     document.addEventListener('DOMContentLoaded', () => {
