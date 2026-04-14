@@ -299,7 +299,10 @@ if ($selected_client_id) {
             background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
         }
         .message-wrapper.received .message-bubble {
-            background: rgba(255,255,255,0.9) !important;
+            background: rgba(255,255,255,1) !important;
+            border: 1px solid rgba(0,0,0,0.05) !important;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
+            color: #334155 !important;
         }
 
         /* ── Input area ── */
@@ -556,7 +559,7 @@ if ($selected_client_id) {
                 <script src="scripts/chat-controller.js"></script>
                 <script>
                     document.addEventListener('DOMContentLoaded', () => {
-                        const chat = new ChatController(<?= $staff_id ?>, 'staff', <?= $selected_client_id ?>);
+                        const chat = new ChatController(<?= $staff_id ?>, '<?= $_SESSION['user_role'] ?>', <?= $selected_client_id ?>);
                         const aiBtn = document.getElementById('aiToggleBtn');
                         if (aiBtn) aiBtn.addEventListener('click', () => chat.toggleAISuggestions());
                     });

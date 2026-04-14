@@ -59,20 +59,33 @@ class ChatController {
     async fetchMessages() {
         if (!this.contactId) return;
         try {
-            const res = await fetch(`${BASE_URL}handlers/get_messages.php?contact_id=${this.contactId}`);
+            console.log("Fetching messages for contact:", this.contactId);
+            const controller = new AbortController();
+            const id = setTimeout(() => controller.abort(), 8000); // 8 second timeout
+
+            const res = await fetch(`${BASE_URL}handlers/get_messages.php?contact_id=${this.contactId}`, {
+                signal: controller.signal
+            });
+            clearTimeout(id);
+
             const data = await res.json();
+            console.log("Message data received:", data);
             
-            // ALWAYS clear the loading spinner on the first successful or empty response
-            const loadingElt = this.chatMessages.querySelector('.fa-spinner');
-            if (loadingElt && loadingElt.parentElement) {
-                loadingElt.parentElement.remove();
+            // Clean up ANY loading indicators in the container
+            if (this.chatMessages) {
+                const spinners = this.chatMessages.querySelectorAll('.fa-spinner, .fa-spin');
+                spinners.forEach(s => {
+                    if (s.parentElement) s.parentElement.remove();
+                });
             }
 
             if (data.success) {
                 this.renderMessages(data.messages);
+            } else {
+                console.error("Server returned error:", data.error);
             }
         } catch (e) {
-            console.error("Chat Error:", e);
+            console.error("Chat Network Error:", e);
         }
     }
 
