@@ -14,8 +14,16 @@ try {
         participants JSON NOT NULL,
         status ENUM('open', 'closed', 'archived') DEFAULT 'open',
         last_message_at DATETIME NULL,
+        updated_at DATETIME NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ) ENGINE=InnoDB;");
+    
+    // Add missing updated_at column if table already existed without it
+    $check = $pdo->query("SHOW COLUMNS FROM internal_threads LIKE 'updated_at'");
+    if ($check->rowCount() == 0) {
+        $pdo->exec("ALTER TABLE internal_threads ADD COLUMN updated_at DATETIME NULL AFTER last_message_at");
+        echo "🔧 Added missing column: updated_at to internal_threads<br>";
+    }
     echo "✅ Verified table: internal_threads<br>";
 
     // 2. Create internal_thread_messages if missing
