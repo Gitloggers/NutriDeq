@@ -93,7 +93,7 @@ try {
 
     echo json_encode(['success' => true, 'messages' => $messages, 'thread_status' => $thread['status'], 'thread_title' => $thread['title']]);
 
-} catch (Exception $e) {
+} catch (Throwable $e) {
     // Stop returning 500 so we can read the message in the console
-    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+    echo json_encode(['success' => false, 'error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
 }

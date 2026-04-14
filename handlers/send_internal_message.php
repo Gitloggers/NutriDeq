@@ -136,7 +136,7 @@ try {
 
     echo json_encode(['success' => true, 'message' => $formatted_message]);
 
-} catch (Exception $e) {
+} catch (Throwable $e) {
     // Stop returning 500 for better cloud debugging
     echo json_encode(['success' => false, 'error' => $e->getMessage()]);
 }

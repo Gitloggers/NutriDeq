@@ -43,7 +43,7 @@ class Database
         try {
             $dsn = "mysql:host=" . $this->host . ";port=" . $this->port . ";dbname=" . $this->dbname . ";charset=utf8mb4";
             self::$connection = new PDO($dsn, $this->username, $this->password, [
-                PDO::ATTR_PERSISTENT => true, // Keep connection open
+                PDO::ATTR_PERSISTENT => false, // Keep connection open
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
             ]);
