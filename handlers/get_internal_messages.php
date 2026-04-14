@@ -29,9 +29,16 @@ try {
         $stmt = $pdo->prepare("SELECT t.* FROM internal_threads t WHERE t.id = ?");
         $stmt->execute([$thread_id]);
     } else {
-        $stmt = $pdo->prepare("SELECT t.* FROM internal_threads t WHERE t.id = ? AND (JSON_CONTAINS(t.participants, ?, '$') OR t.created_by = ?)");
-        $user_json = json_encode($user_id);
-        $stmt->execute([$thread_id, $user_json, $user_id]);
+        // Use JSON_SEARCH for string IDs or numeric cast for robust matching on Cloud DBs
+        $stmt = $pdo->prepare("
+            SELECT t.* FROM internal_threads t 
+            WHERE t.id = ? 
+            AND (
+                JSON_SEARCH(t.participants, 'one', ?) IS NOT NULL 
+                OR t.created_by = ?
+            )
+        ");
+        $stmt->execute([$thread_id, (string)$user_id, $user_id]);
     }
     $thread = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -42,7 +49,7 @@ try {
 
     // Get messages
     $stmt = $pdo->prepare("
-        SELECT m.id, m.thread_id, m.sender_id, m.sender_role, m.message, m.attachment_path, m.message_type, m.read_by, m.created_at,
+        SELECT m.id, m.thread_id, m.sender_id, m.sender_role as msg_role, m.message, m.attachment_path, m.message_type, m.read_by, m.created_at,
                u.name as sender_name,
                u.role as sender_role
         FROM internal_thread_messages m
@@ -87,6 +94,6 @@ try {
     echo json_encode(['success' => true, 'messages' => $messages, 'thread_status' => $thread['status'], 'thread_title' => $thread['title']]);
 
 } catch (Exception $e) {
-    http_response_code(500);
+    // Stop returning 500 so we can read the message in the console
     echo json_encode(['success' => false, 'error' => $e->getMessage()]);
 }

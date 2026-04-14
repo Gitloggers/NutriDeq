@@ -40,9 +40,16 @@ try {
         $stmt = $pdo->prepare("SELECT t.* FROM internal_threads t WHERE t.id = ?");
         $stmt->execute([$thread_id]);
     } else {
-        $stmt = $pdo->prepare("SELECT t.* FROM internal_threads t WHERE t.id = ? AND (JSON_CONTAINS(t.participants, ?, '$') OR t.created_by = ?)");
-        $user_json = json_encode($user_id);
-        $stmt->execute([$thread_id, $user_json, $user_id]);
+        // Robust JSON matching for Cloud DB
+        $stmt = $pdo->prepare("
+            SELECT t.* FROM internal_threads t 
+            WHERE t.id = ? 
+            AND (
+                JSON_SEARCH(t.participants, 'one', ?) IS NOT NULL 
+                OR t.created_by = ?
+            )
+        ");
+        $stmt->execute([$thread_id, (string)$user_id, $user_id]);
     }
     $thread = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -104,7 +111,7 @@ try {
     $stmt = $pdo->prepare("
         SELECT m.*, 
                u.name as sender_name,
-               u.role as sender_role
+               u.role as u_role
         FROM internal_thread_messages m
         LEFT JOIN users u ON m.sender_id = u.id
         WHERE m.id = ?
@@ -130,6 +137,6 @@ try {
     echo json_encode(['success' => true, 'message' => $formatted_message]);
 
 } catch (Exception $e) {
-    http_response_code(500);
+    // Stop returning 500 for better cloud debugging
     echo json_encode(['success' => false, 'error' => $e->getMessage()]);
 }
