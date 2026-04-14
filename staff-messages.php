@@ -558,11 +558,13 @@ if ($selected_client_id) {
             <?php if ($selected_client_id): ?>
                 <script src="scripts/chat-controller.js"></script>
                 <script>
-                    document.addEventListener('DOMContentLoaded', () => {
+                    (function() {
+                        console.log("Starting ChatController...");
                         const chat = new ChatController(<?= $staff_id ?>, '<?= $_SESSION['user_role'] ?>', <?= $selected_client_id ?>);
                         const aiBtn = document.getElementById('aiToggleBtn');
                         if (aiBtn) aiBtn.addEventListener('click', () => chat.toggleAISuggestions());
-                    });
+                        window.currentChat = chat;
+                    })();
                 </script>
             <?php endif; ?>
 
