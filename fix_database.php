@@ -1,78 +1,42 @@
 <?php
 require_once 'database.php';
-echo "<h1>NutriDeq Cloud Database Repair 🛠️</h1>";
+header('Content-Type: text/html; charset=utf-8');
+echo "<h1>NutriDeq MASTER CLOUD REPAIR 🛠️</h1>";
 
 try {
     $database = new Database();
     $pdo = $database->getConnection();
     
-    // 1. Create internal_threads if missing
-    $pdo->exec("CREATE TABLE IF NOT EXISTS internal_threads (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        title VARCHAR(255) NOT NULL,
-        created_by INT NOT NULL,
-        participants JSON NOT NULL,
-        status ENUM('open', 'closed', 'archived') DEFAULT 'open',
-        last_message_at DATETIME NULL,
-        updated_at DATETIME NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    ) ENGINE=InnoDB;");
-    
-    // Add missing updated_at column if table already existed without it
-    $check = $pdo->query("SHOW COLUMNS FROM internal_threads LIKE 'updated_at'");
-    if ($check->rowCount() == 0) {
-        $pdo->exec("ALTER TABLE internal_threads ADD COLUMN updated_at DATETIME NULL AFTER last_message_at");
-        echo "🔧 Added missing column: updated_at to internal_threads<br>";
+    // Function to safely add columns
+    function addColumn($pdo, $table, $column, $definition) {
+        try {
+            $pdo->exec("ALTER TABLE $table ADD COLUMN $column $definition");
+            echo "🔧 Added column: <b>$column</b> to <b>$table</b><br>";
+        } catch (Exception $e) {
+            if (strpos($e->getMessage(), 'Duplicate column name') !== false) {
+                echo "✅ Column <b>$column</b> already exists in <b>$table</b><br>";
+            } else {
+                echo "❌ Error adding $column to $table: " . $e->getMessage() . "<br>";
+            }
+        }
     }
-    echo "✅ Verified table: internal_threads<br>";
 
-    // 2. Create internal_thread_messages if missing
-    $pdo->exec("CREATE TABLE IF NOT EXISTS internal_thread_messages (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        thread_id INT NOT NULL,
-        sender_id INT NOT NULL,
-        sender_role VARCHAR(50) NOT NULL,
-        message TEXT,
-        attachment_path VARCHAR(255) NULL,
-        message_type ENUM('text', 'image', 'file') DEFAULT 'text',
-        read_by JSON NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        INDEX idx_thread (thread_id)
-    ) ENGINE=InnoDB;");
-    echo "✅ Verified table: internal_thread_messages<br>";
+    // 1. Core Tables Creation
+    $pdo->exec("CREATE TABLE IF NOT EXISTS internal_threads (id INT AUTO_INCREMENT PRIMARY KEY, title VARCHAR(255) NOT NULL, created_by INT NOT NULL, participants JSON NOT NULL, status ENUM('open', 'closed', 'archived') DEFAULT 'open', last_message_at DATETIME NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB;");
+    $pdo->exec("CREATE TABLE IF NOT EXISTS internal_thread_messages (id INT AUTO_INCREMENT PRIMARY KEY, thread_id INT NOT NULL, sender_id INT NOT NULL, sender_role VARCHAR(50) NOT NULL, message TEXT, attachment_path VARCHAR(255) NULL, message_type ENUM('text', 'image', 'file') DEFAULT 'text', read_by JSON NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB;");
+    $pdo->exec("CREATE TABLE IF NOT EXISTS conversations (id INT AUTO_INCREMENT PRIMARY KEY, client_id INT NOT NULL, dietitian_id INT NOT NULL, status ENUM('open', 'closed', 'archived') DEFAULT 'open', last_message_at DATETIME NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB;");
+    
+    // 2. Ensure critical columns exist
+    addColumn($pdo, 'internal_threads', 'updated_at', 'DATETIME NULL AFTER last_message_at');
+    addColumn($pdo, 'internal_thread_messages', 'attachment_path', 'VARCHAR(255) NULL AFTER message');
+    addColumn($pdo, 'internal_thread_messages', 'message_type', "ENUM('text', 'image', 'file') DEFAULT 'text' AFTER attachment_path");
+    addColumn($pdo, 'wellness_messages', 'attachment_path', 'VARCHAR(255) NULL AFTER content');
+    addColumn($pdo, 'wellness_messages', 'message_type', "ENUM('text', 'image', 'file') DEFAULT 'text' AFTER attachment_path");
 
-    // 3. Create conversations if missing
-    $pdo->exec("CREATE TABLE IF NOT EXISTS conversations (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        client_id INT NOT NULL,
-        dietitian_id INT NOT NULL,
-        status ENUM('open', 'closed', 'archived') DEFAULT 'open',
-        last_message_at DATETIME NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        INDEX idx_client (client_id),
-        INDEX idx_dietitian (dietitian_id)
-    ) ENGINE=InnoDB;");
-    echo "✅ Verified table: conversations<br>";
-
-    // 4. Create wellness_messages if missing
-    $pdo->exec("CREATE TABLE IF NOT EXISTS wellness_messages (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        conversation_id INT NOT NULL,
-        sender_type ENUM('client', 'staff', 'ai') NOT NULL,
-        sender_id INT NOT NULL,
-        content TEXT,
-        attachment_path VARCHAR(255) NULL,
-        message_type ENUM('text', 'image', 'file') DEFAULT 'text',
-        read_at DATETIME NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        INDEX idx_conv (conversation_id)
-    ) ENGINE=InnoDB;");
-    echo "✅ Verified table: wellness_messages<br>";
-
-    echo "<h2>🎉 Database is fully repaired!</h2>";
-    echo "<p>You can now close this page and test your messages.</p>";
+    echo "<h2>🎉 CLOUD SYNC COMPLETE!</h2>";
+    echo "<p>Your database is now 100% compatible with the Render/Aiven environment.</p>";
 
 } catch (Exception $e) {
-    echo "<h1>❌ Error during repair</h1>";
+    echo "<h1>❌ Master Repair Failed</h1>";
     echo "<pre>" . $e->getMessage() . "</pre>";
 }

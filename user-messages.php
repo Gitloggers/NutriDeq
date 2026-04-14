@@ -129,6 +129,28 @@ if ($selected_staff_id) {
                 text-overflow: ellipsis;
             }
             #backToInbox {
+    <link rel="stylesheet" href="css/mobile-style.css" media="all and (max-width: 1024px)">
+    <style>
+        @media screen and (max-width: 768px) {
+            .messaging-wrapper {
+                height: calc(100vh - 70px) !important;
+                margin: 0 !important;
+                border-radius: 0 !important;
+            }
+            .msg-sidebar {
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+            .chat-header-user {
+                max-width: 70%;
+            }
+            .header-name {
+                font-size: 0.9rem !important;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            #backToInbox {
                 display: inline-flex !important;
             }
         }
@@ -138,6 +160,18 @@ if ($selected_staff_id) {
             #backToInbox {
                 display: none !important;
             }
+        }
+        
+        .message-wrapper.received .message-bubble {
+            background: #f1f5f9 !important;
+            border: 1px solid rgba(0,0,0,0.1) !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+            color: #1a1a1a !important;
+        }
+        .message-wrapper.sent .message-bubble {
+            background: #059669 !important;
+            color: white !important;
+            box-shadow: 0 8px 24px rgba(5, 150, 105, 0.2) !important;
         }
     </style>
     <script src="scripts/dashboard.js" defer></script>
@@ -266,16 +300,24 @@ if ($selected_staff_id) {
                 <script>const BASE_URL = '';</script>
                 <script src="scripts/chat-controller.js?v=101"></script>
                 <script>
-                    document.addEventListener('DOMContentLoaded', () => {
-                        const chat = new ChatController(
-                            <?= $user_id ?>,
-                            'client',
-                            <?= $selected_staff_id ?>
-                        );
-                        document.getElementById('aiToggleBtn').addEventListener('click', () => {
-                            chat.toggleAISuggestions();
-                        });
-                    });
+                    (function() {
+                        const initChat = () => {
+                            console.log("Initializing User Chat...");
+                            const chat = new ChatController(
+                                <?= $user_id ?>,
+                                '<?= $_SESSION['user_role'] ?>',
+                                <?= $selected_staff_id ?>
+                            );
+                            const aiToggle = document.getElementById('aiToggleBtn');
+                            if (aiToggle) aiToggle.addEventListener('click', () => chat.toggleAISuggestions());
+                            window.currentChat = chat;
+                        };
+                        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+                            initChat();
+                        } else {
+                            document.addEventListener('DOMContentLoaded', initChat);
+                        }
+                    })();
                 </script>
             <?php endif; ?>
         </div>

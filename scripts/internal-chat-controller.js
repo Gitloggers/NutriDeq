@@ -50,18 +50,28 @@ class ChatController {
     }
 
     startPolling() {
-        if (this.pollingInterval) clearInterval(this.pollingInterval);
-        this.pollingInterval = setInterval(() => this.fetchMessages(), 3000);
+        if (this.pollingTimeout) clearTimeout(this.pollingTimeout);
+        this.pollingTimeout = setTimeout(() => this.poll(), 3000);
+    }
+
+    async poll() {
+        await this.fetchMessages();
+        this.pollingTimeout = setTimeout(() => this.poll(), 3000);
     }
 
     async fetchMessages() {
         if (!this.currentThreadId) return;
         try {
+            console.log("Fetching internal messages for thread:", this.currentThreadId);
             const endpoint = `handlers/get_internal_messages.php?thread_id=${this.currentThreadId}`;
             const res = await fetch(endpoint);
             if (!res.ok) throw new Error(`HTTP: ${res.status}`);
             const data = await res.json();
-            if (data.success) { this.renderMessages(data.messages); }
+            if (data.success) { 
+                this.renderMessages(data.messages); 
+            } else {
+                console.error("Internal Fetch Error:", data.error);
+            }
         } catch (e) {
             console.error('Fetch error:', e);
         }

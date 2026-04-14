@@ -298,13 +298,13 @@ if ($selected_client_id) {
         .message-wrapper.received .message-bubble {
             background: #f1f5f9 !important;
             border: 1px solid rgba(0,0,0,0.1) !important;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
-            color: #1e293b !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+            color: #1a1a1a !important;
         }
         .message-wrapper.sent .message-bubble {
             background: #059669 !important;
             color: white !important;
-            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.2) !important;
+            box-shadow: 0 8px 24px rgba(5, 150, 105, 0.2) !important;
         }
 
         /* ── Input area ── */
@@ -561,11 +561,19 @@ if ($selected_client_id) {
                 <script src="scripts/chat-controller.js"></script>
                 <script>
                     (function() {
-                        console.log("Starting ChatController...");
-                        const chat = new ChatController(<?= $staff_id ?>, '<?= $_SESSION['user_role'] ?>', <?= $selected_client_id ?>);
-                        const aiBtn = document.getElementById('aiToggleBtn');
-                        if (aiBtn) aiBtn.addEventListener('click', () => chat.toggleAISuggestions());
-                        window.currentChat = chat;
+                        const initChat = () => {
+                            console.log("Initializing Chat System...");
+                            const chat = new ChatController(<?= $staff_id ?>, '<?= $_SESSION['user_role'] ?>', <?= $selected_client_id ?>);
+                            const aiBtn = document.getElementById('aiToggleBtn');
+                            if (aiBtn) aiBtn.addEventListener('click', () => chat.toggleAISuggestions());
+                            window.currentChat = chat;
+                        };
+                        // Start immediately, but if it fails (rare), wait for DOM
+                        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+                            initChat();
+                        } else {
+                            document.addEventListener('DOMContentLoaded', initChat);
+                        }
                     })();
                 </script>
             <?php endif; ?>
