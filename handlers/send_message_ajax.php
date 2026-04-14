@@ -89,8 +89,12 @@ try {
     }
 
     // 4. Insert Message
+    // IMPORTANT: If sender is client, sender_id MUST be $client_id (from clients table)
+    // If sender is staff, sender_id is $user_id (from users table)
+    $final_sender_id = ($sender_type === 'client') ? $client_id : $user_id;
+
     $ins_msg = $pdo->prepare("INSERT INTO wellness_messages (conversation_id, sender_type, sender_id, content, attachment_path, message_type, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())");
-    $ins_msg->execute([$conv_id, $sender_type, $user_id, $message_text, $attachment_path, $msg_type]);
+    $ins_msg->execute([$conv_id, $sender_type, $final_sender_id, $message_text, $attachment_path, $msg_type]);
     $new_msg_id = $pdo->lastInsertId();
 
     echo json_encode([

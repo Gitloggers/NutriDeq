@@ -4,6 +4,8 @@ session_start();
 header('Content-Type: application/json');
 
 require_once '../database.php';
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     http_response_code(401);
@@ -86,7 +88,7 @@ try {
             END as sender_name,
             wm.attachment_path, wm.message_type
             FROM wellness_messages wm
-            LEFT JOIN clients c ON wm.sender_type = 'client' AND wm.sender_id = c.user_id 
+            LEFT JOIN clients c ON wm.sender_type = 'client' AND wm.sender_id = c.id 
             LEFT JOIN users u ON wm.sender_type = 'staff' AND wm.sender_id = u.id
             WHERE wm.conversation_id = ?
             ORDER BY wm.created_at ASC
