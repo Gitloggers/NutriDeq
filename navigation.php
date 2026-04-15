@@ -4,6 +4,7 @@
 function getNavigationLinks($user_role, $current_page = '')
 {
     $nav_links = [];
+    $user_role = strtolower(trim($user_role ?? ''));
 
     if ($user_role === 'admin') {
         $nav_links = [
