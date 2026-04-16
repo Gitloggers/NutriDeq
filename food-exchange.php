@@ -2326,73 +2326,6 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             </div>
                         </div>
 
-                        <!-- Meal Distribution Strategy Summary Table -->
-                        <div class="meal-distribution-strategy-table" style="margin-top: 40px; overflow-x: auto;">
-                            <h3
-                                style="color: var(--primary-color); margin-bottom: 20px; font-size: 1.2rem; display: flex; align-items: center; gap: 10px;">
-                                <i class="fas fa-table"></i> Meal Distribution Strategy Summary
-                            </h3>
-                            <table class="food-exchange-table"
-                                style="width: 100%; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px;">
-                                <thead>
-                                    <tr
-                                        style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white;">
-                                        <th style="padding: 15px; text-align: left;">Meal Time</th>
-                                        <th style="padding: 15px; text-align: center;">CHO (g)</th>
-                                        <th style="padding: 15px; text-align: center;">PRO (g)</th>
-                                        <th style="padding: 15px; text-align: center;">FAT (g)</th>
-                                        <th style="padding: 15px; text-align: center;">KCAL</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td style="padding: 12px 15px; font-weight: 500;">Breakfast (7:00 AM)</td>
-                                        <td style="padding: 12px 15px; text-align: center;">53</td>
-                                        <td style="padding: 12px 15px; text-align: center;">29</td>
-                                        <td style="padding: 12px 15px; text-align: center;">17</td>
-                                        <td style="padding: 12px 15px; text-align: center;">481</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding: 12px 15px; font-weight: 500;">Morning Snack (10:00 AM)</td>
-                                        <td style="padding: 12px 15px; text-align: center;">56</td>
-                                        <td style="padding: 12px 15px; text-align: center;">4</td>
-                                        <td style="padding: 12px 15px; text-align: center;">0</td>
-                                        <td style="padding: 12px 15px; text-align: center;">240</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding: 12px 15px; font-weight: 500;">Lunch (1:00 PM)</td>
-                                        <td style="padding: 12px 15px; text-align: center;">103.5</td>
-                                        <td style="padding: 12px 15px; text-align: center;">16.5</td>
-                                        <td style="padding: 12px 15px; text-align: center;">11</td>
-                                        <td style="padding: 12px 15px; text-align: center;">579</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding: 12px 15px; font-weight: 500;">Afternoon Snack (4:00 PM)</td>
-                                        <td style="padding: 12px 15px; text-align: center;">33</td>
-                                        <td style="padding: 12px 15px; text-align: center;">0</td>
-                                        <td style="padding: 12px 15px; text-align: center;">0</td>
-                                        <td style="padding: 12px 15px; text-align: center;">132</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding: 12px 15px; font-weight: 500;">Supper (7:00 PM)</td>
-                                        <td style="padding: 12px 15px; text-align: center;">93.5</td>
-                                        <td style="padding: 12px 15px; text-align: center;">15.5</td>
-                                        <td style="padding: 12px 15px; text-align: center;">1</td>
-                                        <td style="padding: 12px 15px; text-align: center;">445</td>
-                                    </tr>
-                                </tbody>
-                                <tfoot>
-                                    <tr
-                                        style="background: rgba(10, 191, 188, 0.05); font-weight: 700; color: var(--primary-color); border-top: 2px solid var(--primary-color);">
-                                        <td style="padding: 15px; text-align: left;">GRAND TOTAL</td>
-                                        <td style="padding: 15px; text-align: center;">339g</td>
-                                        <td style="padding: 15px; text-align: center;">65g</td>
-                                        <td style="padding: 15px; text-align: center;">29g</td>
-                                        <td style="padding: 15px; text-align: center;">1869 kcal</td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
                     </div>
 
                     <div class="tab-content" id="sample-menu">
@@ -2406,8 +2339,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <!-- Breakfast Card -->
                             <div class="meal-card">
                                 <div class="meal-header">
-                                    <div class="meal-title">BREAKFAST</div>
-                                    <div class="meal-exchange">7 exchanges</div>
+                                    <div class="meal-title"><i class="fas fa-coffee"></i> BREAKFAST <small class="meal-subtitle">Household Measurements</small></div>
                                 </div>
                                 <div class="menu-item">
                                     <div class="menu-food">Mango, ripe</div>
@@ -2446,8 +2378,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <!-- AM Snack Card -->
                             <div class="meal-card">
                                 <div class="meal-header">
-                                    <div class="meal-title">AM SNACK</div>
-                                    <div class="meal-exchange">2 exchanges</div>
+                                    <div class="meal-title"><i class="fas fa-apple-alt"></i> AM SNACK <small class="meal-subtitle">Household Measurements</small></div>
                                 </div>
                                 <div class="menu-item">
                                     <div class="menu-food">Purple yam</div>
@@ -2462,8 +2393,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <!-- Lunch Card -->
                             <div class="meal-card">
                                 <div class="meal-header">
-                                    <div class="meal-title">LUNCH</div>
-                                    <div class="meal-exchange">5.5 exchanges</div>
+                                    <div class="meal-title"><i class="fas fa-utensils"></i> LUNCH <small class="meal-subtitle">Household Measurements</small></div>
                                 </div>
                                 <div class="menu-item">
                                     <div class="menu-food">Chicken Thigh</div>
@@ -2490,8 +2420,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <!-- PM Snack Card -->
                             <div class="meal-card">
                                 <div class="meal-header">
-                                    <div class="meal-title">PM SNACK</div>
-                                    <div class="meal-exchange">3 exchanges</div>
+                                    <div class="meal-title"><i class="fas fa-cookie"></i> PM SNACK <small class="meal-subtitle">Household Measurements</small></div>
                                 </div>
                                 <div class="menu-item">
                                     <div class="menu-food">Sweet potato, boiled</div>
@@ -2506,8 +2435,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <!-- Dinner Card -->
                             <div class="meal-card">
                                 <div class="meal-header">
-                                    <div class="meal-title">DINNER</div>
-                                    <div class="meal-exchange">6 exchanges</div>
+                                    <div class="meal-title"><i class="fas fa-moon"></i> DINNER <small class="meal-subtitle">Household Measurements</small></div>
                                 </div>
                                 <div class="menu-item">
                                     <div class="menu-food">Bangus, sliced</div>
