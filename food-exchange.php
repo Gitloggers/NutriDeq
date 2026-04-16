@@ -2054,7 +2054,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
 
                     <div class="tab-content" id="distribution">
                         <div class="section-header">
-                            <h2>DISTRIBUTION OF EXCHANGES PER MEAL</h2>
+                            <h2>DISTRIBUTION OF HOUSEHOLD MEASUREMENTS PER MEAL</h2>
                             <div class="info-btn" id="distributionInfo">
                                 <i class="fas fa-info"></i>
                             </div>
@@ -2064,7 +2064,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <div class="distribution-card">
                                 <div class="distribution-header">
                                     <div class="distribution-title">Breakfast</div>
-                                    <div class="distribution-exchange">8 exchanges</div>
+                                    <div class="distribution-exchange">8 Household Measurements</div>
                                 </div>
                                 <div class="distribution-time">
                                     <i class="fas fa-clock"></i>
@@ -2076,55 +2076,55 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                                             <i class="fas fa-carrot"></i>
                                         </div>
                                         <div class="distribution-item-name">Vegetables</div>
-                                        <div class="distribution-item-amount">1 exchange</div>
+                                        <div class="distribution-item-amount">1 Household Measurement</div>
                                     </div>
                                     <div class="distribution-item">
                                         <div class="distribution-item-icon">
                                             <i class="fas fa-apple-alt"></i>
                                         </div>
                                         <div class="distribution-item-name">Fruit</div>
-                                        <div class="distribution-item-amount">1 exchange</div>
+                                        <div class="distribution-item-amount">1 Household Measurement</div>
                                     </div>
                                     <div class="distribution-item">
                                         <div class="distribution-item-icon">
                                             <i class="fas fa-bread-slice"></i>
                                         </div>
                                         <div class="distribution-item-name">Rice C</div>
-                                        <div class="distribution-item-amount">1 exchange</div>
+                                        <div class="distribution-item-amount">1 Household Measurement</div>
                                     </div>
                                     <div class="distribution-item">
                                         <div class="distribution-item-icon">
                                             <i class="fas fa-wine-bottle"></i>
                                         </div>
                                         <div class="distribution-item-name">Whole Milk</div>
-                                        <div class="distribution-item-amount">1 exchange</div>
+                                        <div class="distribution-item-amount">1 Household Measurement</div>
                                     </div>
                                     <div class="distribution-item">
                                         <div class="distribution-item-icon">
                                             <i class="fas fa-drumstick-bite"></i>
                                         </div>
                                         <div class="distribution-item-name">Low Fat Meat</div>
-                                        <div class="distribution-item-amount">2 exchanges</div>
+                                        <div class="distribution-item-amount">2 Household Measurements</div>
                                     </div>
                                     <div class="distribution-item">
                                         <div class="distribution-item-icon">
                                             <i class="fas fa-oil-can"></i>
                                         </div>
                                         <div class="distribution-item-name">Fat</div>
-                                        <div class="distribution-item-amount">1 exchange</div>
+                                        <div class="distribution-item-amount">1 Household Measurement</div>
                                     </div>
                                     <div class="distribution-item">
                                         <div class="distribution-item-icon">
                                             <i class="fas fa-cube"></i>
                                         </div>
                                         <div class="distribution-item-name">Sugar</div>
-                                        <div class="distribution-item-amount">1 exchange</div>
+                                        <div class="distribution-item-amount">1 Household Measurement</div>
                                     </div>
                                 </div>
                                 <div class="distribution-summary">
                                     <div class="distribution-summary-item">
                                         <div class="distribution-summary-value">8</div>
-                                        <div class="distribution-summary-label">Total Exchanges</div>
+                                        <div class="distribution-summary-label">Total Household Measurements</div>
                                     </div>
                                     <div class="distribution-summary-item">
                                         <div class="distribution-summary-value">473</div>
@@ -2137,7 +2137,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <div class="distribution-card">
                                 <div class="distribution-header">
                                     <div class="distribution-title">Morning Snack</div>
-                                    <div class="distribution-exchange">3 exchanges</div>
+                                    <div class="distribution-exchange">3 Household Measurements</div>
                                 </div>
                                 <div class="distribution-time">
                                     <i class="fas fa-clock"></i>
@@ -2149,20 +2149,20 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                                             <i class="fas fa-apple-alt"></i>
                                         </div>
                                         <div class="distribution-item-name">Fruit</div>
-                                        <div class="distribution-item-amount">1 exchange</div>
+                                        <div class="distribution-item-amount">1 Household Measurement</div>
                                     </div>
                                     <div class="distribution-item">
                                         <div class="distribution-item-icon">
                                             <i class="fas fa-bread-slice"></i>
                                         </div>
                                         <div class="distribution-item-name">Rice B</div>
-                                        <div class="distribution-item-amount">2 exchanges</div>
+                                        <div class="distribution-item-amount">2 Household Measurements</div>
                                     </div>
                                 </div>
                                 <div class="distribution-summary">
                                     <div class="distribution-summary-item">
                                         <div class="distribution-summary-value">3</div>
-                                        <div class="distribution-summary-label">Total Exchanges</div>
+                                        <div class="distribution-summary-label">Total Household Measurements</div>
                                     </div>
                                     <div class="distribution-summary-item">
                                         <div class="distribution-summary-value">240</div>
@@ -2175,7 +2175,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <div class="distribution-card">
                                 <div class="distribution-header">
                                     <div class="distribution-title">Lunch</div>
-                                    <div class="distribution-exchange">7.5 exchanges</div>
+                                    <div class="distribution-exchange">7.5 Household Measurements</div>
                                 </div>
                                 <div class="distribution-time">
                                     <i class="fas fa-clock"></i>
@@ -2187,41 +2187,41 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                                             <i class="fas fa-carrot"></i>
                                         </div>
                                         <div class="distribution-item-name">Vegetables</div>
-                                        <div class="distribution-item-amount">½ exchange</div>
+                                        <div class="distribution-item-amount">½ Household Measurement</div>
                                     </div>
                                     <div class="distribution-item">
                                         <div class="distribution-item-icon">
                                             <i class="fas fa-apple-alt"></i>
                                         </div>
                                         <div class="distribution-item-name">Fruit</div>
-                                        <div class="distribution-item-amount">1 exchange</div>
+                                        <div class="distribution-item-amount">1 Household Measurement</div>
                                     </div>
                                     <div class="distribution-item">
                                         <div class="distribution-item-icon">
                                             <i class="fas fa-bread-slice"></i>
                                         </div>
                                         <div class="distribution-item-name">Rice B</div>
-                                        <div class="distribution-item-amount">4 exchanges</div>
+                                        <div class="distribution-item-amount">4 Household Measurements</div>
                                     </div>
                                     <div class="distribution-item">
                                         <div class="distribution-item-icon">
                                             <i class="fas fa-drumstick-bite"></i>
                                         </div>
                                         <div class="distribution-item-name">Medium Fat Meat</div>
-                                        <div class="distribution-item-amount">1 exchange</div>
+                                        <div class="distribution-item-amount">1 Household Measurement</div>
                                     </div>
                                     <div class="distribution-item">
                                         <div class="distribution-item-icon">
                                             <i class="fas fa-oil-can"></i>
                                         </div>
                                         <div class="distribution-item-name">Fat</div>
-                                        <div class="distribution-item-amount">1 exchange</div>
+                                        <div class="distribution-item-amount">1 Household Measurement</div>
                                     </div>
                                 </div>
                                 <div class="distribution-summary">
                                     <div class="distribution-summary-item">
                                         <div class="distribution-summary-value">7.5</div>
-                                        <div class="distribution-summary-label">Total Exchanges</div>
+                                        <div class="distribution-summary-label">Total Household Measurements</div>
                                     </div>
                                     <div class="distribution-summary-item">
                                         <div class="distribution-summary-value">579</div>
@@ -2234,7 +2234,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <div class="distribution-card">
                                 <div class="distribution-header">
                                     <div class="distribution-title">Afternoon Snack</div>
-                                    <div class="distribution-exchange">3 exchanges</div>
+                                    <div class="distribution-exchange">3 Household Measurements</div>
                                 </div>
                                 <div class="distribution-time">
                                     <i class="fas fa-clock"></i>
@@ -2246,20 +2246,20 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                                             <i class="fas fa-bread-slice"></i>
                                         </div>
                                         <div class="distribution-item-name">Rice A</div>
-                                        <div class="distribution-item-amount">1 exchange</div>
+                                        <div class="distribution-item-amount">1 Household Measurement</div>
                                     </div>
                                     <div class="distribution-item">
                                         <div class="distribution-item-icon">
                                             <i class="fas fa-cube"></i>
                                         </div>
                                         <div class="distribution-item-name">Sugar</div>
-                                        <div class="distribution-item-amount">2 exchanges</div>
+                                        <div class="distribution-item-amount">2 Household Measurements</div>
                                     </div>
                                 </div>
                                 <div class="distribution-summary">
                                     <div class="distribution-summary-item">
                                         <div class="distribution-summary-value">3</div>
-                                        <div class="distribution-summary-label">Total Exchanges</div>
+                                        <div class="distribution-summary-label">Total Household Measurements</div>
                                     </div>
                                     <div class="distribution-summary-item">
                                         <div class="distribution-summary-value">132</div>
@@ -2272,7 +2272,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <div class="distribution-card">
                                 <div class="distribution-header">
                                     <div class="distribution-title">Supper</div>
-                                    <div class="distribution-exchange">7.5 exchanges</div>
+                                    <div class="distribution-exchange">7.5 Household Measurements</div>
                                 </div>
                                 <div class="distribution-time">
                                     <i class="fas fa-clock"></i>
@@ -2284,34 +2284,34 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                                             <i class="fas fa-carrot"></i>
                                         </div>
                                         <div class="distribution-item-name">Vegetables</div>
-                                        <div class="distribution-item-amount">1½ exchanges</div>
+                                        <div class="distribution-item-amount">1½ Household Measurements</div>
                                     </div>
                                     <div class="distribution-item">
                                         <div class="distribution-item-icon">
                                             <i class="fas fa-apple-alt"></i>
                                         </div>
                                         <div class="distribution-item-name">Fruit</div>
-                                        <div class="distribution-item-amount">2 exchanges</div>
+                                        <div class="distribution-item-amount">2 Household Measurements</div>
                                     </div>
                                     <div class="distribution-item">
                                         <div class="distribution-item-icon">
                                             <i class="fas fa-bread-slice"></i>
                                         </div>
                                         <div class="distribution-item-name">Rice B</div>
-                                        <div class="distribution-item-amount">3 exchanges</div>
+                                        <div class="distribution-item-amount">3 Household Measurements</div>
                                     </div>
                                     <div class="distribution-item">
                                         <div class="distribution-item-icon">
                                             <i class="fas fa-drumstick-bite"></i>
                                         </div>
                                         <div class="distribution-item-name">Low Fat Meat</div>
-                                        <div class="distribution-item-amount">1 exchange</div>
+                                        <div class="distribution-item-amount">1 Household Measurement</div>
                                     </div>
                                 </div>
                                 <div class="distribution-summary">
                                     <div class="distribution-summary-item">
                                         <div class="distribution-summary-value">7.5</div>
-                                        <div class="distribution-summary-label">Total Exchanges</div>
+                                        <div class="distribution-summary-label">Total Household Measurements</div>
                                     </div>
                                     <div class="distribution-summary-item">
                                         <div class="distribution-summary-value">445</div>
@@ -2334,7 +2334,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <div class="meal-card">
                                 <div class="meal-header">
                                     <div class="meal-title">BREAKFAST</div>
-                                    <div class="meal-exchange">7 exchanges</div>
+                                    <div class="meal-exchange">7 Household Measurements</div>
                                 </div>
                                 <div class="menu-item">
                                     <div class="menu-food">Mango, ripe</div>
@@ -2374,7 +2374,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <div class="meal-card">
                                 <div class="meal-header">
                                     <div class="meal-title">AM SNACK</div>
-                                    <div class="meal-exchange">2 exchanges</div>
+                                    <div class="meal-exchange">2 Household Measurements</div>
                                 </div>
                                 <div class="menu-item">
                                     <div class="menu-food">Purple yam</div>
@@ -2390,7 +2390,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <div class="meal-card">
                                 <div class="meal-header">
                                     <div class="meal-title">LUNCH</div>
-                                    <div class="meal-exchange">5.5 exchanges</div>
+                                    <div class="meal-exchange">5.5 Household Measurements</div>
                                 </div>
                                 <div class="menu-item">
                                     <div class="menu-food">Chicken Thigh</div>
@@ -2418,7 +2418,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <div class="meal-card">
                                 <div class="meal-header">
                                     <div class="meal-title">PM SNACK</div>
-                                    <div class="meal-exchange">3 exchanges</div>
+                                    <div class="meal-exchange">3 Household Measurements</div>
                                 </div>
                                 <div class="menu-item">
                                     <div class="menu-food">Sweet potato, boiled</div>
@@ -2434,7 +2434,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <div class="meal-card">
                                 <div class="meal-header">
                                     <div class="meal-title">DINNER</div>
-                                    <div class="meal-exchange">6 exchanges</div>
+                                    <div class="meal-exchange">6 Household Measurements</div>
                                 </div>
                                 <div class="menu-item">
                                     <div class="menu-food">Bangus, sliced</div>
