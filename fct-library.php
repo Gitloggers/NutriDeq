@@ -74,6 +74,82 @@ function getFoodIcon(string $category): array
         return ['fa-oil-well', '#F5A623', 'rgba(245,166,35,0.1)'];
     if (str_contains($cat, 'meat') || str_contains($cat, 'poultry'))
         return ['fa-drumstick-bite', '#C0392B', 'rgba(192,57,43,0.1)'];
+<?php
+session_start();
+echo '<script>console.log("Current Role: ' . ($_SESSION['user_role'] ?? 'none') . '");</script>';
+require_once 'api/fct_helper.php';
+
+// Check login (Assuming standard auth)
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login-logout/NutriDeqN-Login.php');
+    exit();
+}
+
+$user_role = strtolower($_SESSION['user_role'] ?? 'guest');
+$fct = new FCTHelper();
+?>
+<script> 
+    const currentUserRole = '<?php echo $user_role; ?>'; 
+    console.log('Detected Role:', currentUserRole);
+</script>
+<?php
+
+// Get parameters
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$search = isset($_GET['search']) ? $_GET['search'] : '';
+$category = isset($_GET['cat']) ? $_GET['cat'] : '';
+
+$data = $fct->getFoodItems($page, 20, $search, $category);
+$items = $data['items'];
+$total_pages = $data['pages'];
+
+require_once 'navigation.php';
+$nav_links = getNavigationLinks($user_role, 'fct-library.php');
+
+$fct_categories = [
+    'Cereals and Cereal Products',
+    'Starchy Roots and Tubers',
+    'Nuts, Pulses and Seeds',
+    'Vegetables and Vegetable Products',
+    'Fruits and Fruit Products',
+    'Fish and Shellfish',
+    'Eggs and Egg Products',
+    'Milk and Milk Products',
+    'Fats and Oils',
+    'Meat and Poultry',
+    'Sweets and Condiments',
+    'Spices and Condiments',
+    'Beverages (Alcoholic and Non-Alcoholic)',
+    'Mixed Dishes / Prepared Foods',
+    'Baby Foods (Strained)',
+    'Seaweeds',
+    'Miscellaneous'
+];
+
+// Map food categories to an icon + accent color
+function getFoodIcon(string $category): array
+{
+    $cat = strtolower($category);
+    if (str_contains($cat, 'cereal'))
+        return ['fa-wheat-awn', '#E67E22', 'rgba(230,126,34,0.1)'];
+    if (str_contains($cat, 'starchy') || str_contains($cat, 'root') || str_contains($cat, 'tuber'))
+        return ['fa-carrot', '#E74C3C', 'rgba(231,76,60,0.1)'];
+    if (str_contains($cat, 'nut') || str_contains($cat, 'pulse') || str_contains($cat, 'seed'))
+        return ['fa-seedling', '#27AE60', 'rgba(39,174,96,0.1)'];
+    if (str_contains($cat, 'vegetable'))
+        return ['fa-leaf', '#2ECC71', 'rgba(46,204,113,0.1)'];
+    if (str_contains($cat, 'fruit'))
+        return ['fa-apple-whole', '#E91E8C', 'rgba(233,30,140,0.1)'];
+    if (str_contains($cat, 'fish') || str_contains($cat, 'shellfish'))
+        return ['fa-fish', '#3498DB', 'rgba(52,152,219,0.1)'];
+    if (str_contains($cat, 'egg'))
+        return ['fa-egg', '#FDD835', 'rgba(253,216,53,0.12)'];
+    if (str_contains($cat, 'milk'))
+        return ['fa-cow', '#00BCD4', 'rgba(0,188,212,0.1)'];
+    if (str_contains($cat, 'fat') || str_contains($cat, 'oil'))
+        return ['fa-oil-well', '#F5A623', 'rgba(245,166,35,0.1)'];
+    if (str_contains($cat, 'meat') || str_contains($cat, 'poultry'))
+        return ['fa-drumstick-bite', '#C0392B', 'rgba(192,57,43,0.1)'];
     if (str_contains($cat, 'sweet') || str_contains($cat, 'candy'))
         return ['fa-candy-cane', '#E91E63', 'rgba(233,30,99,0.1)'];
     if (str_contains($cat, 'spice') || str_contains($cat, 'condiment'))
@@ -103,187 +179,53 @@ function getFoodIcon(string $category): array
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/dashboard-interactive.css">
     <link rel="stylesheet" href="css/sidebar.css">
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="css/logout-modal.css">
+    <link rel="stylesheet" href="css/fct-style.css">
+    
+    <?php if ($user_role === 'admin'): ?>
+        <link rel="stylesheet" href="css/admin.css">
+    <?php elseif ($user_role === 'staff'): ?>
+        <link rel="stylesheet" href="css/staff.css">
+    <?php else: ?>
+        <link rel="stylesheet" href="css/user-premium.css">
+    <?php endif; ?>
+
+    <link rel="stylesheet" href="css/dashboard-premium.css">
+    <link rel="stylesheet" href="css/mobile-style.css">
+    
     <!-- Choices.js (Base Styles First) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
-    <link rel="stylesheet" href="css/fct-style.css">
-    <link rel="stylesheet" href="css/dashboard-premium.css">
-    <!-- Platform Specific Styles -->
-    <link rel="stylesheet" href="css/desktop-style.css" media="all and (min-width: 1025px)">
-    <link rel="stylesheet" href="css/mobile-style.css" media="all and (max-width: 1024px)">
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-    <!-- dashboard.js included via sidebar.php -->
-    <!-- Final Choices.js Polish - Highest specificity, loaded last -->
     <style>
-        /* ===== NUCLEAR FIX: Dropdown must float, not push content ===== */
+        /* Choices.js Dropdown Polish */
         .choices {
             position: relative !important;
             overflow: visible !important;
             margin-bottom: 0 !important;
         }
         .choices__list--dropdown {
-            position: absolute !important;
-            top: 100% !important;
-            left: 0 !important;
-            width: 100% !important;
             z-index: 100000 !important;
-            background-color: #ffffff !important;
-            opacity: 1 !important;
-            visibility: visible !important;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23) !important;
-            border-radius: 0 0 8px 8px !important;
-            border: 1px solid #2D8A56 !important;
-            margin-top: 0 !important;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
         }
-        /* Prevent ALL parents from clipping the dropdown */
-        .choices__inner, .choices__list,
-        .ant-space-compact, .ant-input-wrapper,
-        .ant-controls-group, .card,
-        /* CRITICAL: Ensure dash-panel doesn't clip its children */
-        .dash-panel {
+        .choices__inner, .choices__list, .ant-space-compact, .ant-input-wrapper, .ant-controls-group, .card, .dash-panel {
             overflow: visible !important;
         }
-        /* Dark readable text inside dropdown items */
-        .choices__item--choice {
-            color: #333333 !important;
-            padding: 10px 15px !important;
-        }
-        /* Hover: subtle gray bg + brand green text */
-        .choices__item--selectable.is-highlighted {
-            background-color: #f5f5f5 !important;
-            color: #2D8A56 !important;
-        }
-        /* ===== SEARCH BAR ROW: unified flex layout ===== */
-        .ant-space-compact {
-            display: flex !important;
-            align-items: stretch !important;
-            width: 100% !important;
-        }
-        .ant-space-compact .ant-input-wrapper {
-            flex-grow: 1 !important;
-            height: 45px !important;
-            min-height: 45px !important;
-        }
-        .ant-space-compact .choices {
-            width: 250px !important;
-            flex-shrink: 0 !important;
-        }
-        .ant-space-compact .choices__inner {
-            height: 45px !important;
-            min-height: 45px !important;
-        }
-        /* ===== SCROLL FIX: limit height, add scrollbar ===== */
-        .choices__list--dropdown .choices__list {
-            max-height: 300px !important;
-            overflow-y: auto !important;
-        }
-        /* Keep search icon above the dropdown overlay */
-        .ant-input-prefix {
-            position: relative !important;
-            z-index: 3 !important;
-            color: #9ca3af;
-            flex-shrink: 0;
-        }
 
-        /* TASK 1: Fix Mobile Content Cutoffs */
+        /* Mobile Adjustments */
         @media (max-width: 768px) {
             .page-container, .fct-container, .table-container, .main-content {
-                box-sizing: border-box !important;
                 padding-left: 15px !important;
                 padding-right: 15px !important;
                 margin-left: 0 !important;
-                overflow-x: hidden !important; 
-            }
-            .fct-table td[data-label="Food ID"] {
-                position: relative !important;
-                top: auto !important;
-                right: auto !important;
-                display: inline-block !important;
-                margin-bottom: 8px !important;
-            }
-            .fct-table td {
-                margin-left: 0 !important;
-            }
-            .fct-table tbody tr {
-                margin-left: 0 !important;
-                margin-right: 0 !important;
-                width: 100% !important;
-                box-sizing: border-box !important;
             }
         }
-    
-        
-</style>
-    <!-- MOBILE FALLBACK FIXES -->
-    <style>
-    @media (max-width: 1024px) {
-        .main-content, .page-container, main { padding-bottom: 120px !important; margin-bottom: 120px !important; }
-        .table-responsive, .table-container, .card-body, .ant-table-wrapper {
-            width: 100vw !important;
-            max-width: 100% !important;
-            overflow-x: auto !important;
-            -webkit-overflow-scrolling: touch !important;
-            display: block !important;
-        }
-        table { min-width: 800px !important; display: table !important; }
-        thead, tbody, tr { width: 100% !important; }
-        
-        /* Form & Search Bar Fixes */
-        form > div[style*="grid-template-columns"] {
-            grid-template-columns: 1fr !important;
-            gap: 12px !important;
-        }
-        
-        /* Activity Feed / Card Fixes */
-        .activity-content > div {
-            flex-direction: column !important;
-            align-items: flex-start !important;
-            gap: 14px !important;
-        }
-        .ant-btn-group {
-            display: flex !important;
-            gap: 8px !important;
-            width: 100% !important;
-            margin-top: 4px !important;
-        }
-        .activity-content div[style*="align-items: center; gap: 8px"] {
-            flex-wrap: wrap !important;
-            height: auto !important;
-            align-items: flex-start !important;
-            flex-direction: column !important;
-        }
-        .profile-badge {
-            height: auto !important;
-            padding: 6px 12px !important;
-            line-height: 1.3 !important;
-            text-align: left !important;
-            white-space: normal !important;
-            border-radius: 12px !important; 
-            display: inline-block !important;
-            width: fit-content !important;
-        }
-        .dash-hero-ribbon { padding: 20px !important; }
-        .dash-hero-ribbon h1 { font-size: 1.8rem !important; }
-        
-        .search-box { 
-            width: 100% !important; 
-            box-sizing: border-box !important;
-            border-radius: 12px !important;
-            padding: 0 16px !important;
-        }
-        .search-box input { width: 100% !important; }
-        .choices { width: 100% !important; }
-    }
     </style>
 </head>
 
 <body>
-    <div class="main-layout">
-        <!-- Sidebar Navigation (provides global mobile-header and toggle) -->
         <?php include 'includes/sidebar.php'; ?>
 
         <main class="main-content">
