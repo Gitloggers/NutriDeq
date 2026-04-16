@@ -83,6 +83,7 @@ if (isset($_SESSION['error'])) {
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="manifest" href="../manifest.json">
     <title>NutriDeq - Portal Authentication</title>
+    <link rel="icon" type="image/png" href="../assets/img/logo.png">
     <link rel="stylesheet" href="../css/base.css?v=205">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>

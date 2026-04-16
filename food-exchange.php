@@ -35,6 +35,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
     <title>Food Exchange Lists | NutriDeq</title>
+    <link rel="icon" type="image/png" href="assets/img/logo.png">
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
