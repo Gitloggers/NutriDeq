@@ -38,7 +38,7 @@ $nav_links = getNavigationLinks($user_role, 'dietary-information.php');
     <script src="scripts/theme-toggle.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
-    <title>NutriDeq - Nutrient Terminal</title>
+    <title>NutriDeq - Nutrient Calculator</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/base.css">
@@ -214,8 +214,8 @@ $nav_links = getNavigationLinks($user_role, 'dietary-information.php');
             <div class="page-container" style="position: relative; z-index: 10;">
                 <div class="header">
                     <div class="page-title">
-                        <h1 style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 2.1rem; letter-spacing: -0.02em; color: #1e293b; margin: 0;">Nutrient Terminal</h1>
-                        <p style="font-weight: 600; color: #64748b; font-size: 0.95rem; margin-top: 4px;">Clinical Nutrient Percentage Diagnostic Engine</p>
+                        <h1 style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 2.1rem; letter-spacing: -0.02em; color: #1e293b; margin: 0;">Nutrient Calculator</h1>
+                        <p style="font-weight: 600; color: #64748b; font-size: 0.95rem; margin-top: 4px;">Convert nutrient weights into daily percentages</p>
                     </div>
                 </div>
 
@@ -225,7 +225,7 @@ $nav_links = getNavigationLinks($user_role, 'dietary-information.php');
                     <div class="terminal-panel stagger d-1">
                         <div style="border:none; padding:0; margin-bottom:20px; display: flex; align-items: center; justify-content: space-between;">
                             <h2 style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.25rem; margin: 0; color: #1e293b;">
-                                <i class="fas fa-microscope" style="color:#10b981; margin-right:12px;"></i> Bio-Scan Inputs
+                                <i class="fas fa-keyboard" style="color:#10b981; margin-right:12px;"></i> Enter Nutrient Values
                             </h2>
                         </div>
 
@@ -239,7 +239,7 @@ $nav_links = getNavigationLinks($user_role, 'dietary-information.php');
                             </div>
                         </div>
 
-                        <p style="color: #64748b; font-size: 0.95rem; margin-bottom: 24px; font-weight: 500;">Select target nutrients and input the weight per serving size to begin diagnostic scan.</p>
+                        <p style="color: #64748b; font-size: 0.95rem; margin-bottom: 24px; font-weight: 500;">Select a category and enter the weight of each nutrient found on your food label.</p>
 
                         <!-- Minerals Tab -->
                         <div id="group-essentials" class="nutrient-tab-content">
@@ -299,7 +299,7 @@ $nav_links = getNavigationLinks($user_role, 'dietary-information.php');
 
                         <div style="display: flex; gap: 12px; margin-top: 24px;">
                             <button class="btn-dash-action" id="calculateBtn" style="background: #10b981; color: white; border: none; flex: 1; padding: 14px; border-radius: 16px; font-weight: 800; font-size: 1rem; box-shadow: 0 8px 20px rgba(16, 185, 129, 0.2);">
-                                <i class="fas fa-calculator" style="margin-right: 8px;"></i> Bio-Calculate
+                                <i class="fas fa-play" style="margin-right: 8px;"></i> Calculate Now
                             </button>
                             <button class="btn-dash-action" id="resetBtn" style="padding: 14px; border-radius: 16px; font-weight: 800; border: 1.5px solid #e2e8f0; font-size: 1rem;">
                                 <i class="fas fa-redo" style="margin-right: 8px;"></i> Reset
@@ -311,13 +311,13 @@ $nav_links = getNavigationLinks($user_role, 'dietary-information.php');
                     <div class="terminal-panel stagger d-2" style="height: fit-content;">
                         <div style="border:none; padding:0; margin-bottom:20px;">
                             <h2 style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.25rem; margin: 0; color: #1e293b;">
-                                <i class="fas fa-chart-line" style="color:#10b981; margin-right:12px;"></i> Diagnostic Output
+                                <i class="fas fa-chart-pie" style="color:#10b981; margin-right:12px;"></i> Your Results
                             </h2>
                         </div>
 
                         <div id="emptyState" style="text-align: center; padding: 70px 20px; color: #64748b;">
                             <i class="fas fa-satellite-dish fa-3x" style="opacity: 0.15; margin-bottom: 20px; animation: pulse-glass 2s infinite;"></i>
-                            <p style="font-weight: 600; font-size: 1rem;">Awaiting bio-input...</p>
+                            <p style="font-weight: 600; font-size: 1rem;">Waiting for your entry...</p>
                         </div>
 
                         <div id="calculatedResults" style="display: none;">
@@ -327,11 +327,10 @@ $nav_links = getNavigationLinks($user_role, 'dietary-information.php');
 
                             <div class="disclaimer-box" style="margin-top: 48px; background: rgba(239, 68, 68, 0.06); border: 1.5px solid rgba(239, 68, 68, 0.15); padding: 24px; border-radius: 24px;">
                                 <h4 style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 0.95rem; color: #ef4444; margin: 0 0 12px 0;">
-                                    <i class="fas fa-triangle-exclamation"></i> CLINICAL NOTICE
+                                    <i class="fas fa-circle-info"></i> MEDICAL REMINDER
                                 </h4>
                                 <p style="font-size: 0.88rem; color: #4b5563; line-height: 1.6; margin: 0; font-weight: 500;">
-                                    Diagnostic data is for visual optimization only. Limit sodium intake to &lt; 2000mg/day for clinical safety. 
-                                    Do not use this for official food labeling.
+                                    Results are estimates based on standard daily values. For professional dietary advice, please consult your Nutrideq dietician or a doctor.
                                 </p>
                             </div>
                         </div>
@@ -389,7 +388,7 @@ $nav_links = getNavigationLinks($user_role, 'dietary-information.php');
                     });
 
                     if (selected.length === 0) {
-                        alert('Calibration Failed: Please enter nutrient weights above 0.');
+                        alert('Calculation stopped: Please enter a weight higher than 0.');
                         return;
                     }
 
@@ -427,8 +426,8 @@ $nav_links = getNavigationLinks($user_role, 'dietary-information.php');
                     emptyState.style.display = 'none';
                     calculatedResults.style.display = 'block';
                     
-                    this.innerHTML = '<i class="fas fa-check"></i> Calculation Optimized';
-                    setTimeout(() => { this.innerHTML = '<i class="fas fa-calculator"></i> Execute Bio-Calculation'; }, 2000);
+                    this.innerHTML = '<i class="fas fa-check"></i> Calculation Ready';
+                    setTimeout(() => { this.innerHTML = '<i class="fas fa-play"></i> Calculate Now'; }, 2000);
                 });
 
                 resetBtn.addEventListener('click', function () {
