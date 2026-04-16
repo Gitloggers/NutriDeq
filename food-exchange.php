@@ -800,20 +800,23 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
         /* ── Distribution Grid ── */
         .distribution-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 15px;
             margin-top: 20px;
         }
 
         .distribution-card {
             background: var(--bg-surface);
-            border-radius: 20px;
-            padding: 22px;
+            border-radius: 18px;
+            padding: 15px;
             border: 1px solid var(--border-color);
-            transition: all 0.3s;
+            transition: all 0.35s;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
         .distribution-card::before {
@@ -834,7 +837,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
         }
 
         .distribution-card:hover {
-            transform: translateY(-6px);
+            transform: translateY(-5px);
             box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
         }
 
@@ -842,34 +845,34 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 14px;
-            padding-bottom: 12px;
+            padding-bottom: 8px;
             border-bottom: 1px solid var(--border-color);
+            margin-bottom: 2px;
         }
 
         .distribution-title {
             font-family: 'Outfit', sans-serif;
             font-weight: 800;
             color: var(--primary);
-            font-size: 1rem;
+            font-size: 0.95rem;
         }
 
         .distribution-exchange {
-            font-size: 0.8rem;
+            font-size: 0.72rem;
             font-weight: 700;
             background: rgba(5, 150, 105, 0.1);
             color: var(--primary);
-            padding: 4px 10px;
-            border-radius: 20px;
+            padding: 2px 8px;
+            border-radius: 6px;
         }
 
         .distribution-time {
             display: flex;
             align-items: center;
             gap: 6px;
-            font-size: 0.82rem;
+            font-size: 0.75rem;
             color: var(--text-secondary);
-            margin-bottom: 14px;
+            margin-bottom: 10px;
             font-weight: 600;
         }
 
@@ -880,9 +883,9 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
         .distribution-item {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 8px 0;
-            border-bottom: 1px dashed rgba(0, 0, 0, 0.06);
+            gap: 8px;
+            padding: 4px 0;
+            border-bottom: 1px dashed rgba(0, 0, 0, 0.04);
         }
 
         .distribution-item:last-child {
@@ -890,14 +893,14 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
         }
 
         .distribution-item-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 10px;
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
             background: rgba(5, 150, 105, 0.08);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: var(--primary);
             flex-shrink: 0;
         }
@@ -905,20 +908,20 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
         .distribution-item-name {
             flex: 1;
             font-weight: 600;
-            font-size: 0.88rem;
+            font-size: 0.82rem;
         }
 
         .distribution-item-amount {
             font-weight: 700;
-            font-size: 0.85rem;
+            font-size: 0.78rem;
             color: var(--primary);
         }
 
         .distribution-summary {
             display: flex;
-            gap: 12px;
-            margin-top: 16px;
-            padding-top: 14px;
+            gap: 10px;
+            margin-top: auto;
+            padding-top: 10px;
             border-top: 1px solid var(--border-color);
         }
 
@@ -929,16 +932,17 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
 
         .distribution-summary-value {
             font-family: 'Outfit', sans-serif;
-            font-size: 1.5rem;
+            font-size: 1.15rem;
             font-weight: 800;
             color: var(--primary);
         }
 
         .distribution-summary-label {
-            font-size: 0.75rem;
+            font-size: 0.6rem;
             color: var(--text-secondary);
             font-weight: 600;
             text-transform: uppercase;
+            letter-spacing: 0.02em;
         }
 
         /* ── Meal Cards Premium Overhaul (Compressed) ── */
