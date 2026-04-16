@@ -679,22 +679,33 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
         }
 
         .macronutrient-energy {
-            background: var(--primary);
-            color: #fff;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 700;
+            background: rgba(5, 150, 105, 0.1);
+            color: var(--primary);
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            border: 1px solid rgba(5, 150, 105, 0.2);
+            box-shadow: 0 4px 10px rgba(5, 150, 105, 0.1);
         }
 
-        /* ── Macronutrient Color Indicators ── */
-        .macronutrient-card.group-i { border-left: 5px solid #4ade80 !important; }
-        .macronutrient-card.group-ii { border-left: 5px solid #fde047 !important; }
-        .macronutrient-card.group-iii { border-left: 5px solid #e5e7eb !important; }
-        .macronutrient-card.group-iv { border-left: 5px solid #c0a13e !important; }
-        .macronutrient-card.group-v { border-left: 5px solid #f87171 !important; }
-        .macronutrient-card.group-vi { border-left: 5px solid #fb923c !important; }
-        .macronutrient-card.group-vii { border-left: 5px solid #60a5fa !important; }
+        /* ── Chromatic Glass Levels ── */
+        .macronutrient-card.group-i { background: rgba(74, 222, 128, 0.03) !important; border-left: 5px solid #4ade80 !important; }
+        .macronutrient-card.group-ii { background: rgba(253, 224, 71, 0.03) !important; border-left: 5px solid #fde047 !important; }
+        .macronutrient-card.group-iii { background: rgba(229, 231, 235, 0.03) !important; border-left: 5px solid #e5e7eb !important; }
+        .macronutrient-card.group-iv { background: rgba(192, 161, 62, 0.03) !important; border-left: 5px solid #c0a13e !important; }
+        .macronutrient-card.group-v { background: rgba(248, 113, 113, 0.03) !important; border-left: 5px solid #f87171 !important; }
+        .macronutrient-card.group-vi { background: rgba(251, 146, 60, 0.03) !important; border-left: 5px solid #fb923c !important; }
+        .macronutrient-card.group-vii { background: rgba(96, 165, 250, 0.03) !important; border-left: 5px solid #60a5fa !important; }
+
+        /* ── Glowing Hover States ── */
+        .macronutrient-card.group-i:hover { box-shadow: 0 15px 35px rgba(74, 222, 128, 0.15) !important; }
+        .macronutrient-card.group-ii:hover { box-shadow: 0 15px 35px rgba(253, 224, 71, 0.15) !important; }
+        .macronutrient-card.group-iii:hover { box-shadow: 0 15px 35px rgba(229, 231, 235, 0.15) !important; }
+        .macronutrient-card.group-iv:hover { box-shadow: 0 15px 35px rgba(192, 161, 62, 0.15) !important; }
+        .macronutrient-card.group-v:hover { box-shadow: 0 15px 35px rgba(248, 113, 113, 0.15) !important; }
+        .macronutrient-card.group-vi:hover { box-shadow: 0 15px 35px rgba(251, 146, 60, 0.15) !important; }
+        .macronutrient-card.group-vii:hover { box-shadow: 0 15px 35px rgba(96, 165, 250, 0.15) !important; }
 
         .group-num {
             font-family: 'Outfit', sans-serif;
@@ -702,25 +713,31 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
             font-size: 0.75rem;
             opacity: 0.4;
             margin-right: 8px;
+            color: var(--text-secondary);
         }
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 700;
+
+        .macronutrient-title i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+            opacity: 0.8;
         }
 
         .macronutrient-values {
             display: flex;
             justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px dashed rgba(0, 0, 0, 0.06);
+            align-items: center;
+            padding: 8px 10px;
+            margin: 0 -10px;
+            border-bottom: 1px dashed rgba(0, 0, 0, 0.04);
             font-size: 0.88rem;
-            transition: all 0.2s;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            border-radius: 8px;
         }
 
         .macronutrient-values:hover {
-            transform: translateX(4px);
+            background: rgba(5, 150, 105, 0.04);
+            transform: translateX(6px);
+            padding-right: 4px;
         }
 
         .macronutrient-values:last-child {
@@ -1803,7 +1820,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <!-- Vegetable Card -->
                             <div class="macronutrient-card group-i">
                                 <div class="macronutrient-header">
-                                    <div class="macronutrient-title"><span class="group-num">I</span>Vegetable</div>
+                                    <div class="macronutrient-title"><span class="group-num">I</span> <i class="fas fa-carrot" style="color:#4ade80"></i> Vegetable</div>
                                     <div class="macronutrient-energy">16 kcal</div>
                                 </div>
                                 <div class="macronutrient-values">
@@ -1823,7 +1840,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <!-- Fruit Card -->
                             <div class="macronutrient-card group-ii">
                                 <div class="macronutrient-header">
-                                    <div class="macronutrient-title"><span class="group-num">II</span>Fruit</div>
+                                    <div class="macronutrient-title"><span class="group-num">II</span> <i class="fas fa-apple-whole" style="color:#fde047"></i> Fruit</div>
                                     <div class="macronutrient-energy">40 kcal</div>
                                 </div>
                                 <div class="macronutrient-values">
@@ -1843,7 +1860,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <!-- Whole Milk Card -->
                             <div class="macronutrient-card group-iii">
                                 <div class="macronutrient-header">
-                                    <div class="macronutrient-title"><span class="group-num">III</span>Milk - Whole</div>
+                                    <div class="macronutrient-title"><span class="group-num">III</span> <i class="fas fa-glass-water" style="color:#94a3b8"></i> Milk - Whole</div>
                                     <div class="macronutrient-energy">170 kcal</div>
                                 </div>
                                 <div class="macronutrient-values">
@@ -1863,7 +1880,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <!-- Low Fat Milk Card -->
                             <div class="macronutrient-card group-iii">
                                 <div class="macronutrient-header">
-                                    <div class="macronutrient-title"><span class="group-num">III</span>Milk - Low Fat</div>
+                                    <div class="macronutrient-title"><span class="group-num">III</span> <i class="fas fa-glass-water" style="color:#94a3b8"></i> Milk - Low Fat</div>
                                     <div class="macronutrient-energy">125 kcal</div>
                                 </div>
                                 <div class="macronutrient-values">
@@ -1883,7 +1900,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <!-- Non-Fat Milk Card -->
                             <div class="macronutrient-card group-iii">
                                 <div class="macronutrient-header">
-                                    <div class="macronutrient-title"><span class="group-num">III</span>Milk - Non-Fat</div>
+                                    <div class="macronutrient-title"><span class="group-num">III</span> <i class="fas fa-glass-water" style="color:#94a3b8"></i> Milk - Non-Fat</div>
                                     <div class="macronutrient-energy">80 kcal</div>
                                 </div>
                                 <div class="macronutrient-values">
@@ -1903,7 +1920,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <!-- Low Protein Rice Card -->
                             <div class="macronutrient-card group-iv">
                                 <div class="macronutrient-header">
-                                    <div class="macronutrient-title"><span class="group-num">IV</span>Rice - Low Protein</div>
+                                    <div class="macronutrient-title"><span class="group-num">IV</span> <i class="fas fa-bowl-rice" style="color:#c0a13e"></i> Rice - Low Protein</div>
                                     <div class="macronutrient-energy">92 kcal</div>
                                 </div>
                                 <div class="macronutrient-values">
@@ -1923,7 +1940,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <!-- Medium Protein Rice Card -->
                             <div class="macronutrient-card group-iv">
                                 <div class="macronutrient-header">
-                                    <div class="macronutrient-title"><span class="group-num">IV</span>Rice - Medium Protein</div>
+                                    <div class="macronutrient-title"><span class="group-num">IV</span> <i class="fas fa-bowl-rice" style="color:#c0a13e"></i> Rice - Medium Protein</div>
                                     <div class="macronutrient-energy">100 kcal</div>
                                 </div>
                                 <div class="macronutrient-values">
@@ -1943,7 +1960,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <!-- High Protein Rice Card -->
                             <div class="macronutrient-card group-iv">
                                 <div class="macronutrient-header">
-                                    <div class="macronutrient-title"><span class="group-num">IV</span>Rice - High Protein</div>
+                                    <div class="macronutrient-title"><span class="group-num">IV</span> <i class="fas fa-bowl-rice" style="color:#c0a13e"></i> Rice - High Protein</div>
                                     <div class="macronutrient-energy">108 kcal</div>
                                 </div>
                                 <div class="macronutrient-values">
@@ -1963,7 +1980,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <!-- Low Fat Meat Card -->
                             <div class="macronutrient-card group-v">
                                 <div class="macronutrient-header">
-                                    <div class="macronutrient-title"><span class="group-num">V</span>Meat - Low Fat</div>
+                                    <div class="macronutrient-title"><span class="group-num">V</span> <i class="fas fa-drumstick-bite" style="color:#f87171"></i> Meat - Low Fat</div>
                                     <div class="macronutrient-energy">41 kcal</div>
                                 </div>
                                 <div class="macronutrient-values">
@@ -1983,7 +2000,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <!-- Medium Fat Meat Card -->
                             <div class="macronutrient-card group-v">
                                 <div class="macronutrient-header">
-                                    <div class="macronutrient-title"><span class="group-num">V</span>Meat - Medium Fat</div>
+                                    <div class="macronutrient-title"><span class="group-num">V</span> <i class="fas fa-drumstick-bite" style="color:#f87171"></i> Meat - Medium Fat</div>
                                     <div class="macronutrient-energy">86 kcal</div>
                                 </div>
                                 <div class="macronutrient-values">
@@ -2003,7 +2020,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <!-- High Fat Meat Card -->
                             <div class="macronutrient-card group-v">
                                 <div class="macronutrient-header">
-                                    <div class="macronutrient-title"><span class="group-num">V</span>Meat - High Fat</div>
+                                    <div class="macronutrient-title"><span class="group-num">V</span> <i class="fas fa-drumstick-bite" style="color:#f87171"></i> Meat - High Fat</div>
                                     <div class="macronutrient-energy">122 kcal</div>
                                 </div>
                                 <div class="macronutrient-values">
@@ -2023,7 +2040,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <!-- Fat Card -->
                             <div class="macronutrient-card group-vi">
                                 <div class="macronutrient-header">
-                                    <div class="macronutrient-title"><span class="group-num">VI</span>Fat</div>
+                                    <div class="macronutrient-title"><span class="group-num">VI</span> <i class="fas fa-droplet" style="color:#fb923c"></i> Fat</div>
                                     <div class="macronutrient-energy">45 kcal</div>
                                 </div>
                                 <div class="macronutrient-values">
@@ -2043,7 +2060,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <!-- Sugar Card -->
                             <div class="macronutrient-card group-vii">
                                 <div class="macronutrient-header">
-                                    <div class="macronutrient-title"><span class="group-num">VII</span>Sugar</div>
+                                    <div class="macronutrient-title"><span class="group-num">VII</span> <i class="fas fa-cubes-stacked" style="color:#60a5fa"></i> Sugar</div>
                                     <div class="macronutrient-energy">20 kcal</div>
                                 </div>
                                 <div class="macronutrient-values">
