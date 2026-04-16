@@ -1396,8 +1396,8 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                                                 </tr>
                                                 <tr>
                                                     <td class="food-subgroup">Whole Milk</td>
-                                                    <td><span class="exchange-value">1</span></td>
-                                                    <td><span class="exchange-value">1</span></td>
+                                                    <td><span class="exchange-value">-</span></td>
+                                                    <td><span class="exchange-value">-</span></td>
                                                     <td><span class="exchange-value">1</span></td>
                                                     <td><span class="exchange-value">1</span></td>
                                                     <td><span class="exchange-value highlight">1</span></td>
@@ -1482,11 +1482,11 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                                                 <tr>
                                                     <td class="food-subgroup">High Protein</td>
                                                     <td><span class="exchange-value">-</span></td>
+                                                    <td><span class="exchange-value">-</span></td>
                                                     <td><span class="exchange-value">1</span></td>
                                                     <td><span class="exchange-value">1</span></td>
-                                                    <td><span class="exchange-value">2</span></td>
-                                                    <td><span class="exchange-value highlight">1</span></td>
-                                                    <td><span class="exchange-value">2</span></td>
+                                                    <td><span class="exchange-value highlight">2</span></td>
+                                                    <td><span class="exchange-value">1</span></td>
                                                     <td><span class="exchange-value">2</span></td>
                                                     <td><span class="exchange-value">2</span></td>
                                                     <td><span class="exchange-value">2</span></td>
