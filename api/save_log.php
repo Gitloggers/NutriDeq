@@ -17,14 +17,10 @@ if ($user_role !== 'user' && $user_role !== 'regular') {
 }
 
 $user_id = $_SESSION['user_id'];
-$food_item_ids = $_POST['food_item_ids'] ?? [];
-if (!is_array($food_item_ids) && !empty($_POST['food_item_id'])) {
-    $food_item_ids = [$_POST['food_item_id']];
-}
 $meal_type = $_POST['meal_type'] ?? '';
-$serving_size = $_POST['serving_size'] ?? 100;
+$batch_data = $_POST['batch_data'] ?? null;
 
-if (empty($food_item_ids) || !$meal_type) {
+if (!$meal_type || (!$batch_data && empty($_POST['food_item_ids']))) {
     echo json_encode(['success' => false, 'message' => 'Missing required data']);
     exit();
 }
@@ -34,20 +30,41 @@ try {
     $conn = $db->getConnection();
     $fct = new FCTHelper();
     
+    // Auto-migration: Ensure columns exist
+    try {
+        $conn->exec("ALTER TABLE food_logs ADD COLUMN IF NOT EXISTS serving_unit VARCHAR(50) DEFAULT 'g' AFTER serving_size");
+        $conn->exec("ALTER TABLE food_logs ADD COLUMN IF NOT EXISTS display_size VARCHAR(100) AFTER serving_unit");
+    } catch (Exception $e) { /* Ignore if exists or error */ }
+
     $conn->beginTransaction();
 
-    $sql = "INSERT INTO food_logs (user_id, food_id, food_name, calories, protein, carbs, fat, serving_size, meal_type, log_date) 
-            VALUES (:user_id, :food_id, :food_name, :calories, :protein, :carbs, :fat, :serving_size, :meal_type, :log_date)";
+    $sql = "INSERT INTO food_logs (user_id, food_id, food_name, calories, protein, carbs, fat, serving_size, serving_unit, display_size, meal_type, log_date) 
+            VALUES (:user_id, :food_id, :food_name, :calories, :protein, :carbs, :fat, :serving_size, :unit, :display, :meal_type, :log_date)";
     $stmt = $conn->prepare($sql);
 
-    foreach ($food_item_ids as $id) {
+    // Parse items to process
+    $items_to_process = [];
+    if ($batch_data) {
+        $items_to_process = json_decode($batch_data, true);
+    } else {
+        // Fallback for legacy calls
+        $ids = $_POST['food_item_ids'] ?? [$_POST['food_item_id']];
+        foreach ($ids as $id) {
+            $items_to_process[] = ['id' => $id, 'grams' => $_POST['serving_size'] ?? 100, 'display_size' => ($_POST['serving_size'] ?? 100) . ' g'];
+        }
+    }
+
+    foreach ($items_to_process as $item_data) {
+        $id = $item_data['id'];
+        $grams = $item_data['grams'];
+        $display = $item_data['display_size'] ?? ($grams . ' g');
+
         $details = $fct->getDetails($id);
         if (!$details) continue;
 
         $food = $details['item'];
         $nutrients = $details['nutrients'];
 
-        // Helper to find nutrient value
         $getNutrientVal = function($nutrients, $name) {
             foreach ($nutrients as $n) {
                 if (stripos($n['nutrient_name'], $name) !== false) {
@@ -62,7 +79,7 @@ try {
         $base_carbs = $getNutrientVal($nutrients, 'Carbohydrate');
         $base_fat = $getNutrientVal($nutrients, 'Fat');
 
-        $ratio = (float)$serving_size / 100;
+        $ratio = (float)$grams / 100;
 
         $stmt->execute([
             ':user_id' => $user_id,
@@ -72,7 +89,9 @@ try {
             ':protein' => $base_protein * $ratio,
             ':carbs' => $base_carbs * $ratio,
             ':fat' => $base_fat * $ratio,
-            ':serving_size' => $serving_size,
+            ':serving_size' => $grams,
+            ':unit' => 'g',
+            ':display' => $display,
             ':meal_type' => $meal_type,
             ':log_date' => date('Y-m-d')
         ]);

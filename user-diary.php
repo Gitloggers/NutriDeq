@@ -589,7 +589,7 @@ $nav_links = getNavigationLinks($user_role, 'user-diary.php');
                                     <div class="food-item">
                                         <div class="food-info">
                                             <h4><?php echo htmlspecialchars($item['food_name']); ?></h4>
-                                            <p><?php echo number_format($item['serving_size'], 0); ?>g serving</p>
+                                            <p><?php echo htmlspecialchars($item['display_size'] ?: number_format($item['serving_size'], 0) . 'g'); ?></p>
                                         </div>
                                         <div class="food-macros">
                                             <span class="cals"><?php echo number_format($item['calories'], 0); ?> kcal</span>
@@ -741,7 +741,7 @@ $nav_links = getNavigationLinks($user_role, 'user-diary.php');
                             <?php foreach($items as $it): ?>
                             <tr style="border-top:1px solid #f1f5f9;">
                                 <td style="padding:9px 14px; font-weight:600; color:#1e293b;"><?php echo htmlspecialchars($it['food_name']); ?></td>
-                                <td style="padding:9px; text-align:center; color:#64748b;"><?php echo number_format($it['serving_size']??100,0); ?>g</td>
+                                <td style="padding:9px; text-align:center; color:#64748b;"><?php echo htmlspecialchars($it['display_size'] ?: number_format($it['serving_size'], 0) . 'g'); ?></td>
                                 <td style="padding:9px; text-align:center; font-weight:700; color:#ef4444;"><?php echo number_format($it['calories'],0); ?></td>
                                 <td style="padding:9px; text-align:center; color:#3b82f6;"><?php echo number_format($it['protein'],1); ?>g</td>
                                 <td style="padding:9px; text-align:center; color:#f59e0b;"><?php echo number_format($it['carbs'],1); ?>g</td>
@@ -797,8 +797,18 @@ $nav_links = getNavigationLinks($user_role, 'user-diary.php');
                 </div>
                 
                 <div style="margin-bottom: 15px;">
-                    <label style="display: block; margin-bottom: 5px; font-weight: 500;">Servings (grams)</label>
-                    <input type="number" name="serving_size" class="form-control" placeholder="0" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500;">Serving Quantity</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="number" name="serving_size" id="customServingVal" class="form-control" placeholder="0" required style="flex: 2; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                        <select name="serving_unit" id="customServingUnit" class="form-control" style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                            <option value="g">grams</option>
+                            <option value="ml">ml</option>
+                            <option value="cup">cup(s)</option>
+                            <option value="slice">slice(s)</option>
+                            <option value="piece">piece(s)</option>
+                            <option value="tbsp">tbsp</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
@@ -825,7 +835,7 @@ $nav_links = getNavigationLinks($user_role, 'user-diary.php');
                     <button type="submit" style="flex: 2; padding: 12px; border-radius: 10px; border: none; background: #4a90e2; color: white; font-weight: 600; cursor: pointer;">Save Meal</button>
                 </div>
                 <p style="margin-top: 15px; font-size: 0.8rem; color: #666; text-align: center; font-style: italic;">
-                    Tip: You can leave nutrition blanks empty if you're unsure; your dietician can help fill them in!
+                    Tip: Macros should be for the <b>entire serving</b> you entered above.
                 </p>
             </form>
         </div>
@@ -884,11 +894,14 @@ $nav_links = getNavigationLinks($user_role, 'user-diary.php');
                 </div>
             </div>
             <div class="modal-body" style="padding: 25px; overflow-y: auto; flex-grow: 1;">
-                <div class="modal-controls" style="margin-bottom: 20px; display: flex; gap: 15px; flex-wrap: wrap; position: sticky; top: -25px; background: white; padding: 10px 0; z-index: 10;">
+                <div class="modal-controls" style="margin-bottom: 20px; display: flex; gap: 15px; flex-wrap: wrap; position: sticky; top: -25px; background: white; padding: 10px 0; z-index: 10; align-items: center;">
                     <div style="flex-grow: 1; position: relative;">
                         <span style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #9ca3af;"><i class="fas fa-search"></i></span>
                         <input type="text" id="fctSearch" placeholder="Search food items..." style="width: 100%; padding: 12px 12px 12px 40px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.95rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
                     </div>
+                    <button type="button" onclick="openCustomMealModal(currentMealType)" style="background: #f0faf5; color: #10b981; border: 1.5px dashed #10b981; padding: 10px 18px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+                        <i class="fas fa-magic"></i> Add Custom Food
+                    </button>
                 </div>
                 <div id="fctTableContainer">
                     <table class="fct-table" style="width: 100%; border-collapse: collapse;">
@@ -896,6 +909,7 @@ $nav_links = getNavigationLinks($user_role, 'user-diary.php');
                             <tr style="border-bottom: 2px solid #eee;">
                                 <th style="padding: 12px; text-align: left; width: 40px;"><input type="checkbox" id="selectAll"></th>
                                 <th style="padding: 12px; text-align: left;">Food Item</th>
+                                <th style="padding: 12px; text-align: left; width: 220px;">Serving</th>
                                 <th style="padding: 12px; text-align: center;">Calories</th>
                                 <th style="padding: 12px; text-align: center;">Protein</th>
                                 <th style="padding: 12px; text-align: center;">Carbs</th>
@@ -1046,6 +1060,16 @@ $nav_links = getNavigationLinks($user_role, 'user-diary.php');
             }
         });
 
+        // Conversion units logic
+        const UNIT_MULTIPLIERS = {
+            'g': 1,
+            'ml': 1,
+            'cup': 240,       // Approx average for many foods
+            'slice': 35,      // Approx average slice
+            'piece': 50,      // Approx average piece
+            'tbsp': 15        // Approx 15g
+        };
+
         function renderFctTable(filter = '') {
             const tbody = document.getElementById('fctTableBody');
             tbody.innerHTML = '';
@@ -1053,29 +1077,80 @@ $nav_links = getNavigationLinks($user_role, 'user-diary.php');
             const filtered = allFctData.filter(item => 
                 item.food_name.toLowerCase().includes(filter.toLowerCase()) ||
                 (item.food_id && item.food_id.toString().includes(filter))
-            ).slice(0, 100); // Limit to 100 for performance
+            ).slice(0, 100); 
 
             filtered.forEach(item => {
                 const tr = document.createElement('tr');
+                tr.id = `food-row-${item.id}`;
                 tr.style.borderBottom = '1px solid #f1f1f1';
+                tr.dataset.baseCals = item.calories || 0;
+                tr.dataset.baseProtein = item.protein || 0;
+                tr.dataset.baseCarbs = item.carbs || 0;
+                tr.dataset.baseFat = item.fat || 0;
+
                 tr.innerHTML = `
                     <td style="padding: 12px; text-align: left;"><input type="checkbox" class="food-checkbox" value="${item.id}" style="width: 20px; height: 20px;" onchange="updateSelectedCount()"></td>
                     <td data-label="Food Item" style="padding: 12px; text-align: left;">
                         <span style="font-weight: 500; color: var(--dark);">${item.food_name}</span><br>
                         <small style="color: var(--gray);">${item.category}</small>
                     </td>
-                    <td data-label="Calories" style="padding: 12px; text-align: center;">${parseFloat(item.calories || 0).toFixed(0)}</td>
-                    <td data-label="Protein" style="padding: 12px; text-align: center;">${parseFloat(item.protein || 0).toFixed(1)}</td>
-                    <td data-label="Carbs" style="padding: 12px; text-align: center;">${parseFloat(item.carbs || 0).toFixed(1)}</td>
-                    <td data-label="Fat" style="padding: 12px; text-align: center;">${parseFloat(item.fat || 0).toFixed(1)}</td>
+                    <td data-label="Serving" style="padding: 12px; text-align: left;">
+                        <div style="display: flex; gap: 5px;">
+                            <input type="number" class="serving-qty" value="100" min="1" step="any" 
+                                style="width: 70px; padding: 6px; border: 1px solid #ddd; border-radius: 6px;" 
+                                oninput="calculateRowMacros(${item.id})">
+                            <select class="serving-unit" style="padding: 6px; border: 1px solid #ddd; border-radius: 6px;" onchange="calculateRowMacros(${item.id})">
+                                <option value="g" selected>g</option>
+                                <option value="ml">ml</option>
+                                <option value="cup">cup</option>
+                                <option value="slice">slice</option>
+                                <option value="piece">piece</option>
+                                <option value="tbsp">tbsp</option>
+                            </select>
+                        </div>
+                    </td>
+                    <td data-label="Calories" class="row-cals" style="padding: 12px; text-align: center; font-weight: 600;">${parseFloat(item.calories || 0).toFixed(0)}</td>
+                    <td data-label="Protein" class="row-protein" style="padding: 12px; text-align: center;">${parseFloat(item.protein || 0).toFixed(1)}</td>
+                    <td data-label="Carbs" class="row-carbs" style="padding: 12px; text-align: center;">${parseFloat(item.carbs || 0).toFixed(1)}</td>
+                    <td data-label="Fat" class="row-fat" style="padding: 12px; text-align: center;">${parseFloat(item.fat || 0).toFixed(1)}</td>
                 `;
                 tbody.appendChild(tr);
             });
 
             if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="padding: 40px; text-align: center; color: var(--gray);">No food items found matching your search.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" style="padding: 40px; text-align: center; color: var(--gray);">No food items found matching your search.</td></tr>';
             }
             updateSelectedCount();
+        }
+
+        function calculateRowMacros(id) {
+            const row = document.getElementById(`food-row-${id}`);
+            if (!row) return;
+
+            const qty = parseFloat(row.querySelector('.serving-qty').value) || 0;
+            const unit = row.querySelector('.serving-unit').value;
+            const multiplier = UNIT_MULTIPLIERS[unit] || 1;
+            
+            // Core logic: nutrients are per 100g. Total grams = quantity * unit factor.
+            const totalGrams = qty * multiplier;
+            const ratio = totalGrams / 100;
+
+            const cals = parseFloat(row.dataset.baseCals) * ratio;
+            const protein = parseFloat(row.dataset.baseProtein) * ratio;
+            const carbs = parseFloat(row.dataset.baseCarbs) * ratio;
+            const fat = parseFloat(row.dataset.baseFat) * ratio;
+
+            row.querySelector('.row-cals').innerText = cals.toFixed(0);
+            row.querySelector('.row-protein').innerText = protein.toFixed(1);
+            row.querySelector('.row-carbs').innerText = carbs.toFixed(1);
+            row.querySelector('.row-fat').innerText = fat.toFixed(1);
+
+            // Also check the checkbox if they edit quantity (ux improvement)
+            const cb = row.querySelector('.food-checkbox');
+            if (qty > 0 && !cb.checked) {
+                cb.checked = true;
+                updateSelectedCount();
+            }
         }
 
         document.getElementById('fctSearch').addEventListener('input', (e) => {
@@ -1097,8 +1172,20 @@ $nav_links = getNavigationLinks($user_role, 'user-diary.php');
         }
 
         async function submitSelectedFoods() {
-            const selectedIds = Array.from(document.querySelectorAll('.food-checkbox:checked')).map(cb => cb.value);
-            if (selectedIds.length === 0) return;
+            const selectedRows = Array.from(document.querySelectorAll('.food-checkbox:checked')).map(cb => {
+                const row = cb.closest('tr');
+                const qty = parseFloat(row.querySelector('.serving-qty').value) || 0;
+                const unit = row.querySelector('.serving-unit').value;
+                const totalGrams = qty * (UNIT_MULTIPLIERS[unit] || 1);
+                
+                return {
+                    id: cb.value,
+                    grams: totalGrams,
+                    display_size: `${qty} ${unit}`
+                };
+            });
+            
+            if (selectedRows.length === 0) return;
 
             const btn = document.getElementById('btnAddSelected');
             const originalText = btn.innerText;
@@ -1106,15 +1193,15 @@ $nav_links = getNavigationLinks($user_role, 'user-diary.php');
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
 
             try {
-                const body = new URLSearchParams();
-                body.append('meal_type', currentMealType);
-                body.append('serving_size', 100);
-                selectedIds.forEach(id => body.append('food_item_ids[]', id));
+                // Send as JSON data for better handling of mixed serving sizes
+                const payload = new URLSearchParams();
+                payload.append('meal_type', currentMealType);
+                payload.append('batch_data', JSON.stringify(selectedRows));
 
                 const response = await fetch(BASE_URL + 'api/save_log.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: body.toString()
+                    body: payload.toString()
                 });
 
                 const result = await response.json();
