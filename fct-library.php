@@ -74,82 +74,6 @@ function getFoodIcon(string $category): array
         return ['fa-oil-well', '#F5A623', 'rgba(245,166,35,0.1)'];
     if (str_contains($cat, 'meat') || str_contains($cat, 'poultry'))
         return ['fa-drumstick-bite', '#C0392B', 'rgba(192,57,43,0.1)'];
-<?php
-session_start();
-echo '<script>console.log("Current Role: ' . ($_SESSION['user_role'] ?? 'none') . '");</script>';
-require_once 'api/fct_helper.php';
-
-// Check login (Assuming standard auth)
-if (!isset($_SESSION['user_id'])) {
-    header('Location: login-logout/NutriDeqN-Login.php');
-    exit();
-}
-
-$user_role = strtolower($_SESSION['user_role'] ?? 'guest');
-$fct = new FCTHelper();
-?>
-<script> 
-    const currentUserRole = '<?php echo $user_role; ?>'; 
-    console.log('Detected Role:', currentUserRole);
-</script>
-<?php
-
-// Get parameters
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$search = isset($_GET['search']) ? $_GET['search'] : '';
-$category = isset($_GET['cat']) ? $_GET['cat'] : '';
-
-$data = $fct->getFoodItems($page, 20, $search, $category);
-$items = $data['items'];
-$total_pages = $data['pages'];
-
-require_once 'navigation.php';
-$nav_links = getNavigationLinks($user_role, 'fct-library.php');
-
-$fct_categories = [
-    'Cereals and Cereal Products',
-    'Starchy Roots and Tubers',
-    'Nuts, Pulses and Seeds',
-    'Vegetables and Vegetable Products',
-    'Fruits and Fruit Products',
-    'Fish and Shellfish',
-    'Eggs and Egg Products',
-    'Milk and Milk Products',
-    'Fats and Oils',
-    'Meat and Poultry',
-    'Sweets and Condiments',
-    'Spices and Condiments',
-    'Beverages (Alcoholic and Non-Alcoholic)',
-    'Mixed Dishes / Prepared Foods',
-    'Baby Foods (Strained)',
-    'Seaweeds',
-    'Miscellaneous'
-];
-
-// Map food categories to an icon + accent color
-function getFoodIcon(string $category): array
-{
-    $cat = strtolower($category);
-    if (str_contains($cat, 'cereal'))
-        return ['fa-wheat-awn', '#E67E22', 'rgba(230,126,34,0.1)'];
-    if (str_contains($cat, 'starchy') || str_contains($cat, 'root') || str_contains($cat, 'tuber'))
-        return ['fa-carrot', '#E74C3C', 'rgba(231,76,60,0.1)'];
-    if (str_contains($cat, 'nut') || str_contains($cat, 'pulse') || str_contains($cat, 'seed'))
-        return ['fa-seedling', '#27AE60', 'rgba(39,174,96,0.1)'];
-    if (str_contains($cat, 'vegetable'))
-        return ['fa-leaf', '#2ECC71', 'rgba(46,204,113,0.1)'];
-    if (str_contains($cat, 'fruit'))
-        return ['fa-apple-whole', '#E91E8C', 'rgba(233,30,140,0.1)'];
-    if (str_contains($cat, 'fish') || str_contains($cat, 'shellfish'))
-        return ['fa-fish', '#3498DB', 'rgba(52,152,219,0.1)'];
-    if (str_contains($cat, 'egg'))
-        return ['fa-egg', '#FDD835', 'rgba(253,216,53,0.12)'];
-    if (str_contains($cat, 'milk'))
-        return ['fa-cow', '#00BCD4', 'rgba(0,188,212,0.1)'];
-    if (str_contains($cat, 'fat') || str_contains($cat, 'oil'))
-        return ['fa-oil-well', '#F5A623', 'rgba(245,166,35,0.1)'];
-    if (str_contains($cat, 'meat') || str_contains($cat, 'poultry'))
-        return ['fa-drumstick-bite', '#C0392B', 'rgba(192,57,43,0.1)'];
     if (str_contains($cat, 'sweet') || str_contains($cat, 'candy'))
         return ['fa-candy-cane', '#E91E63', 'rgba(233,30,99,0.1)'];
     if (str_contains($cat, 'spice') || str_contains($cat, 'condiment'))
@@ -159,7 +83,7 @@ function getFoodIcon(string $category): array
     if (str_contains($cat, 'mixed') || str_contains($cat, 'prepared'))
         return ['fa-bowl-food', '#16A085', 'rgba(22,160,133,0.1)'];
     if (str_contains($cat, 'baby'))
-        return ['fa-baby', '#F06292', 'rgba(240,98,146,0.1)'];
+        return ['fa-baby', '#F06292', 'rgba(240,198,146,0.1)'];
     if (str_contains($cat, 'seaweed'))
         return ['fa-water', '#1ABC9C', 'rgba(26,188,156,0.1)'];
     return ['fa-utensils', '#7F8C8D', 'rgba(127,140,141,0.1)'];
