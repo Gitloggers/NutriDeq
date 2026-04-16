@@ -2368,7 +2368,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <!-- Breakfast Card -->
                             <div class="meal-card">
                                 <div class="meal-header">
-                                    <div class="meal-title"><i class="fas fa-coffee"></i> BREAKFAST <small class="meal-subtitle">7 Household Measurements</small></div>
+                                    <div class="meal-title"><i class="fas fa-coffee"></i> BREAKFAST <small class="meal-subtitle">Household Measurements</small></div>
                                 </div>
                                 <div class="menu-item">
                                     <div class="menu-food">Mango, ripe</div>
@@ -2407,7 +2407,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <!-- AM Snack Card -->
                             <div class="meal-card">
                                 <div class="meal-header">
-                                    <div class="meal-title"><i class="fas fa-apple-alt"></i> AM SNACK <small class="meal-subtitle">2 Household Measurements</small></div>
+                                    <div class="meal-title"><i class="fas fa-apple-alt"></i> AM SNACK <small class="meal-subtitle">Household Measurements</small></div>
                                 </div>
                                 <div class="menu-item">
                                     <div class="menu-food">Purple yam</div>
@@ -2422,7 +2422,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <!-- Lunch Card -->
                             <div class="meal-card">
                                 <div class="meal-header">
-                                    <div class="meal-title"><i class="fas fa-utensils"></i> LUNCH <small class="meal-subtitle">5.5 Household Measurements</small></div>
+                                    <div class="meal-title"><i class="fas fa-utensils"></i> LUNCH <small class="meal-subtitle">Household Measurements</small></div>
                                 </div>
                                 <div class="menu-item">
                                     <div class="menu-food">Chicken Thigh</div>
@@ -2449,7 +2449,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <!-- PM Snack Card -->
                             <div class="meal-card">
                                 <div class="meal-header">
-                                    <div class="meal-title"><i class="fas fa-cookie"></i> PM SNACK <small class="meal-subtitle">3 Household Measurements</small></div>
+                                    <div class="meal-title"><i class="fas fa-cookie"></i> PM SNACK <small class="meal-subtitle">Household Measurements</small></div>
                                 </div>
                                 <div class="menu-item">
                                     <div class="menu-food">Sweet potato, boiled</div>
@@ -2464,7 +2464,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <!-- Dinner Card -->
                             <div class="meal-card">
                                 <div class="meal-header">
-                                    <div class="meal-title"><i class="fas fa-moon"></i> DINNER <small class="meal-subtitle">6 Household Measurements</small></div>
+                                    <div class="meal-title"><i class="fas fa-moon"></i> DINNER <small class="meal-subtitle">Household Measurements</small></div>
                                 </div>
                                 <div class="menu-item">
                                     <div class="menu-food">Bangus, sliced</div>
