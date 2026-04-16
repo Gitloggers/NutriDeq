@@ -34,12 +34,8 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
     <script src="scripts/theme-toggle.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
-<<<<<<< HEAD
-    <title>Food Exchange Lists | NutriDeq</title>
-    <link rel="icon" type="image/png" href="assets/img/logo.png">
-=======
     <title>Food Exchange Terminal | NutriDeq</title>
->>>>>>> 7297f3dad1dddedcc9875daa210f56c8f1f5a9ce
+    <link rel="icon" type="image/png" href="assets/img/logo.png">
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
@@ -805,15 +801,15 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
         /* ── Distribution Grid ── */
         .distribution-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
         }
 
         .distribution-card {
             background: var(--bg-surface);
-            border-radius: 20px;
-            padding: 22px;
+            border-radius: 16px;
+            padding: 16px;
             border: 1px solid var(--border-color);
             transition: all 0.3s;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
@@ -847,8 +843,8 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 14px;
-            padding-bottom: 12px;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
             border-bottom: 1px solid var(--border-color);
         }
 
@@ -872,9 +868,9 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
             display: flex;
             align-items: center;
             gap: 6px;
-            font-size: 0.82rem;
+            font-size: 0.78rem;
             color: var(--text-secondary);
-            margin-bottom: 14px;
+            margin-bottom: 10px;
             font-weight: 600;
         }
 
@@ -885,9 +881,9 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
         .distribution-item {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 8px 0;
-            border-bottom: 1px dashed rgba(0, 0, 0, 0.06);
+            gap: 10px;
+            padding: 6px 0;
+            border-bottom: 1px dashed rgba(0, 0, 0, 0.05);
         }
 
         .distribution-item:last-child {
@@ -895,14 +891,14 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
         }
 
         .distribution-item-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 10px;
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
             background: rgba(5, 150, 105, 0.08);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: var(--primary);
             flex-shrink: 0;
         }
@@ -921,9 +917,9 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
 
         .distribution-summary {
             display: flex;
-            gap: 12px;
-            margin-top: 16px;
-            padding-top: 14px;
+            gap: 10px;
+            margin-top: 12px;
+            padding-top: 10px;
             border-top: 1px solid var(--border-color);
         }
 
@@ -934,7 +930,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
 
         .distribution-summary-value {
             font-family: 'Outfit', sans-serif;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 800;
             color: var(--primary);
         }
@@ -949,15 +945,15 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
         /* ── Meal Cards ── */
         .menu-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
         }
 
         .meal-card {
             background: var(--bg-surface);
-            border-radius: 20px;
-            padding: 22px;
+            border-radius: 16px;
+            padding: 16px;
             border: 1px solid var(--border-color);
             transition: all 0.3s;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
@@ -1015,10 +1011,20 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
         .menu-measure {
             color: var(--primary);
             font-weight: 700;
-            font-size: 0.82rem;
+            font-size: 0.78rem;
             background: rgba(5, 150, 105, 0.07);
-            padding: 2px 8px;
-            border-radius: 20px;
+            padding: 2px 6px;
+            border-radius: 12px;
+        }
+
+        .meal-subtitle {
+            display: block;
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
         }
 
         /* ── FEL Vertical Tabs ── */
