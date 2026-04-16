@@ -34,7 +34,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
     <script src="scripts/theme-toggle.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
-    <title>Food Exchange Lists | NutriDeq</title>
+    <title>Food Exchange Terminal | NutriDeq</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
@@ -50,7 +50,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
     <link rel="stylesheet" href="css/mobile-style.css" media="all and (max-width: 1024px)">
     <!-- dashboard.js included via sidebar.php -->
     <style>
-        /* ═══════════ FOOD EXCHANGE LISTS · PREMIUM SHELL ═══════════ */
+        /* ═══════════ FOOD EXCHANGE TERMINAL · PREMIUM SHELL ═══════════ */
         .main-content {
             position: relative;
             overflow-x: hidden;
@@ -941,93 +941,62 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
             text-transform: uppercase;
         }
 
-        /* ── Meal Cards Premium Overhaul (Compressed) ── */
+        /* ── Meal Cards ── */
         .menu-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
             margin-top: 20px;
         }
 
         .meal-card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-radius: 18px;
-            padding: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            transition: all 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
-            box-shadow: 0 4px 15px -5px rgba(0, 0, 0, 0.05);
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .meal-card::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: var(--gradient);
-            opacity: 0.5;
+            background: var(--bg-surface);
+            border-radius: 20px;
+            padding: 22px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            cursor: pointer;
         }
 
         .meal-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px -10px rgba(5, 150, 105, 0.12);
-            border-color: rgba(5, 150, 105, 0.1);
+            transform: translateY(-6px);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
+            border-color: rgba(5, 150, 105, 0.2);
         }
 
         .meal-header {
             display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            padding-bottom: 8px;
-            border-bottom: 1.5px solid rgba(5, 150, 105, 0.08);
-            margin-bottom: 2px;
-            gap: 2px;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .meal-title {
             font-family: 'Outfit', sans-serif;
             font-weight: 800;
             color: var(--primary);
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            font-size: 1rem;
         }
 
-        .meal-subtitle {
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-            font-weight: 600;
-            opacity: 0.8;
-            background: rgba(5, 150, 105, 0.05);
-            padding: 1px 6px;
-            border-radius: 4px;
-        }
-
-        .meal-title i {
-            font-size: 0.85rem;
+        .meal-exchange {
+            font-size: 0.78rem;
+            font-weight: 700;
+            background: rgba(5, 150, 105, 0.1);
             color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 20px;
         }
 
         .menu-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 6px 0;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.02);
-        }
-
-        .menu-item:hover {
-            padding-left: 4px;
-            background: rgba(5, 150, 105, 0.02);
+            padding: 8px 0;
+            border-bottom: 1px dashed rgba(0, 0, 0, 0.06);
+            font-size: 0.88rem;
         }
 
         .menu-item:last-child {
@@ -1035,20 +1004,16 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
         }
 
         .menu-food {
-            font-weight: 500;
-            color: var(--text-primary);
-            font-size: 0.95rem;
+            font-weight: 600;
         }
 
         .menu-measure {
             color: var(--primary);
             font-weight: 700;
-            font-size: 0.78rem;
-            background: rgba(5, 150, 105, 0.08);
-            padding: 4px 12px;
-            border-radius: 50px;
-            text-transform: lowercase;
-            border: 1px solid rgba(5, 150, 105, 0.1);
+            font-size: 0.82rem;
+            background: rgba(5, 150, 105, 0.07);
+            padding: 2px 8px;
+            border-radius: 20px;
         }
 
         /* ── FEL Vertical Tabs ── */
@@ -1313,8 +1278,8 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                 <div class="fet-hero">
                     <div>
                         <h1 class="fet-hero-title"><i class="fas fa-exchange-alt"
-                                style="margin-right:14px;opacity:0.8;"></i>Healthy Exchanges</h1>
-                        <p class="fet-hero-sub">Philippine Food Exchange Lists & Nutritional Guide</p>
+                                style="margin-right:14px;opacity:0.8;"></i>Food Exchange Terminal</h1>
+                        <p class="fet-hero-sub">Clinical Meal Planning & Dietary Exchange Reference System</p>
                     </div>
                     <div class="fet-hero-badge"><i class="fas fa-leaf"></i> NutriDeq FEL v2.0</div>
                 </div>
@@ -1431,8 +1396,8 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                                                 </tr>
                                                 <tr>
                                                     <td class="food-subgroup">Whole Milk</td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
+                                                    <td><span class="exchange-value">1</span></td>
+                                                    <td><span class="exchange-value">1</span></td>
                                                     <td><span class="exchange-value">1</span></td>
                                                     <td><span class="exchange-value">1</span></td>
                                                     <td><span class="exchange-value highlight">1</span></td>
@@ -1517,11 +1482,11 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                                                 <tr>
                                                     <td class="food-subgroup">High Protein</td>
                                                     <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
                                                     <td><span class="exchange-value">1</span></td>
                                                     <td><span class="exchange-value">1</span></td>
-                                                    <td><span class="exchange-value highlight">2</span></td>
-                                                    <td><span class="exchange-value">1</span></td>
+                                                    <td><span class="exchange-value">2</span></td>
+                                                    <td><span class="exchange-value highlight">1</span></td>
+                                                    <td><span class="exchange-value">2</span></td>
                                                     <td><span class="exchange-value">2</span></td>
                                                     <td><span class="exchange-value">2</span></td>
                                                     <td><span class="exchange-value">2</span></td>
@@ -2099,7 +2064,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <div class="distribution-card">
                                 <div class="distribution-header">
                                     <div class="distribution-title">Breakfast</div>
-                                    <div class="distribution-exchange">8.5 exchanges</div>
+                                    <div class="distribution-exchange">8 exchanges</div>
                                 </div>
                                 <div class="distribution-time">
                                     <i class="fas fa-clock"></i>
@@ -2139,7 +2104,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                                             <i class="fas fa-drumstick-bite"></i>
                                         </div>
                                         <div class="distribution-item-name">Low Fat Meat</div>
-                                        <div class="distribution-item-amount">2½ exchanges</div>
+                                        <div class="distribution-item-amount">2 exchanges</div>
                                     </div>
                                     <div class="distribution-item">
                                         <div class="distribution-item-icon">
@@ -2158,11 +2123,11 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                                 </div>
                                 <div class="distribution-summary">
                                     <div class="distribution-summary-item">
-                                        <div class="distribution-summary-value">8.5</div>
-                                        <div class="distribution-summary-label">Total exchanges</div>
+                                        <div class="distribution-summary-value">8</div>
+                                        <div class="distribution-summary-label">Exchanges</div>
                                     </div>
                                     <div class="distribution-summary-item">
-                                        <div class="distribution-summary-value">502</div>
+                                        <div class="distribution-summary-value">481</div>
                                         <div class="distribution-summary-label">Calories</div>
                                     </div>
                                 </div>
@@ -2197,7 +2162,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                                 <div class="distribution-summary">
                                     <div class="distribution-summary-item">
                                         <div class="distribution-summary-value">3</div>
-                                        <div class="distribution-summary-label">Total exchanges</div>
+                                        <div class="distribution-summary-label">Exchanges</div>
                                     </div>
                                     <div class="distribution-summary-item">
                                         <div class="distribution-summary-value">240</div>
@@ -2256,7 +2221,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                                 <div class="distribution-summary">
                                     <div class="distribution-summary-item">
                                         <div class="distribution-summary-value">7.5</div>
-                                        <div class="distribution-summary-label">Total exchanges</div>
+                                        <div class="distribution-summary-label">Exchanges</div>
                                     </div>
                                     <div class="distribution-summary-item">
                                         <div class="distribution-summary-value">579</div>
@@ -2294,7 +2259,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                                 <div class="distribution-summary">
                                     <div class="distribution-summary-item">
                                         <div class="distribution-summary-value">3</div>
-                                        <div class="distribution-summary-label">Total exchanges</div>
+                                        <div class="distribution-summary-label">Exchanges</div>
                                     </div>
                                     <div class="distribution-summary-item">
                                         <div class="distribution-summary-value">132</div>
@@ -2307,7 +2272,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <div class="distribution-card">
                                 <div class="distribution-header">
                                     <div class="distribution-title">Supper</div>
-                                    <div class="distribution-exchange">7 exchanges</div>
+                                    <div class="distribution-exchange">7.5 exchanges</div>
                                 </div>
                                 <div class="distribution-time">
                                     <i class="fas fa-clock"></i>
@@ -2340,132 +2305,81 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                                             <i class="fas fa-drumstick-bite"></i>
                                         </div>
                                         <div class="distribution-item-name">Low Fat Meat</div>
-                                        <div class="distribution-item-amount">½ exchange</div>
+                                        <div class="distribution-item-amount">1 exchange</div>
                                     </div>
                                 </div>
                                 <div class="distribution-summary">
                                     <div class="distribution-summary-item">
-                                        <div class="distribution-summary-value">7</div>
-                                        <div class="distribution-summary-label">Total Exchanges</div>
+                                        <div class="distribution-summary-value">7.5</div>
+                                        <div class="distribution-summary-label">Exchanges</div>
                                     </div>
                                     <div class="distribution-summary-item">
-                                        <div class="distribution-summary-value">425</div>
+                                        <div class="distribution-summary-value">445</div>
                                         <div class="distribution-summary-label">Calories</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Meal Distribution Summary Table -->
-                        <div class="distribution-strategy-table-container">
-                            <style>
-                                .distribution-strategy-table-container {
-                                    margin-top: 40px;
-                                    padding: 24px;
-                                    background: rgba(255, 255, 255, 0.03);
-                                    border-radius: 20px;
-                                    border: 1px solid rgba(255, 255, 255, 0.1);
-                                    overflow-x: auto;
-                                }
-
-                                .distribution-strategy-table {
-                                    width: 100%;
-                                    border-collapse: separate;
-                                    border-spacing: 0;
-                                    color: #fff;
-                                }
-
-                                .distribution-strategy-table th {
-                                    background: rgba(4, 120, 87, 0.2);
-                                    padding: 15px;
-                                    text-align: center;
-                                    font-family: 'Outfit', sans-serif;
-                                    font-weight: 600;
-                                    font-size: 0.9rem;
-                                    border-bottom: 2px solid rgba(4, 120, 87, 0.4);
-                                }
-
-                                .distribution-strategy-table td {
-                                    padding: 12px 15px;
-                                    text-align: center;
-                                    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-                                    font-family: 'Poppins', sans-serif;
-                                    font-size: 0.95rem;
-                                }
-
-                                .distribution-strategy-table .meal-col {
-                                    text-align: left;
-                                    font-weight: 600;
-                                    color: #34d399;
-                                }
-
-                                .distribution-strategy-table .footer-row {
-                                    background: rgba(4, 120, 87, 0.3);
-                                    font-weight: 700;
-                                    color: #fff;
-                                }
-
-                                .distribution-strategy-table .footer-row td {
-                                    border-bottom: none;
-                                    border-top: 2px solid #34d399;
-                                    font-size: 1.05rem;
-                                }
-                            </style>
-                            <h3 style="margin-bottom: 20px; color: #34d399; font-family: 'Outfit', sans-serif;">MEAL DISTRIBUTION STRATEGY SUMMARY</h3>
-                            <table class="distribution-strategy-table">
+                        <!-- Meal Distribution Strategy Summary Table -->
+                        <div class="meal-distribution-strategy-table" style="margin-top: 40px; overflow-x: auto;">
+                            <h3 style="color: var(--primary-color); margin-bottom: 20px; font-size: 1.2rem; display: flex; align-items: center; gap: 10px;">
+                                <i class="fas fa-table"></i> Meal Distribution Strategy Summary
+                            </h3>
+                            <table class="food-exchange-table" style="width: 100%; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px;">
                                 <thead>
-                                    <tr>
-                                        <th class="meal-col">Meal</th>
-                                        <th>CHO (g)</th>
-                                        <th>PRO (g)</th>
-                                        <th>FAT (g)</th>
-                                        <th>KCAL</th>
+                                    <tr style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white;">
+                                        <th style="padding: 15px; text-align: left;">Meal Time</th>
+                                        <th style="padding: 15px; text-align: center;">CHO (g)</th>
+                                        <th style="padding: 15px; text-align: center;">PRO (g)</th>
+                                        <th style="padding: 15px; text-align: center;">FAT (g)</th>
+                                        <th style="padding: 15px; text-align: center;">KCAL</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td class="meal-col">Breakfast</td>
-                                        <td>53</td>
-                                        <td>33</td>
-                                        <td>17.5</td>
-                                        <td>502</td>
+                                        <td style="padding: 12px 15px; font-weight: 500;">Breakfast (7:00 AM)</td>
+                                        <td style="padding: 12px 15px; text-align: center;">53</td>
+                                        <td style="padding: 12px 15px; text-align: center;">29</td>
+                                        <td style="padding: 12px 15px; text-align: center;">17</td>
+                                        <td style="padding: 12px 15px; text-align: center;">481</td>
                                     </tr>
                                     <tr>
-                                        <td class="meal-col">Morning Snack</td>
-                                        <td>56</td>
-                                        <td>4</td>
-                                        <td>0</td>
-                                        <td>240</td>
+                                        <td style="padding: 12px 15px; font-weight: 500;">Morning Snack (10:00 AM)</td>
+                                        <td style="padding: 12px 15px; text-align: center;">56</td>
+                                        <td style="padding: 12px 15px; text-align: center;">4</td>
+                                        <td style="padding: 12px 15px; text-align: center;">0</td>
+                                        <td style="padding: 12px 15px; text-align: center;">240</td>
                                     </tr>
                                     <tr>
-                                        <td class="meal-col">Lunch</td>
-                                        <td>103.5</td>
-                                        <td>16.5</td>
-                                        <td>11</td>
-                                        <td>579</td>
+                                        <td style="padding: 12px 15px; font-weight: 500;">Lunch (1:00 PM)</td>
+                                        <td style="padding: 12px 15px; text-align: center;">103.5</td>
+                                        <td style="padding: 12px 15px; text-align: center;">16.5</td>
+                                        <td style="padding: 12px 15px; text-align: center;">11</td>
+                                        <td style="padding: 12px 15px; text-align: center;">579</td>
                                     </tr>
                                     <tr>
-                                        <td class="meal-col">Afternoon Snack</td>
-                                        <td>33</td>
-                                        <td>0</td>
-                                        <td>0</td>
-                                        <td>132</td>
+                                        <td style="padding: 12px 15px; font-weight: 500;">Afternoon Snack (4:00 PM)</td>
+                                        <td style="padding: 12px 15px; text-align: center;">33</td>
+                                        <td style="padding: 12px 15px; text-align: center;">0</td>
+                                        <td style="padding: 12px 15px; text-align: center;">0</td>
+                                        <td style="padding: 12px 15px; text-align: center;">132</td>
                                     </tr>
                                     <tr>
-                                        <td class="meal-col">Supper</td>
-                                        <td>93.5</td>
-                                        <td>11.5</td>
-                                        <td>0.5</td>
-                                        <td>425</td>
+                                        <td style="padding: 12px 15px; font-weight: 500;">Supper (7:00 PM)</td>
+                                        <td style="padding: 12px 15px; text-align: center;">93.5</td>
+                                        <td style="padding: 12px 15px; text-align: center;">15.5</td>
+                                        <td style="padding: 12px 15px; text-align: center;">1</td>
+                                        <td style="padding: 12px 15px; text-align: center;">445</td>
                                     </tr>
                                 </tbody>
                                 <tfoot>
-                                    <tr class="footer-row">
-                                        <td class="meal-col">TOTALS</td>
-                                        <td>339g</td>
-                                        <td>65g</td>
-                                        <td>29g</td>
-                                        <td>1869 kcal</td>
+                                    <tr style="background: rgba(10, 191, 188, 0.05); font-weight: 700; color: var(--primary-color); border-top: 2px solid var(--primary-color);">
+                                        <td style="padding: 15px; text-align: left;">GRAND TOTAL</td>
+                                        <td style="padding: 15px; text-align: center;">339g</td>
+                                        <td style="padding: 15px; text-align: center;">65g</td>
+                                        <td style="padding: 15px; text-align: center;">29g</td>
+                                        <td style="padding: 15px; text-align: center;">1869 kcal</td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -2483,7 +2397,8 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <!-- Breakfast Card -->
                             <div class="meal-card">
                                 <div class="meal-header">
-                                    <div class="meal-title"><i class="fas fa-coffee"></i> BREAKFAST <small class="meal-subtitle">Household Measurements</small></div>
+                                    <div class="meal-title">BREAKFAST</div>
+                                    <div class="meal-exchange">7 exchanges</div>
                                 </div>
                                 <div class="menu-item">
                                     <div class="menu-food">Mango, ripe</div>
@@ -2522,7 +2437,8 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <!-- AM Snack Card -->
                             <div class="meal-card">
                                 <div class="meal-header">
-                                    <div class="meal-title"><i class="fas fa-apple-alt"></i> AM SNACK <small class="meal-subtitle">Household Measurements</small></div>
+                                    <div class="meal-title">AM SNACK</div>
+                                    <div class="meal-exchange">2 exchanges</div>
                                 </div>
                                 <div class="menu-item">
                                     <div class="menu-food">Purple yam</div>
@@ -2537,7 +2453,8 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <!-- Lunch Card -->
                             <div class="meal-card">
                                 <div class="meal-header">
-                                    <div class="meal-title"><i class="fas fa-utensils"></i> LUNCH <small class="meal-subtitle">Household Measurements</small></div>
+                                    <div class="meal-title">LUNCH</div>
+                                    <div class="meal-exchange">5.5 exchanges</div>
                                 </div>
                                 <div class="menu-item">
                                     <div class="menu-food">Chicken Thigh</div>
@@ -2564,7 +2481,8 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <!-- PM Snack Card -->
                             <div class="meal-card">
                                 <div class="meal-header">
-                                    <div class="meal-title"><i class="fas fa-cookie"></i> PM SNACK <small class="meal-subtitle">Household Measurements</small></div>
+                                    <div class="meal-title">PM SNACK</div>
+                                    <div class="meal-exchange">3 exchanges</div>
                                 </div>
                                 <div class="menu-item">
                                     <div class="menu-food">Sweet potato, boiled</div>
@@ -2579,7 +2497,8 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <!-- Dinner Card -->
                             <div class="meal-card">
                                 <div class="meal-header">
-                                    <div class="meal-title"><i class="fas fa-moon"></i> DINNER <small class="meal-subtitle">Household Measurements</small></div>
+                                    <div class="meal-title">DINNER</div>
+                                    <div class="meal-exchange">6 exchanges</div>
                                 </div>
                                 <div class="menu-item">
                                     <div class="menu-food">Bangus, sliced</div>
