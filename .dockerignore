@@ -1,0 +1,13 @@
+.git
+.github
+node_modules
+vendor
+Dockerfile
+.dockerignore
+.htaccess
+README.md
+assets/img/tmp
+uploads/*
+!uploads/.gitkeep
+*.log
+.env
