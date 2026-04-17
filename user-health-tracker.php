@@ -479,7 +479,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                                                 <i class="fas fa-<?php
                                                 switch ($food['meal_type']) {
                                                     case 'breakfast': echo 'coffee'; break;
+                                                    case 'AM Snack': echo 'apple-alt'; break;
                                                     case 'lunch': echo 'utensils'; break;
+                                                    case 'PM Snack': echo 'cookie'; break;
                                                     case 'dinner': echo 'moon'; break;
                                                     default: echo 'apple-alt';
                                                 }
@@ -877,9 +879,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                                 <span style="font-size:0.85rem; font-weight:600; color:#475569;">Breakfast</span>
                             </label>
                             <label style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; text-align: center; cursor: pointer; transition: all 0.2s; background: #f8fafc;">
+                                <input type="radio" name="meal_type" value="AM Snack" style="display:none;" required onchange="updateRadioStyling(this)">
+                                <i class="fas fa-apple-alt" style="display:block; font-size: 1.5rem; color: #10b981; margin-bottom: 8px;"></i>
+                                <span style="font-size:0.85rem; font-weight:600; color:#475569;">AM Snack</span>
+                            </label>
+                            <label style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; text-align: center; cursor: pointer; transition: all 0.2s; background: #f8fafc;">
                                 <input type="radio" name="meal_type" value="Lunch" style="display:none;" required onchange="updateRadioStyling(this)">
                                 <i class="fas fa-utensils" style="display:block; font-size: 1.5rem; color: #f59e0b; margin-bottom: 8px;"></i>
                                 <span style="font-size:0.85rem; font-weight:600; color:#475569;">Lunch</span>
+                            </label>
+                            <label style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; text-align: center; cursor: pointer; transition: all 0.2s; background: #f8fafc;">
+                                <input type="radio" name="meal_type" value="PM Snack" style="display:none;" required onchange="updateRadioStyling(this)">
+                                <i class="fas fa-cookie" style="display:block; font-size: 1.5rem; color: #ec4899; margin-bottom: 8px;"></i>
+                                <span style="font-size:0.85rem; font-weight:600; color:#475569;">PM Snack</span>
                             </label>
                             <label style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; text-align: center; cursor: pointer; transition: all 0.2s; background: #f8fafc;">
                                 <input type="radio" name="meal_type" value="Dinner" style="display:none;" required onchange="updateRadioStyling(this)">
@@ -888,8 +900,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                             </label>
                             <label style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; text-align: center; cursor: pointer; transition: all 0.2s; background: #f8fafc;">
                                 <input type="radio" name="meal_type" value="Snack" style="display:none;" required onchange="updateRadioStyling(this)">
-                                <i class="fas fa-apple-alt" style="display:block; font-size: 1.5rem; color: #10b981; margin-bottom: 8px;"></i>
-                                <span style="font-size:0.85rem; font-weight:600; color:#475569;">Snack</span>
+                                <i class="fas fa-utensins" style="display:block; font-size: 1.5rem; color: #94a3b8; margin-bottom: 8px;"></i>
+                                <span style="font-size:0.85rem; font-weight:600; color:#475569;">Other</span>
                             </label>
                         </div>
                         

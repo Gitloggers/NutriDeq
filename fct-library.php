@@ -454,9 +454,11 @@ endforeach; ?>
                         <label>Meal Type</label>
                         <select name="meal_type" class="fct-input" required>
                             <option value="Breakfast">Breakfast</option>
+                            <option value="AM Snack">AM Snack</option>
                             <option value="Lunch">Lunch</option>
+                            <option value="PM Snack">PM Snack</option>
                             <option value="Dinner">Dinner</option>
-                            <option value="Snack">Snack</option>
+                            <option value="Snack">Other Snack</option>
                         </select>
                     </div>
                     

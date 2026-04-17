@@ -48,7 +48,14 @@ $today = date('Y-m-d');
 
 $logs = [];
 $totals = ['calories' => 0, 'protein' => 0, 'carbs' => 0, 'fat' => 0];
-$grouped_logs = ['Breakfast' => [], 'Lunch' => [], 'Dinner' => [], 'Snack' => []];
+$grouped_logs = [
+    'Breakfast' => [],
+    'AM Snack' => [],
+    'Lunch' => [],
+    'PM Snack' => [],
+    'Dinner' => [],
+    'Snack' => [] // legacy
+];
 
 if ($selected_client) {
     // Get the actual user_id for the client
@@ -686,7 +693,9 @@ $nav_links = getNavigationLinks($_SESSION['user_role'], 'staff-client-diary.php'
                                             <i class="fas fa-<?php 
                                                 switch($meal) {
                                                     case 'Breakfast': echo 'coffee'; break;
+                                                    case 'AM Snack': echo 'apple-alt'; break;
                                                     case 'Lunch': echo 'utensils'; break;
+                                                    case 'PM Snack': echo 'cookie'; break;
                                                     case 'Dinner': echo 'moon'; break;
                                                     default: echo 'apple-alt';
                                                 }
@@ -1043,7 +1052,7 @@ $nav_links = getNavigationLinks($_SESSION['user_role'], 'staff-client-diary.php'
                 <!-- Meal-by-Meal Breakdown -->
                 <h4 style="color: #1e293b; font-size: 0.85rem; font-weight: 700; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.5px;">🍽 Meal-by-Meal Dietary Intake</h4>
                 <?php
-                $mealIcons = ['Breakfast' => '☀️', 'Lunch' => '🥗', 'Dinner' => '🌙', 'Snack' => '🍎'];
+                $mealIcons = ['Breakfast' => '☀️', 'AM Snack' => '🍎', 'Lunch' => '🥗', 'PM Snack' => '🍪', 'Dinner' => '🌙', 'Snack' => '🍎'];
                 foreach ($grouped_logs as $meal => $items):
                     $mealCals = array_sum(array_column($items, 'calories'));
                     $mealProtein = array_sum(array_column($items, 'protein'));

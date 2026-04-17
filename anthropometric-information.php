@@ -683,7 +683,15 @@ if (isset($_GET['tab'])) {
                     <div class="ai-food-list">
                         <?php foreach ($food_entries as $food):
                             $mealClass = 'meal-'.($food['meal_type'] ?? 'custom');
-                            $mealIcon  = match($food['meal_type'] ?? '') { 'breakfast'=>'fa-coffee','lunch'=>'fa-utensils','dinner'=>'fa-moon','snack'=>'fa-apple-alt', default=>'fa-bowl-food' };
+                            $mealIcon  = match(strtolower($food['meal_type'] ?? '')) { 
+                                'breakfast'=>'fa-coffee',
+                                'am snack'=>'fa-apple-alt',
+                                'lunch'=>'fa-utensils',
+                                'pm snack'=>'fa-cookie',
+                                'dinner'=>'fa-moon',
+                                'snack'=>'fa-apple-alt', 
+                                default=>'fa-bowl-food' 
+                            };
                         ?>
                         <div class="ai-food-entry">
                             <div class="ai-food-entry-icon <?= $mealClass ?>"><i class="fas <?= $mealIcon ?>"></i></div>
@@ -716,7 +724,9 @@ if (isset($_GET['tab'])) {
                             <div class="ai-add-food-inputs">
                                 <select name="meal_type">
                                     <option value="breakfast">Breakfast</option>
+                                    <option value="AM Snack">AM Snack</option>
                                     <option value="lunch">Lunch</option>
+                                    <option value="PM Snack">PM Snack</option>
                                     <option value="dinner">Dinner</option>
                                     <option value="snack">Snack</option>
                                     <option value="custom" selected>Custom</option>

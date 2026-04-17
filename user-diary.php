@@ -36,9 +36,11 @@ $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 // Group by meal type
 $grouped_logs = [
     'Breakfast' => [],
+    'AM Snack' => [],
     'Lunch' => [],
+    'PM Snack' => [],
     'Dinner' => [],
-    'Snack' => []
+    'Snack' => [] // Keep for legacy
 ];
 
 $totals = [
@@ -709,7 +711,7 @@ $nav_links = getNavigationLinks($user_role, 'user-diary.php');
                     <!-- Meal breakdown -->
                     <h4 style="color:#1e293b; font-size:0.82rem; font-weight:700; margin-bottom:12px; text-transform:uppercase; letter-spacing:0.5px;">🍽 What I Ate Today</h4>
                     <?php
-                    $uicons = ['Breakfast'=>'☀️','Lunch'=>'🥗','Dinner'=>'🌙','Snack'=>'🍎'];
+                    $uicons = ['Breakfast'=>'☀️','AM Snack'=>'🍎','Lunch'=>'🥗','PM Snack'=>'🍪','Dinner'=>'🌙','Snack'=>'🍎'];
                     foreach ($grouped_logs as $meal => $items):
                         $mc = array_sum(array_column($items,'calories'));
                         $mp = array_sum(array_column($items,'protein'));

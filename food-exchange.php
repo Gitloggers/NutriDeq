@@ -2375,7 +2375,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <!-- Morning Snack -->
                             <div class="distribution-card">
                                 <div class="distribution-header">
-                                    <div class="distribution-title">Morning Snack</div>
+                                    <div class="distribution-title">AM Snack</div>
                                     <div class="distribution-exchange">3 exchanges</div>
                                 </div>
                                 <div class="distribution-time">
@@ -2472,7 +2472,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                             <!-- Afternoon Snack -->
                             <div class="distribution-card">
                                 <div class="distribution-header">
-                                    <div class="distribution-title">Afternoon Snack</div>
+                                    <div class="distribution-title">PM Snack</div>
                                     <div class="distribution-exchange">3 exchanges</div>
                                 </div>
                                 <div class="distribution-time">
