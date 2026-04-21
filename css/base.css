@@ -72,8 +72,7 @@ h1, h2, h3, h4, h5, h6 {
 
      /* Standardized Sidebar Active State */
      .nav-links a.active {
-         background: #f3f4f6 !important;
-         border-left: 4px solid #10b981 !important;
+         background: rgba(16, 185, 129, 0.08) !important;
          color: var(--primary) !important;
      }
 
@@ -320,14 +319,15 @@ h1, h2, h3, h4, h5, h6 {
         body .main-content {
             display: block !important;
             visibility: visible !important;
-            width: calc(100% - 260px) !important; /* Proper fixed offset */
-            margin-left: 260px !important; /* Correct for fixed sidebar */
+            width: calc(100% - 260px) !important;
+            margin-left: 260px !important;
             position: relative !important;
             min-width: 0;
+            box-sizing: border-box !important;
         }
 
         body .page-container {
-            max-width: 1300px; /* Enhanced wide clinical view */
+            max-width: 1300px;
             margin: 0 auto;
             padding: 2rem;
         }

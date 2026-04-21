@@ -1556,272 +1556,254 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                                 </div>
                             </div>
 
-                            <!-- Desktop table view -->
-                            <div class="desktop-view">
-                                <div class="table-container">
-                                    <div class="mobile-scroll-wrapper">
-
-                                        <table class="food-exchange-table calorie-ref-table">
+                            <!-- Elite Quick Reference Terminal -->
+                            <div class="calorie-ref-wrap desktop-view">
+                                <div class="table-container" style="background:transparent; border:none; box-shadow:none;">
+                                    <div class="mobile-scroll-wrapper" id="caloriePillarArray">
+                                        <table class="calorie-ref-table">
                                             <thead>
                                                 <tr>
-                                                    <th>Food Group</th>
-                                                    <th>1200</th>
-                                                    <th>1300</th>
-                                                    <th>1400</th>
-                                                    <th>1500</th>
-                                                    <th class="active">1600</th>
-                                                    <th>1700</th>
-                                                    <th>1800</th>
-                                                    <th>1900</th>
-                                                    <th>2000</th>
-                                                    <th>2100</th>
-                                                    <th>2200</th>
-                                                    <th>2300</th>
-                                                    <th>2400</th>
+                                                    <th style="text-align:left; padding-left:24px; min-width:220px;">Food Group Registry</th>
+                                                    <th data-cal="1200">1200</th>
+                                                    <th data-cal="1300">1300</th>
+                                                    <th data-cal="1400">1400</th>
+                                                    <th data-cal="1500">1500</th>
+                                                    <th data-cal="1600" class="active">1600</th>
+                                                    <th data-cal="1700">1700</th>
+                                                    <th data-cal="1800">1800</th>
+                                                    <th data-cal="1900">1900</th>
+                                                    <th data-cal="2000">2000</th>
+                                                    <th data-cal="2100">2100</th>
+                                                    <th data-cal="2200">2200</th>
+                                                    <th data-cal="2300">2300</th>
+                                                    <th data-cal="2400">2400</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <!-- Vegetable++ -->
-                                                <tr>
-                                                    <td class="food-group-header" colspan="14" style="text-align:left;"><i class="fas fa-carrot"></i> Vegetable</td>
+                                                <!-- Vegetable Cluster -->
+                                                <tr class="calorie-group-header">
+                                                    <td colspan="14" style="border-left: 5px solid #10b981; border-radius: 4px 0 0 4px;"><i class="fas fa-carrot"></i> VEGETABLES</td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="food-subgroup"><span class="subgroup-dot" style="background:#4ade80;"></span> Vegetable++</td>
-                                                    <td><span class="exchange-value">3</span></td>
-                                                    <td><span class="exchange-value">3</span></td>
-                                                    <td><span class="exchange-value">3</span></td>
-                                                    <td><span class="exchange-value">3</span></td>
-                                                    <td><span class="exchange-value highlight">3</span></td>
-                                                    <td><span class="exchange-value">3</span></td>
-                                                    <td><span class="exchange-value">3</span></td>
-                                                    <td><span class="exchange-value">3</span></td>
-                                                    <td><span class="exchange-value">3</span></td>
-                                                    <td><span class="exchange-value">3</span></td>
-                                                    <td><span class="exchange-value">3</span></td>
-                                                    <td><span class="exchange-value">3</span></td>
-                                                    <td><span class="exchange-value">3</span></td>
-                                                </tr>
-
-                                                <!-- Fruit -->
-                                                <tr>
-                                                    <td class="food-group-header" colspan="14" style="text-align:left;"><i class="fas fa-apple-whole"></i> Fruit</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="food-subgroup"><span class="subgroup-dot" style="background:#fde047;"></span> Fruit</td>
-                                                    <td><span class="exchange-value">3</span></td>
-                                                    <td><span class="exchange-value">4</span></td>
-                                                    <td><span class="exchange-value">4</span></td>
-                                                    <td><span class="exchange-value">5</span></td>
-                                                    <td><span class="exchange-value highlight">6</span></td>
-                                                    <td><span class="exchange-value">5</span></td>
-                                                    <td><span class="exchange-value">5</span></td>
-                                                    <td><span class="exchange-value">6</span></td>
-                                                    <td><span class="exchange-value">6</span></td>
-                                                    <td><span class="exchange-value">6</span></td>
-                                                    <td><span class="exchange-value">6.5</span></td>
-                                                    <td><span class="exchange-value">7</span></td>
-                                                    <td><span class="exchange-value">6</span></td>
+                                                    <td style="text-align:left; padding-left:45px; color:#64748b; font-weight:700;">Vegetable++</td>
+                                                    <td data-col="1200"><span class="exchange-value">3</span></td>
+                                                    <td data-col="1300"><span class="exchange-value">3</span></td>
+                                                    <td data-col="1400"><span class="exchange-value">3</span></td>
+                                                    <td data-col="1500"><span class="exchange-value">3</span></td>
+                                                    <td data-col="1600" class="active-col"><span class="exchange-value highlight">3</span></td>
+                                                    <td data-col="1700"><span class="exchange-value">3</span></td>
+                                                    <td data-col="1800"><span class="exchange-value">3</span></td>
+                                                    <td data-col="1900"><span class="exchange-value">3</span></td>
+                                                    <td data-col="2000"><span class="exchange-value">3</span></td>
+                                                    <td data-col="2100"><span class="exchange-value">3</span></td>
+                                                    <td data-col="2200"><span class="exchange-value">3</span></td>
+                                                    <td data-col="2300"><span class="exchange-value">3</span></td>
+                                                    <td data-col="2400"><span class="exchange-value">3</span></td>
                                                 </tr>
 
-                                                <!-- Milk -->
-                                                <tr>
-                                                    <td class="food-group-header" colspan="14" style="text-align:left;"><i class="fas fa-glass-water"></i> Milk</td>
+                                                <!-- Fruit Cluster -->
+                                                <tr class="calorie-group-header">
+                                                    <td colspan="14" style="border-left: 5px solid #ef4444; border-radius: 4px 0 0 4px;"><i class="fas fa-apple-alt"></i> FRUITS</td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="food-subgroup"><span class="subgroup-dot" style="background:#94a3b8;"></span> Whole Milk</td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">1</span></td>
-                                                    <td><span class="exchange-value">1</span></td>
-                                                    <td><span class="exchange-value highlight">1</span></td>
-                                                    <td><span class="exchange-value">1</span></td>
-                                                    <td><span class="exchange-value">1</span></td>
-                                                    <td><span class="exchange-value">1</span></td>
-                                                    <td><span class="exchange-value">1</span></td>
-                                                    <td><span class="exchange-value">1</span></td>
-                                                    <td><span class="exchange-value">1</span></td>
-                                                    <td><span class="exchange-value">1</span></td>
-                                                    <td><span class="exchange-value">2</span></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="food-subgroup"><span class="subgroup-dot" style="background:#94a3b8;"></span> Low Fat</td>
-                                                    <td><span class="exchange-value">1</span></td>
-                                                    <td><span class="exchange-value">1</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value highlight">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="food-subgroup"><span class="subgroup-dot" style="background:#94a3b8;"></span> Non-Fat Milk</td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value highlight">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
+                                                    <td style="text-align:left; padding-left:45px; color:#64748b; font-weight:700;">Reference Exchange</td>
+                                                    <td data-col="1200"><span class="exchange-value">3</span></td>
+                                                    <td data-col="1300"><span class="exchange-value">4</span></td>
+                                                    <td data-col="1400"><span class="exchange-value">4</span></td>
+                                                    <td data-col="1500"><span class="exchange-value">5</span></td>
+                                                    <td data-col="1600" class="active-col"><span class="exchange-value highlight">6</span></td>
+                                                    <td data-col="1700"><span class="exchange-value">5</span></td>
+                                                    <td data-col="1800"><span class="exchange-value">5</span></td>
+                                                    <td data-col="1900"><span class="exchange-value">6</span></td>
+                                                    <td data-col="2000"><span class="exchange-value">6</span></td>
+                                                    <td data-col="2100"><span class="exchange-value">6</span></td>
+                                                    <td data-col="2200"><span class="exchange-value">6.5</span></td>
+                                                    <td data-col="2300"><span class="exchange-value">7</span></td>
+                                                    <td data-col="2400"><span class="exchange-value">6</span></td>
                                                 </tr>
 
-                                                <!-- Rice -->
-                                                <tr>
-                                                    <td class="food-group-header" colspan="14" style="text-align:left;"><i class="fas fa-bowl-rice"></i> Rice</td>
+                                                <!-- Milk Cluster -->
+                                                <tr class="calorie-group-header">
+                                                    <td colspan="14" style="border-left: 5px solid #3b82f6; border-radius: 4px 0 0 4px;"><i class="fas fa-glass-whiskey"></i> MILK</td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="food-subgroup"><span class="subgroup-dot" style="background:#c0a13e;"></span> Low Protein</td>
-                                                    <td><span class="exchange-value">2</span></td>
-                                                    <td><span class="exchange-value">2</span></td>
-                                                    <td><span class="exchange-value">1</span></td>
-                                                    <td><span class="exchange-value">1</span></td>
-                                                    <td><span class="exchange-value highlight">2</span></td>
-                                                    <td><span class="exchange-value">3</span></td>
-                                                    <td><span class="exchange-value">2</span></td>
-                                                    <td><span class="exchange-value">2</span></td>
-                                                    <td><span class="exchange-value">2</span></td>
-                                                    <td><span class="exchange-value">2</span></td>
-                                                    <td><span class="exchange-value">2.5</span></td>
-                                                    <td><span class="exchange-value">3</span></td>
-                                                    <td><span class="exchange-value">2</span></td>
+                                                    <td style="text-align:left; padding-left:45px; color:#64748b; font-weight:700;">Whole Milk</td>
+                                                    <td data-col="1200"><span class="exchange-value">-</span></td>
+                                                    <td data-col="1300"><span class="exchange-value">-</span></td>
+                                                    <td data-col="1400"><span class="exchange-value">1</span></td>
+                                                    <td data-col="1500"><span class="exchange-value">1</span></td>
+                                                    <td data-col="1600" class="active-col"><span class="exchange-value highlight">1</span></td>
+                                                    <td data-col="1700"><span class="exchange-value">1</span></td>
+                                                    <td data-col="1800"><span class="exchange-value">1</span></td>
+                                                    <td data-col="1900"><span class="exchange-value">1</span></td>
+                                                    <td data-col="2000"><span class="exchange-value">1</span></td>
+                                                    <td data-col="2100"><span class="exchange-value">1</span></td>
+                                                    <td data-col="2200"><span class="exchange-value">1</span></td>
+                                                    <td data-col="2300"><span class="exchange-value">1</span></td>
+                                                    <td data-col="2400"><span class="exchange-value">1</span></td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="food-subgroup"><span class="subgroup-dot" style="background:#c0a13e;"></span> Medium Protein</td>
-                                                    <td><span class="exchange-value">3.5</span></td>
-                                                    <td><span class="exchange-value">4</span></td>
-                                                    <td><span class="exchange-value">4.5</span></td>
-                                                    <td><span class="exchange-value">5</span></td>
-                                                    <td><span class="exchange-value highlight">3</span></td>
-                                                    <td><span class="exchange-value">4</span></td>
-                                                    <td><span class="exchange-value">5</span></td>
-                                                    <td><span class="exchange-value">5</span></td>
-                                                    <td><span class="exchange-value">6</span></td>
-                                                    <td><span class="exchange-value">6</span></td>
-                                                    <td><span class="exchange-value">6</span></td>
-                                                    <td><span class="exchange-value">6</span></td>
-                                                    <td><span class="exchange-value">8</span></td>
+                                                     <td style="text-align:left; padding-left:45px; color:#64748b; font-weight:700;">Low Fat</td>
+                                                     <td data-col="1200"><span class="exchange-value">1</span></td>
+                                                     <td data-col="1300"><span class="exchange-value">1</span></td>
+                                                     <td data-col="1400"><span class="exchange-value">-</span></td>
+                                                     <td data-col="1500"><span class="exchange-value">-</span></td>
+                                                     <td data-col="1600" class="active-col"><span class="exchange-value highlight">-</span></td>
+                                                     <td data-col="1700"><span class="exchange-value">-</span></td>
+                                                     <td data-col="1800"><span class="exchange-value">-</span></td>
+                                                     <td data-col="1900"><span class="exchange-value">-</span></td>
+                                                     <td data-col="2000"><span class="exchange-value">-</span></td>
+                                                     <td data-col="2100"><span class="exchange-value">-</span></td>
+                                                     <td data-col="2200"><span class="exchange-value">-</span></td>
+                                                     <td data-col="2300"><span class="exchange-value">-</span></td>
+                                                     <td data-col="2400"><span class="exchange-value">-</span></td>
+                                                 </tr>
+                                                 <tr>
+                                                     <td style="text-align:left; padding-left:45px; color:#64748b; font-weight:700;">Non-Fat Milk</td>
+                                                     <td data-col="1200"><span class="exchange-value">-</span></td>
+                                                     <td data-col="1300"><span class="exchange-value">-</span></td>
+                                                     <td data-col="1400"><span class="exchange-value">-</span></td>
+                                                     <td data-col="1500"><span class="exchange-value">-</span></td>
+                                                     <td data-col="1600" class="active-col"><span class="exchange-value highlight">-</span></td>
+                                                     <td data-col="1700"><span class="exchange-value">-</span></td>
+                                                     <td data-col="1800"><span class="exchange-value">-</span></td>
+                                                     <td data-col="1900"><span class="exchange-value">-</span></td>
+                                                     <td data-col="2000"><span class="exchange-value">-</span></td>
+                                                     <td data-col="2100"><span class="exchange-value">-</span></td>
+                                                     <td data-col="2200"><span class="exchange-value">-</span></td>
+                                                     <td data-col="2300"><span class="exchange-value">-</span></td>
+                                                     <td data-col="2400"><span class="exchange-value">-</span></td>
+                                                 </tr>
+
+                                                 <!-- Rice Cluster -->
+                                                 <tr class="calorie-group-header">
+                                                     <td colspan="14" style="border-left: 5px solid #f59e0b; border-radius: 4px 0 0 4px;"><i class="fas fa-bread-slice"></i> RICE</td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="food-subgroup"><span class="subgroup-dot" style="background:#c0a13e;"></span> High Protein</td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">1</span></td>
-                                                    <td><span class="exchange-value">1</span></td>
-                                                    <td><span class="exchange-value highlight">2</span></td>
-                                                    <td><span class="exchange-value">1</span></td>
-                                                    <td><span class="exchange-value">2</span></td>
-                                                    <td><span class="exchange-value">2</span></td>
-                                                    <td><span class="exchange-value">2</span></td>
-                                                    <td><span class="exchange-value">2</span></td>
-                                                    <td><span class="exchange-value">2</span></td>
-                                                    <td><span class="exchange-value">2</span></td>
-                                                    <td><span class="exchange-value">2</span></td>
+                                                    <td style="text-align:left; padding-left:45px; color:#64748b; font-weight:700;">Low Protein</td>
+                                                    <td data-col="1200"><span class="exchange-value">2</span></td>
+                                                    <td data-col="1300"><span class="exchange-value">2</span></td>
+                                                    <td data-col="1400"><span class="exchange-value">1</span></td>
+                                                    <td data-col="1500"><span class="exchange-value">1</span></td>
+                                                    <td data-col="1600" class="active-col"><span class="exchange-value highlight">2</span></td>
+                                                    <td data-col="1700"><span class="exchange-value">3</span></td>
+                                                    <td data-col="1800"><span class="exchange-value">2</span></td>
+                                                    <td data-col="1900"><span class="exchange-value">2</span></td>
+                                                    <td data-col="2000"><span class="exchange-value">2</span></td>
+                                                    <td data-col="2100"><span class="exchange-value">2</span></td>
+                                                    <td data-col="2200"><span class="exchange-value">2.5</span></td>
+                                                    <td data-col="2300"><span class="exchange-value">3</span></td>
+                                                    <td data-col="2400"><span class="exchange-value">2</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="text-align:left; padding-left:45px; color:#64748b; font-weight:700;">Medium Protein</td>
+                                                    <td data-col="1200"><span class="exchange-value">3.5</span></td>
+                                                    <td data-col="1300"><span class="exchange-value">4</span></td>
+                                                    <td data-col="1400"><span class="exchange-value">4.5</span></td>
+                                                    <td data-col="1500"><span class="exchange-value">5</span></td>
+                                                    <td data-col="1600" class="active-col"><span class="exchange-value highlight">3</span></td>
+                                                    <td data-col="1700"><span class="exchange-value">4</span></td>
+                                                    <td data-col="1800"><span class="exchange-value">5</span></td>
+                                                    <td data-col="1900"><span class="exchange-value">5</span></td>
+                                                    <td data-col="2000"><span class="exchange-value">6</span></td>
+                                                    <td data-col="2100"><span class="exchange-value">6</span></td>
+                                                    <td data-col="2200"><span class="exchange-value">6</span></td>
+                                                    <td data-col="2300"><span class="exchange-value">6</span></td>
+                                                    <td data-col="2400"><span class="exchange-value">8</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="text-align:left; padding-left:45px; color:#64748b; font-weight:700;">High Protein</td>
+                                                    <td data-col="1200"><span class="exchange-value">-</span></td>
+                                                    <td data-col="1300"><span class="exchange-value">-</span></td>
+                                                    <td data-col="1400"><span class="exchange-value">1</span></td>
+                                                    <td data-col="1500"><span class="exchange-value">1</span></td>
+                                                    <td data-col="1600" class="active-col"><span class="exchange-value highlight">2</span></td>
+                                                    <td data-col="1700"><span class="exchange-value">1</span></td>
+                                                    <td data-col="1800"><span class="exchange-value">2</span></td>
+                                                    <td data-col="1900"><span class="exchange-value">2</span></td>
+                                                    <td data-col="2000"><span class="exchange-value">2</span></td>
+                                                    <td data-col="2100"><span class="exchange-value">2</span></td>
+                                                    <td data-col="2200"><span class="exchange-value">2</span></td>
+                                                    <td data-col="2300"><span class="exchange-value">2</span></td>
+                                                    <td data-col="2400"><span class="exchange-value">2</span></td>
                                                 </tr>
 
-                                                <!-- Meat -->
-                                                <tr>
-                                                    <td class="food-group-header" colspan="14" style="text-align:left;"><i class="fas fa-drumstick-bite"></i> Meat</td>
+                                                <!-- Meat Cluster -->
+                                                <tr class="calorie-group-header">
+                                                    <td colspan="14" style="border-left: 5px solid #8b5cf6; border-radius: 4px 0 0 4px;"><i class="fas fa-drumstick-bite"></i> MEAT</td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="food-subgroup"><span class="subgroup-dot" style="background:#f87171;"></span> Low Fat</td>
-                                                    <td><span class="exchange-value">3</span></td>
-                                                    <td><span class="exchange-value">2</span></td>
-                                                    <td><span class="exchange-value">2</span></td>
-                                                    <td><span class="exchange-value">2</span></td>
-                                                    <td><span class="exchange-value highlight">4</span></td>
-                                                    <td><span class="exchange-value">3.5</span></td>
-                                                    <td><span class="exchange-value">4</span></td>
-                                                    <td><span class="exchange-value">3.5</span></td>
-                                                    <td><span class="exchange-value">4</span></td>
-                                                    <td><span class="exchange-value">4</span></td>
-                                                    <td><span class="exchange-value">5</span></td>
-                                                    <td><span class="exchange-value">5</span></td>
-                                                    <td><span class="exchange-value">5</span></td>
+                                                    <td style="text-align:left; padding-left:45px; color:#64748b; font-weight:700;">Low Fat</td>
+                                                    <td data-col="1200"><span class="exchange-value">3</span></td>
+                                                    <td data-col="1300"><span class="exchange-value">2</span></td>
+                                                    <td data-col="1400"><span class="exchange-value">2</span></td>
+                                                    <td data-col="1500"><span class="exchange-value">2</span></td>
+                                                    <td data-col="1600" class="active-col"><span class="exchange-value highlight">4</span></td>
+                                                    <td data-col="1700"><span class="exchange-value">3.5</span></td>
+                                                    <td data-col="1800"><span class="exchange-value">4</span></td>
+                                                    <td data-col="1900"><span class="exchange-value">3.5</span></td>
+                                                    <td data-col="2000"><span class="exchange-value">4</span></td>
+                                                    <td data-col="2100"><span class="exchange-value">4</span></td>
+                                                    <td data-col="2200"><span class="exchange-value">5</span></td>
+                                                    <td data-col="2300"><span class="exchange-value">5</span></td>
+                                                    <td data-col="2400"><span class="exchange-value">5</span></td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="food-subgroup"><span class="subgroup-dot" style="background:#f87171;"></span> Medium Fat</td>
-                                                    <td><span class="exchange-value">1</span></td>
-                                                    <td><span class="exchange-value">2</span></td>
-                                                    <td><span class="exchange-value">2</span></td>
-                                                    <td><span class="exchange-value">2</span></td>
-                                                    <td><span class="exchange-value highlight">1</span></td>
-                                                    <td><span class="exchange-value">2</span></td>
-                                                    <td><span class="exchange-value">1</span></td>
-                                                    <td><span class="exchange-value">2</span></td>
-                                                    <td><span class="exchange-value">2</span></td>
-                                                    <td><span class="exchange-value">2</span></td>
-                                                    <td><span class="exchange-value">2</span></td>
-                                                    <td><span class="exchange-value">2</span></td>
-                                                    <td><span class="exchange-value">1</span></td>
+                                                    <td style="text-align:left; padding-left:45px; color:#64748b; font-weight:700;">Medium Fat</td>
+                                                    <td data-col="1200"><span class="exchange-value">1</span></td>
+                                                    <td data-col="1300"><span class="exchange-value">2</span></td>
+                                                    <td data-col="1400"><span class="exchange-value">2</span></td>
+                                                    <td data-col="1500"><span class="exchange-value">2</span></td>
+                                                    <td data-col="1600" class="active-col"><span class="exchange-value highlight">1</span></td>
+                                                    <td data-col="1700"><span class="exchange-value">2</span></td>
+                                                    <td data-col="1800"><span class="exchange-value">1</span></td>
+                                                    <td data-col="1900"><span class="exchange-value">2</span></td>
+                                                    <td data-col="2000"><span class="exchange-value">2</span></td>
+                                                    <td data-col="2100"><span class="exchange-value">2</span></td>
+                                                    <td data-col="2200"><span class="exchange-value">2</span></td>
+                                                    <td data-col="2300"><span class="exchange-value">2</span></td>
+                                                    <td data-col="2400"><span class="exchange-value">1</span></td>
+                                                </tr>
+                                                <!-- Fat Cluster -->
+                                                <tr class="calorie-group-header">
+                                                    <td colspan="14" style="border-left: 5px solid #64748b; border-radius: 4px 0 0 4px;"><i class="fas fa-droplet" style="color:#64748b;"></i> FAT</td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="food-subgroup"><span class="subgroup-dot" style="background:#f87171;"></span> High Fat</td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value highlight">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                    <td><span class="exchange-value">-</span></td>
-                                                </tr>
-
-                                                <!-- Fat -->
-                                                <tr>
-                                                    <td class="food-group-header" colspan="14" style="text-align:left;"><i class="fas fa-droplet"></i> Fat</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="food-subgroup"><span class="subgroup-dot" style="background:#fb923c;"></span> Fat</td>
-                                                    <td><span class="exchange-value">3</span></td>
-                                                    <td><span class="exchange-value">2</span></td>
-                                                    <td><span class="exchange-value">2</span></td>
-                                                    <td><span class="exchange-value">2</span></td>
-                                                    <td><span class="exchange-value highlight">3</span></td>
-                                                    <td><span class="exchange-value">3</span></td>
-                                                    <td><span class="exchange-value">4</span></td>
-                                                    <td><span class="exchange-value">4</span></td>
-                                                    <td><span class="exchange-value">4</span></td>
-                                                    <td><span class="exchange-value">5</span></td>
-                                                    <td><span class="exchange-value">5</span></td>
-                                                    <td><span class="exchange-value">5</span></td>
-                                                    <td><span class="exchange-value">4</span></td>
+                                                    <td style="text-align:left; padding-left:45px; color:#64748b; font-weight:700;">Reference Exchange</td>
+                                                    <td data-col="1200"><span class="exchange-value">2</span></td>
+                                                    <td data-col="1300"><span class="exchange-value">2</span></td>
+                                                    <td data-col="1400"><span class="exchange-value">3</span></td>
+                                                    <td data-col="1500"><span class="exchange-value">4</span></td>
+                                                    <td data-col="1600" class="active-col"><span class="exchange-value highlight">3</span></td>
+                                                    <td data-col="1700"><span class="exchange-value">4</span></td>
+                                                    <td data-col="1800"><span class="exchange-value">5</span></td>
+                                                    <td data-col="1900"><span class="exchange-value">5</span></td>
+                                                    <td data-col="2000"><span class="exchange-value">6</span></td>
+                                                    <td data-col="2100"><span class="exchange-value">7</span></td>
+                                                    <td data-col="2200"><span class="exchange-value">7</span></td>
+                                                    <td data-col="2300"><span class="exchange-value">7</span></td>
+                                                    <td data-col="2400"><span class="exchange-value">9</span></td>
                                                 </tr>
 
                                                 <!-- Sugar -->
-                                                <tr>
-                                                    <td class="food-group-header" colspan="14" style="text-align:left;"><i class="fas fa-cubes-stacked"></i> Sugar</td>
+                                                <tr class="calorie-group-header">
+                                                    <td colspan="14" style="border-left: 5px solid #38bdf8; border-radius: 4px 0 0 4px;"><i class="fas fa-cubes-stacked"></i> SUGAR</td>
                                                 </tr>
                                                 <tr>
-                                                    <td class="food-subgroup"><span class="subgroup-dot" style="background:#60a5fa;"></span> Sugar</td>
-                                                    <td><span class="exchange-value">4</span></td>
-                                                    <td><span class="exchange-value">3</span></td>
-                                                    <td><span class="exchange-value">3</span></td>
-                                                    <td><span class="exchange-value">3</span></td>
-                                                    <td><span class="exchange-value highlight">4</span></td>
-                                                    <td><span class="exchange-value">5</span></td>
-                                                    <td><span class="exchange-value">3</span></td>
-                                                    <td><span class="exchange-value">4</span></td>
-                                                    <td><span class="exchange-value">4</span></td>
-                                                    <td><span class="exchange-value">5</span></td>
-                                                    <td><span class="exchange-value">6</span></td>
-                                                    <td><span class="exchange-value">6</span></td>
-                                                    <td><span class="exchange-value">4</span></td>
+                                                    <td style="text-align:left; padding-left:45px; color:#64748b; font-weight:700;">Reference Exchange</td>
+                                                    <td data-col="1200"><span class="exchange-value">4</span></td>
+                                                    <td data-col="1300"><span class="exchange-value">3</span></td>
+                                                    <td data-col="1400"><span class="exchange-value">3</span></td>
+                                                    <td data-col="1500"><span class="exchange-value">3</span></td>
+                                                    <td data-col="1600" class="active-col"><span class="exchange-value highlight">4</span></td>
+                                                    <td data-col="1700"><span class="exchange-value">5</span></td>
+                                                    <td data-col="1800"><span class="exchange-value">3</span></td>
+                                                    <td data-col="1900"><span class="exchange-value">4</span></td>
+                                                    <td data-col="2000"><span class="exchange-value">4</span></td>
+                                                    <td data-col="2100"><span class="exchange-value">5</span></td>
+                                                    <td data-col="2200"><span class="exchange-value">6</span></td>
+                                                    <td data-col="2300"><span class="exchange-value">6</span></td>
+                                                    <td data-col="2400"><span class="exchange-value">4</span></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -3424,7 +3406,14 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                                     felPanes.forEach(p => p.classList.remove('active'));
                                     btn.classList.add('active');
                                     const target = btn.getAttribute('data-fel');
-                                    document.getElementById(target).classList.add('active');
+                                    const activePane = document.getElementById(target);
+                                    activePane.classList.add('active');
+                                    
+                                    // Elite GSAP Transition
+                                    gsap.fromTo(activePane, 
+                                        { opacity: 0, x: 15, filter: 'blur(5px)' }, 
+                                        { opacity: 1, x: 0, filter: 'blur(0px)', duration: 0.4, ease: "power2.out" }
+                                    );
                                 });
                             });
 
@@ -3444,87 +3433,59 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                                 });
                             });
 
-                            // Original functionality for food exchange table
+                            // ─── ELITE PILLAR TERMINAL ENGINE ───
                             const calorieSelector = document.getElementById('calorieSelector');
-                            const tableHeaders = document.querySelectorAll('.food-exchange-table th');
-                            const exchangeValues = document.querySelectorAll('.exchange-value');
-
-                            // Set initial highlight for 1600 calories
-                            highlightSelectedCalorie(1600);
-
-                            // Add event listener to calorie selector
-                            calorieSelector.addEventListener('change', function () {
-                                const selectedCalories = parseInt(this.value);
-                                highlightSelectedCalorie(selectedCalories);
-                            });
-
-                            // Function to highlight selected calorie column
-                            function highlightSelectedCalorie(calories) {
-                                // Remove current active highlight from headers and value spans
-                                tableHeaders.forEach(header => header.classList.remove('active'));
-                                exchangeValues.forEach(val => val.classList.remove('highlight'));
-
-                                // Remove specialized active-cell class from all td elements
-                                const allCells = document.querySelectorAll('.food-exchange-table td');
-                                allCells.forEach(cell => cell.classList.remove('active-cell'));
-
-                                // Find the index of the column to highlight
-                                let columnIndex = -1;
-                                for (let i = 1; i < tableHeaders.length; i++) {
-                                    if (parseInt(tableHeaders[i].textContent) === calories) {
-                                        columnIndex = i;
-                                        break;
-                                    }
-                                }
-
-                                if (columnIndex !== -1) {
-                                    // Highlight the header
-                                    tableHeaders[columnIndex].classList.add('active');
-
-                                    // Highlight cells in the column
-                                    const rows = document.querySelectorAll('.food-exchange-table tbody tr');
-                                    rows.forEach(row => {
-                                        const cells = row.querySelectorAll('td');
-                                        if (cells.length > columnIndex) {
-                                            // Add helper class for mobile show/hide
-                                            cells[columnIndex].classList.add('active-cell');
-
-                                            const exchangeValue = cells[columnIndex].querySelector('.exchange-value');
-                                            if (exchangeValue) {
-                                                exchangeValue.classList.add('highlight');
-                                            }
-                                        }
-                                    });
-                                }
-                            }
-
-                            // ============================================
-                            // MOBILE CARD VIEW ENGINE
-                            // ============================================
                             const mobileCalorieCards = document.getElementById('mobileCalorieCards');
-
-                            // Data extracted from the table at runtime
                             const calorieData = {
-                                columns: [], // [1200, 1300, ... 2400]
-                                groups: []   // [{ header: 'Vegetable++', isGroup: false, values: [3,3,...] }, ...]
+                                columns: [],
+                                groups: []
                             };
+
+                            function highlightSelectedCalorie(val) {
+                                // 1. Update Headers
+                                document.querySelectorAll('.calorie-ref-table th[data-cal]').forEach(th => {
+                                    if (th.getAttribute('data-cal') == val) {
+                                        th.classList.add('active');
+                                    } else {
+                                        th.classList.remove('active');
+                                    }
+                                });
+
+                                // 2. Update Column Pillar Highlight
+                                document.querySelectorAll('.calorie-ref-table td[data-col]').forEach(td => {
+                                    if (td.getAttribute('data-col') == val) {
+                                        td.classList.add('active-col');
+                                        const valWrap = td.querySelector('.exchange-value');
+                                        if (valWrap) {
+                                            valWrap.classList.add('highlight');
+                                            // Holographic Pulse
+                                            gsap.fromTo(valWrap, 
+                                                { scale: 1.25, boxShadow: '0 0 25px rgba(16, 185, 129, 0.4)' }, 
+                                                { scale: 1.1, boxShadow: '0 4px 12px rgba(5, 150, 105, 0.15)', duration: 0.6, ease: "back.out(2)" }
+                                            );
+                                        }
+                                    } else {
+                                        td.classList.remove('active-col');
+                                        const valWrap = td.querySelector('.exchange-value');
+                                        if (valWrap) valWrap.classList.remove('highlight');
+                                    }
+                                });
+                            }
 
                             function buildCalorieData() {
                                 const headers = document.querySelectorAll('.calorie-ref-table thead th');
                                 headers.forEach((th, i) => {
                                     if (i === 0) return;
-                                    calorieData.columns.push(parseInt(th.textContent.trim()));
+                                    calorieData.columns.push(parseInt(th.getAttribute('data-cal')));
                                 });
 
                                 const rows = document.querySelectorAll('.calorie-ref-table tbody tr');
                                 rows.forEach(row => {
                                     const cells = row.querySelectorAll('td');
                                     const firstCell = cells[0];
-                                    const isGroupHeader = firstCell && firstCell.classList.contains('food-group-header');
-                                    const isSubgroup = firstCell && firstCell.classList.contains('food-subgroup');
-                                    const isColspan = firstCell && firstCell.getAttribute('colspan');
-
                                     if (!firstCell) return;
+                                    
+                                    const isCategoryHeader = firstCell.getAttribute('colspan') !== null;
                                     const name = firstCell.textContent.trim();
                                     const values = [];
                                     cells.forEach((td, i) => {
@@ -3535,9 +3496,7 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
 
                                     calorieData.groups.push({
                                         name,
-                                        isGroupHeader,
-                                        isSubgroup,
-                                        isCategoryHeader: !!isColspan,
+                                        isCategoryHeader,
                                         values
                                     });
                                 });
@@ -3549,10 +3508,8 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                                 if (colIndex === -1) return;
 
                                 mobileCalorieCards.innerHTML = '';
-
                                 calorieData.groups.forEach(group => {
                                     if (group.isCategoryHeader) {
-                                        // Render a new category section header
                                         const catHeader = document.createElement('div');
                                         catHeader.className = 'mcv-category-header';
                                         catHeader.innerHTML = `<span>${group.name.toUpperCase()}</span>`;
@@ -3561,14 +3518,14 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                                     }
 
                                     const val = group.values[colIndex] || '-';
-                                    if (val === '-') return; // Skip items with no value for this calorie level
+                                    if (val === '-') return;
 
                                     const row = document.createElement('div');
-                                    row.className = group.isSubgroup ? 'mcv-row mcv-row--sub' : 'mcv-row';
+                                    row.className = 'mcv-row';
                                     row.innerHTML = `
-                            <span class="mcv-label">${group.name}</span>
-                            <span class="mcv-value">${val}</span>
-                        `;
+                                        <span class="mcv-label">${group.name}</span>
+                                        <span class="mcv-value">${val}</span>
+                                    `;
                                     mobileCalorieCards.appendChild(row);
                                 });
 
@@ -3577,7 +3534,6 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                                 pills.forEach(pill => {
                                     if (parseInt(pill.getAttribute('data-value')) === calories) {
                                         pill.classList.add('active');
-                                        // Ensure the active pill is visible in the scrollable container
                                         pill.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
                                     } else {
                                         pill.classList.remove('active');
@@ -3585,28 +3541,21 @@ $nav_links_array = getNavigationLinks($user_role, 'food-exchange.php');
                                 });
                             }
 
-                            // Add pill-slider interaction
-                            const pillSlider = document.getElementById('mobilePillSlider');
-                            if (pillSlider) {
-                                pillSlider.addEventListener('click', function (e) {
-                                    const pill = e.target.closest('.calorie-pill');
-                                    if (pill) {
-                                        const value = parseInt(pill.getAttribute('data-value'));
-                                        calorieSelector.value = value;
-                                        highlightSelectedCalorie(value);
-                                        renderMobileCards(value);
-                                    }
+                            if (calorieSelector) {
+                                calorieSelector.addEventListener('change', function() {
+                                    const selectedCalories = parseInt(this.value);
+                                    highlightSelectedCalorie(selectedCalories);
+                                    if (typeof renderMobileCards === 'function') renderMobileCards(selectedCalories);
                                 });
                             }
 
+                            // Initialize
                             buildCalorieData();
-                            renderMobileCards(parseInt(calorieSelector.value));
-
-                            calorieSelector.addEventListener('change', function () {
-                                const selectedCalories = parseInt(this.value);
-                                highlightSelectedCalorie(selectedCalories);
-                                renderMobileCards(selectedCalories);
-                            });
+                            if (calorieSelector) {
+                                const initialVal = parseInt(calorieSelector.value);
+                                highlightSelectedCalorie(initialVal);
+                                renderMobileCards(initialVal);
+                            }
 
 
                             const tableRows = document.querySelectorAll('.food-exchange-table tbody tr');

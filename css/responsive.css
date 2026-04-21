@@ -75,18 +75,12 @@
         width: calc(100% - 80px) !important;
     }
 
-    /* Dashboard Grid - 3 columns */
+    /* Dashboard Grid - Fluid auto-fit pattern */
     .dashboard-grid,
-    .admin-grid {
-        display: grid !important;
-        grid-template-columns: repeat(3, 1fr) !important;
-        gap: 25px !important;
-    }
-
-    /* User Grid - Auto-fit pattern */
+    .admin-grid,
     .user-grid {
         display: grid !important;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
         gap: 25px !important;
     }
 

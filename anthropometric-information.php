@@ -303,6 +303,7 @@ if (isset($_GET['tab'])) {
     <link rel="stylesheet" href="css/anthropometric-premium.css">
     <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="css/mobile-style.css">
+    <link rel="stylesheet" href="css/food-exchange.css">
     <style>
         .stats-input[readonly] {
             background-color: #f8fafc !important;
@@ -994,99 +995,221 @@ if (isset($_GET['tab'])) {
 
                 <!-- ── TAB 4: Meal Planner (Food Exchange List) ── -->
                 <div class="ai-tab-panel tab-content <?= $active_tab === 'progress' ? 'active' : '' ?>" id="progress">
+
                     <div class="ai-meal-header">
-                        <h2 class="ai-section-title" style="margin:0;"><i class="fas fa-exchange-alt"></i> Food Exchange List</h2>
+                        <h2 class="ai-section-title" style="margin:0;"><i class="fas fa-microscope"></i> Food Exchange System</h2>
                         <button class="ai-btn-save-meal" id="saveMealPlan"><i class="fas fa-save"></i> Save Meal Plan</button>
                     </div>
 
-                    <div class="ai-table-wrap">
-                        <table class="ai-exchange-table fel-table">
-                            <thead>
-                                <tr>
-                                    <th width="25%">Food Group &amp; Items</th>
-                                    <th width="15%">Exchange</th>
-                                    <th width="12%">Weight (g)</th>
-                                    <th width="12%">Energy (kcal)</th>
-                                    <th width="12%">Protein (g)</th>
-                                    <th width="12%">Fat (g)</th>
-                                    <th width="12%">CHO (g)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="group-header"><td colspan="7"><i class="fas fa-carrot"></i> <strong>VEGETABLES</strong></td></tr>
-                                <tr class="food-item"><td>
-                                    <select id="veg-select" class="food-select">
-                                        <option value="">Select Vegetable Type</option>
-                                        <?php if (!empty($food_items_by_group['vegetable'])): foreach ($food_items_by_group['vegetable'] as $item): ?>
-                                        <option value="<?= htmlspecialchars($item['id']) ?>" data-exchange="<?= htmlspecialchars($item['exchanges']??'1') ?>" data-weight="<?= htmlspecialchars($item['serving_size']??'') ?>" data-energy="<?= htmlspecialchars($item['energy']??'0') ?>" data-protein="<?= htmlspecialchars($item['protein']??'0') ?>" data-fat="<?= htmlspecialchars($item['fat']??'0') ?>" data-cho="<?= htmlspecialchars($item['carbohydrates']??'0') ?>"><?= htmlspecialchars($item['food_name']) ?></option>
-                                        <?php endforeach; else: ?>
-                                        <option value="leafy">Leafy, flower, fruit vegetables</option><option value="root">Root, tuber, bulb vegetables</option><option value="starchy">Starchy vegetables</option>
-                                        <?php endif; ?>
-                                    </select>
-                                </td><td id="vegetable-exchange">-</td><td id="vegetable-weight">-</td><td id="vegetable-energy">-</td><td id="vegetable-protein">-</td><td id="vegetable-fat">-</td><td id="vegetable-cho">-</td></tr>
+                    <!-- Elite Food Discovery Grid System -->
+                    <div class="fet-grid">
+                        
+                        <!-- Vegetables Discovery -->
+                        <div class="fet-card" data-group="vegetables">
+                            <div class="fet-card-header">
+                                <h3 class="fet-card-title"><i class="fas fa-carrot"></i> Vegetables</h3>
+                                <div class="fet-weight-pill" id="vegetable-weight-pill">80g</div>
+                            </div>
+                            <div class="fet-discovery-wrap">
+                                <select id="veg-select" class="fet-search-container" onchange="updateVegetableDetails(this)">
+                                    <option value="">Select vegetable item...</option>
+                                    <?php if (!empty($food_items_by_group['vegetable'])): foreach ($food_items_by_group['vegetable'] as $item): ?>
+                                    <option value="<?= htmlspecialchars($item['id']) ?>" 
+                                            data-exchange="<?= htmlspecialchars($item['exchanges']??'1') ?>" 
+                                            data-weight="<?= htmlspecialchars($item['serving_size']??'') ?>" 
+                                            data-energy="<?= htmlspecialchars($item['energy']??'0') ?>" 
+                                            data-protein="<?= htmlspecialchars($item['protein']??'0') ?>" 
+                                            data-fat="<?= htmlspecialchars($item['fat']??'0') ?>" 
+                                            data-cho="<?= htmlspecialchars($item['carbohydrates']??'0') ?>">
+                                        <?= htmlspecialchars($item['food_name']) ?>
+                                    </option>
+                                    <?php endforeach; endif; ?>
+                                </select>
+                            </div>
+                            <div class="fet-macro-grid">
+                                <div class="fet-macro-hologram"><span class="fet-macro-label">Energy</span><span class="fet-macro-value" id="vegetable-energy">0</span></div>
+                                <div class="fet-macro-hologram"><span class="fet-macro-label">Protein</span><span class="fet-macro-value" id="vegetable-protein">0</span></div>
+                                <div class="fet-macro-hologram"><span class="fet-macro-label">Fat</span><span class="fet-macro-value" id="vegetable-fat">0</span></div>
+                                <div class="fet-macro-hologram"><span class="fet-macro-label">CHO</span><span class="fet-macro-value" id="vegetable-cho">0</span></div>
+                            </div>
+                            <div class="fet-card-footer">
+                                <span class="fet-exchange-text" id="vegetable-exchange">0 exchange</span>
+                                <div class="fet-energy-badge"><i class="fas fa-bolt"></i> <span id="vegetable-kcal-badge">0</span> kcal</div>
+                            </div>
+                        </div>
 
-                                <tr class="group-header"><td colspan="7"><i class="fas fa-apple-alt"></i> <strong>FRUITS</strong></td></tr>
-                                <tr class="food-item"><td>
-                                    <select id="fruit-select" class="food-select">
-                                        <option value="">Select Fruit</option>
-                                        <?php if (!empty($food_items_by_group['fruit'])): foreach ($food_items_by_group['fruit'] as $item): ?>
-                                        <option value="<?= htmlspecialchars($item['id']) ?>" data-exchange="<?= htmlspecialchars($item['exchanges']??'1') ?>" data-weight="<?= htmlspecialchars($item['serving_size']??'') ?>" data-energy="<?= htmlspecialchars($item['energy']??'0') ?>" data-protein="<?= htmlspecialchars($item['protein']??'0') ?>" data-fat="<?= htmlspecialchars($item['fat']??'0') ?>" data-cho="<?= htmlspecialchars($item['carbohydrates']??'0') ?>"><?= htmlspecialchars($item['food_name']) ?></option>
-                                        <?php endforeach; else: ?>
-                                        <option value="banana">Banana (saba)</option><option value="mango">Mango</option><option value="apple">Apple</option><option value="orange">Orange</option><option value="papaya">Papaya</option>
-                                        <?php endif; ?>
-                                    </select>
-                                </td><td id="fruit-exchange">-</td><td id="fruit-weight">-</td><td id="fruit-energy">-</td><td id="fruit-protein">-</td><td id="fruit-fat">-</td><td id="fruit-cho">-</td></tr>
+                        <!-- Fruits Discovery -->
+                        <div class="fet-card" data-group="fruits">
+                            <div class="fet-card-header">
+                                <h3 class="fet-card-title"><i class="fas fa-apple-alt"></i> Fruits</h3>
+                                <div class="fet-weight-pill" id="fruit-weight-pill">100g</div>
+                            </div>
+                            <div class="fet-discovery-wrap">
+                                <select id="fruit-select" class="fet-search-container" onchange="updateFruitDetails(this)">
+                                    <option value="">Select fruit item...</option>
+                                    <?php if (!empty($food_items_by_group['fruit'])): foreach ($food_items_by_group['fruit'] as $item): ?>
+                                    <option value="<?= htmlspecialchars($item['id']) ?>" 
+                                            data-exchange="<?= htmlspecialchars($item['exchanges']??'1') ?>" 
+                                            data-weight="<?= htmlspecialchars($item['serving_size']??'') ?>" 
+                                            data-energy="<?= htmlspecialchars($item['energy']??'0') ?>" 
+                                            data-protein="<?= htmlspecialchars($item['protein']??'0') ?>" 
+                                            data-fat="<?= htmlspecialchars($item['fat']??'0') ?>" 
+                                            data-cho="<?= htmlspecialchars($item['carbohydrates']??'0') ?>">
+                                        <?= htmlspecialchars($item['food_name']) ?>
+                                    </option>
+                                    <?php endforeach; endif; ?>
+                                </select>
+                            </div>
+                            <div class="fet-macro-grid">
+                                <div class="fet-macro-hologram"><span class="fet-macro-label">Energy</span><span class="fet-macro-value" id="fruit-energy">0</span></div>
+                                <div class="fet-macro-hologram"><span class="fet-macro-label">Protein</span><span class="fet-macro-value" id="fruit-protein">0</span></div>
+                                <div class="fet-macro-hologram"><span class="fet-macro-label">Fat</span><span class="fet-macro-value" id="fruit-fat">0</span></div>
+                                <div class="fet-macro-hologram"><span class="fet-macro-label">CHO</span><span class="fet-macro-value" id="fruit-cho">0</span></div>
+                            </div>
+                            <div class="fet-card-footer">
+                                <span class="fet-exchange-text" id="fruit-exchange">0 exchange</span>
+                                <div class="fet-energy-badge"><i class="fas fa-bolt"></i> <span id="fruit-kcal-badge">0</span> kcal</div>
+                            </div>
+                        </div>
 
-                                <tr class="group-header"><td colspan="7"><i class="fas fa-wine-bottle"></i> <strong>MILK</strong></td></tr>
-                                <tr class="food-item"><td>
-                                    <select id="milk-select" class="food-select">
-                                        <option value="">Select Milk Type</option>
-                                        <?php if (!empty($food_items_by_group['milk'])): foreach ($food_items_by_group['milk'] as $item): ?>
-                                        <option value="<?= htmlspecialchars($item['id']) ?>" data-exchange="<?= htmlspecialchars($item['exchanges']??'1') ?>" data-weight="<?= htmlspecialchars($item['serving_size']??'') ?>" data-energy="<?= htmlspecialchars($item['energy']??'0') ?>" data-protein="<?= htmlspecialchars($item['protein']??'0') ?>" data-fat="<?= htmlspecialchars($item['fat']??'0') ?>" data-cho="<?= htmlspecialchars($item['carbohydrates']??'0') ?>"><?= htmlspecialchars($item['food_name']) ?></option>
-                                        <?php endforeach; else: ?>
-                                        <option value="whole">Whole, fresh/evap</option><option value="lowfat">Low-fat, fresh</option><option value="nonfat">Non-fat, powdered</option>
-                                        <?php endif; ?>
-                                    </select>
-                                </td><td id="milk-exchange">-</td><td id="milk-weight">-</td><td id="milk-energy">-</td><td id="milk-protein">-</td><td id="milk-fat">-</td><td id="milk-cho">-</td></tr>
+                         <!-- Milk Discovery -->
+                         <div class="fet-card" data-group="milk">
+                            <div class="fet-card-header">
+                                <h3 class="fet-card-title"><i class="fas fa-wine-bottle"></i> Milk</h3>
+                                <div class="fet-weight-pill" id="milk-weight-pill">240g</div>
+                            </div>
+                            <div class="fet-discovery-wrap">
+                                <select id="milk-select" class="fet-search-container" onchange="updateMilkDetails(this)">
+                                    <option value="">Select milk item...</option>
+                                    <?php if (!empty($food_items_by_group['milk'])): foreach ($food_items_by_group['milk'] as $item): ?>
+                                    <option value="<?= htmlspecialchars($item['id']) ?>" 
+                                            data-exchange="<?= htmlspecialchars($item['exchanges']??'1') ?>" 
+                                            data-weight="<?= htmlspecialchars($item['serving_size']??'') ?>" 
+                                            data-energy="<?= htmlspecialchars($item['energy']??'0') ?>" 
+                                            data-protein="<?= htmlspecialchars($item['protein']??'0') ?>" 
+                                            data-fat="<?= htmlspecialchars($item['fat']??'0') ?>" 
+                                            data-cho="<?= htmlspecialchars($item['carbohydrates']??'0') ?>">
+                                        <?= htmlspecialchars($item['food_name']) ?>
+                                    </option>
+                                    <?php endforeach; endif; ?>
+                                </select>
+                            </div>
+                            <div class="fet-macro-grid">
+                                <div class="fet-macro-hologram"><span class="fet-macro-label">Energy</span><span class="fet-macro-value" id="milk-energy">0</span></div>
+                                <div class="fet-macro-hologram"><span class="fet-macro-label">Protein</span><span class="fet-macro-value" id="milk-protein">0</span></div>
+                                <div class="fet-macro-hologram"><span class="fet-macro-label">Fat</span><span class="fet-macro-value" id="milk-fat">0</span></div>
+                                <div class="fet-macro-hologram"><span class="fet-macro-label">CHO</span><span class="fet-macro-value" id="milk-cho">0</span></div>
+                            </div>
+                            <div class="fet-card-footer">
+                                <span class="fet-exchange-text" id="milk-exchange">0 exchange</span>
+                                <div class="fet-energy-badge"><i class="fas fa-bolt"></i> <span id="milk-kcal-badge">0</span> kcal</div>
+                            </div>
+                        </div>
 
-                                <tr class="group-header"><td colspan="7"><i class="fas fa-bread-slice"></i> <strong>RICE, RICE SUBSTITUTES &amp; PRODUCTS</strong></td></tr>
-                                <tr class="food-item"><td>
-                                    <select id="rice-select" class="food-select">
-                                        <option value="">Select Rice/Grain</option>
-                                        <?php if (!empty($food_items_by_group['rice'])): foreach ($food_items_by_group['rice'] as $item): ?>
-                                        <option value="<?= htmlspecialchars($item['id']) ?>" data-exchange="<?= htmlspecialchars($item['exchanges']??'1') ?>" data-weight="<?= htmlspecialchars($item['serving_size']??'') ?>" data-energy="<?= htmlspecialchars($item['energy']??'0') ?>" data-protein="<?= htmlspecialchars($item['protein']??'0') ?>" data-fat="<?= htmlspecialchars($item['fat']??'0') ?>" data-cho="<?= htmlspecialchars($item['carbohydrates']??'0') ?>"><?= htmlspecialchars($item['food_name']) ?></option>
-                                        <?php endforeach; else: ?>
-                                        <option value="rice_well">Rice, well-milled</option><option value="rice_medium">Rice, medium-milled</option><option value="rice_brown">Rice, brown</option><option value="bread">Bread</option><option value="noodles">Noodles</option>
-                                        <?php endif; ?>
-                                    </select>
-                                </td><td id="rice-exchange">-</td><td id="rice-weight">-</td><td id="rice-energy">-</td><td id="rice-protein">-</td><td id="rice-fat">-</td><td id="rice-cho">-</td></tr>
+                        <!-- Rice Discovery -->
+                        <div class="fet-card" data-group="rice">
+                            <div class="fet-card-header">
+                                <h3 class="fet-card-title"><i class="fas fa-bread-slice"></i> Rice &amp; Grains</h3>
+                                <div class="fet-weight-pill" id="rice-weight-pill">100g</div>
+                            </div>
+                            <div class="fet-discovery-wrap">
+                                <select id="rice-select" class="fet-search-container" onchange="updateRiceDetails(this)">
+                                    <option value="">Select rice item...</option>
+                                    <?php if (!empty($food_items_by_group['rice'])): foreach ($food_items_by_group['rice'] as $item): ?>
+                                    <option value="<?= htmlspecialchars($item['id']) ?>" 
+                                            data-exchange="<?= htmlspecialchars($item['exchanges']??'1') ?>" 
+                                            data-weight="<?= htmlspecialchars($item['serving_size']??'') ?>" 
+                                            data-energy="<?= htmlspecialchars($item['energy']??'0') ?>" 
+                                            data-protein="<?= htmlspecialchars($item['protein']??'0') ?>" 
+                                            data-fat="<?= htmlspecialchars($item['fat']??'0') ?>" 
+                                            data-cho="<?= htmlspecialchars($item['carbohydrates']??'0') ?>">
+                                        <?= htmlspecialchars($item['food_name']) ?>
+                                    </option>
+                                    <?php endforeach; endif; ?>
+                                </select>
+                            </div>
+                            <div class="fet-macro-grid">
+                                <div class="fet-macro-hologram"><span class="fet-macro-label">Energy</span><span class="fet-macro-value" id="rice-energy">0</span></div>
+                                <div class="fet-macro-hologram"><span class="fet-macro-label">Protein</span><span class="fet-macro-value" id="rice-protein">0</span></div>
+                                <div class="fet-macro-hologram"><span class="fet-macro-label">Fat</span><span class="fet-macro-value" id="rice-fat">0</span></div>
+                                <div class="fet-macro-hologram"><span class="fet-macro-label">CHO</span><span class="fet-macro-value" id="rice-cho">0</span></div>
+                            </div>
+                            <div class="fet-card-footer">
+                                <span class="fet-exchange-text" id="rice-exchange">0 exchange</span>
+                                <div class="fet-energy-badge"><i class="fas fa-bolt"></i> <span id="rice-kcal-badge">0</span> kcal</div>
+                            </div>
+                        </div>
 
-                                <tr class="group-header"><td colspan="7"><i class="fas fa-drumstick-bite"></i> <strong>MEAT, POULTRY, FISH &amp; PRODUCTS</strong></td></tr>
-                                <tr class="food-item"><td>
-                                    <select id="meat-select" class="food-select">
-                                        <option value="">Select Meat/Fish</option>
-                                        <?php if (!empty($food_items_by_group['meat'])): foreach ($food_items_by_group['meat'] as $item): ?>
-                                        <option value="<?= htmlspecialchars($item['id']) ?>" data-exchange="<?= htmlspecialchars($item['exchanges']??'1') ?>" data-weight="<?= htmlspecialchars($item['serving_size']??'') ?>" data-energy="<?= htmlspecialchars($item['energy']??'0') ?>" data-protein="<?= htmlspecialchars($item['protein']??'0') ?>" data-fat="<?= htmlspecialchars($item['fat']??'0') ?>" data-cho="<?= htmlspecialchars($item['carbohydrates']??'0') ?>"><?= htmlspecialchars($item['food_name']) ?></option>
-                                        <?php endforeach; else: ?>
-                                        <option value="lean">Lean meat</option><option value="medium">Medium-fat meat</option><option value="high">High-fat meat</option><option value="fish">Fish, lean</option><option value="fish_medium">Fish, medium-fat</option>
-                                        <?php endif; ?>
-                                    </select>
-                                </td><td id="meat-exchange">-</td><td id="meat-weight">-</td><td id="meat-energy">-</td><td id="meat-protein">-</td><td id="meat-fat">-</td><td id="meat-cho">-</td></tr>
+                        <!-- Meat Discovery -->
+                        <div class="fet-card" data-group="meat">
+                            <div class="fet-card-header">
+                                <h3 class="fet-card-title"><i class="fas fa-drumstick-bite"></i> Meat &amp; Fish</h3>
+                                <div class="fet-weight-pill" id="meat-weight-pill">30g</div>
+                            </div>
+                            <div class="fet-discovery-wrap">
+                                <select id="meat-select" class="fet-search-container" onchange="updateMeatDetails(this)">
+                                    <option value="">Select meat item...</option>
+                                    <?php if (!empty($food_items_by_group['meat'])): foreach ($food_items_by_group['meat'] as $item): ?>
+                                    <option value="<?= htmlspecialchars($item['id']) ?>" 
+                                            data-exchange="<?= htmlspecialchars($item['exchanges']??'1') ?>" 
+                                            data-weight="<?= htmlspecialchars($item['serving_size']??'') ?>" 
+                                            data-energy="<?= htmlspecialchars($item['energy']??'0') ?>" 
+                                            data-protein="<?= htmlspecialchars($item['protein']??'0') ?>" 
+                                            data-fat="<?= htmlspecialchars($item['fat']??'0') ?>" 
+                                            data-cho="<?= htmlspecialchars($item['carbohydrates']??'0') ?>">
+                                        <?= htmlspecialchars($item['food_name']) ?>
+                                    </option>
+                                    <?php endforeach; endif; ?>
+                                </select>
+                            </div>
+                            <div class="fet-macro-grid">
+                                <div class="fet-macro-hologram"><span class="fet-macro-label">Energy</span><span class="fet-macro-value" id="meat-energy">0</span></div>
+                                <div class="fet-macro-hologram"><span class="fet-macro-label">Protein</span><span class="fet-macro-value" id="meat-protein">0</span></div>
+                                <div class="fet-macro-hologram"><span class="fet-macro-label">Fat</span><span class="fet-macro-value" id="meat-fat">0</span></div>
+                                <div class="fet-macro-hologram"><span class="fet-macro-label">CHO</span><span class="fet-macro-value" id="meat-cho">0</span></div>
+                            </div>
+                            <div class="fet-card-footer">
+                                <span class="fet-exchange-text" id="meat-exchange">0 exchange</span>
+                                <div class="fet-energy-badge"><i class="fas fa-bolt"></i> <span id="meat-kcal-badge">0</span> kcal</div>
+                            </div>
+                        </div>
 
-                                <tr class="group-header"><td colspan="7"><i class="fas fa-oil-can"></i> <strong>FATS &amp; OILS</strong></td></tr>
-                                <tr class="food-item"><td>
-                                    <select id="fat-select" class="food-select">
-                                        <option value="">Select Fat/Oil Type</option>
-                                        <?php if (!empty($food_items_by_group['fat'])): foreach ($food_items_by_group['fat'] as $item): ?>
-                                        <option value="<?= htmlspecialchars($item['id']) ?>" data-exchange="<?= htmlspecialchars($item['exchanges']??'1') ?>" data-weight="<?= htmlspecialchars($item['serving_size']??'') ?>" data-energy="<?= htmlspecialchars($item['energy']??'0') ?>" data-protein="<?= htmlspecialchars($item['protein']??'0') ?>" data-fat="<?= htmlspecialchars($item['fat']??'0') ?>" data-cho="<?= htmlspecialchars($item['carbohydrates']??'0') ?>"><?= htmlspecialchars($item['food_name']) ?></option>
-                                        <?php endforeach; else: ?>
-                                        <option value="butter">Butter, margarine</option><option value="oil">Cooking oil</option><option value="mayo">Mayonnaise</option>
-                                        <?php endif; ?>
-                                    </select>
-                                </td><td id="fat-exchange">-</td><td id="fat-weight">-</td><td id="fat-energy">-</td><td id="fat-protein">-</td><td id="fat-fat">-</td><td id="fat-cho">-</td></tr>
-                            </tbody>
-                        </table>
+                        <!-- Fats & Oils Discovery -->
+                        <div class="fet-card" data-group="fats">
+                            <div class="fet-card-header">
+                                <h3 class="fet-card-title"><i class="fas fa-oil-can"></i> Fats &amp; Oils</h3>
+                                <div class="fet-weight-pill" id="fat-weight-pill">5g</div>
+                            </div>
+                            <div class="fet-discovery-wrap">
+                                <select id="fat-select" class="fet-search-container" onchange="updateFatDetails(this)">
+                                    <option value="">Select fat item...</option>
+                                    <?php if (!empty($food_items_by_group['fat'])): foreach ($food_items_by_group['fat'] as $item): ?>
+                                    <option value="<?= htmlspecialchars($item['id']) ?>" 
+                                            data-exchange="<?= htmlspecialchars($item['exchanges']??'1') ?>" 
+                                            data-weight="<?= htmlspecialchars($item['serving_size']??'') ?>" 
+                                            data-energy="<?= htmlspecialchars($item['energy']??'0') ?>" 
+                                            data-protein="<?= htmlspecialchars($item['protein']??'0') ?>" 
+                                            data-fat="<?= htmlspecialchars($item['fat']??'0') ?>" 
+                                            data-cho="<?= htmlspecialchars($item['carbohydrates']??'0') ?>">
+                                        <?= htmlspecialchars($item['food_name']) ?>
+                                    </option>
+                                    <?php endforeach; endif; ?>
+                                </select>
+                            </div>
+                            <div class="fet-macro-grid">
+                                <div class="fet-macro-hologram"><span class="fet-macro-label">Energy</span><span class="fet-macro-value" id="fat-energy">0</span></div>
+                                <div class="fet-macro-hologram"><span class="fet-macro-label">Protein</span><span class="fet-macro-value" id="fat-protein">0</span></div>
+                                <div class="fet-macro-hologram"><span class="fet-macro-label">Fat</span><span class="fet-macro-value" id="fat-fat">0</span></div>
+                                <div class="fet-macro-hologram"><span class="fet-macro-label">CHO</span><span class="fet-macro-value" id="fat-cho">0</span></div>
+                            </div>
+                            <div class="fet-card-footer">
+                                <span class="fet-exchange-text" id="fat-exchange">0 exchange</span>
+                                <div class="fet-energy-badge"><i class="fas fa-bolt"></i> <span id="fat-kcal-badge">0</span> kcal</div>
+                            </div>
+                        </div>
+
                     </div>
+
 
                     <!-- Selected Items Summary -->
                     <div class="selected-items-section" style="margin-top:20px;background:#f9fafb;border:1.5px solid #f3f4f6;border-radius:14px;padding:18px 20px;">
@@ -1160,144 +1283,156 @@ if (isset($_GET['tab'])) {
                 return activeTab ? activeTab.getAttribute('data-tab') : 'personal-info';
             }
 
-            // Update detail functions (all your update functions remain the same)
+            // Update detail functions (Elite Discovery System)
+            function triggerHologram(groupId) {
+                const holograms = document.querySelectorAll(`[data-group="${groupId}"] .fet-macro-value`);
+                const energyBadge = document.querySelector(`[data-group="${groupId}"] .fet-energy-badge`);
+                
+                // Pulse effect on values
+                gsap.fromTo(holograms, 
+                    { color: '#10b981', scale: 1.1 }, 
+                    { color: '#1e293b', scale: 1, duration: 0.8, stagger: 0.05, ease: 'power2.out' }
+                );
+
+                // Glow effect on badge
+                gsap.fromTo(energyBadge,
+                    { scale: 1.1, boxShadow: '0 0 20px rgba(16, 185, 129, 0.5)' },
+                    { scale: 1, boxShadow: '0 8px 20px rgba(5, 150, 105, 0.25)', duration: 0.6 }
+                );
+            }
+
             function updateVegetableDetails(select) {
-                const selectedOption = select.options[select.selectedIndex];
-                if (selectedOption.value) {
-                    const data = {
-                        exchange: selectedOption.getAttribute('data-exchange') || '1',
-                        weight: selectedOption.getAttribute('data-weight') || '-',
-                        energy: selectedOption.getAttribute('data-energy') || '0',
-                        protein: selectedOption.getAttribute('data-protein') || '0',
-                        fat: selectedOption.getAttribute('data-fat') || '0',
-                        cho: selectedOption.getAttribute('data-cho') || '0'
-                    };
-
-                    document.getElementById('vegetable-exchange').textContent = data.exchange;
-                    document.getElementById('vegetable-weight').textContent = data.weight;
-                    document.getElementById('vegetable-energy').textContent = data.energy;
-                    document.getElementById('vegetable-protein').textContent = data.protein;
-                    document.getElementById('vegetable-fat').textContent = data.fat;
-                    document.getElementById('vegetable-cho').textContent = data.cho;
-
-                    addSelectedItem('Vegetables', selectedOption.text, data);
-                }
+                const opt = select.options[select.selectedIndex];
+                if (!opt.value) return;
+                const d = {
+                    ex: opt.getAttribute('data-exchange') || '1',
+                    wt: opt.getAttribute('data-weight') || '-',
+                    en: opt.getAttribute('data-energy') || '0',
+                    pr: opt.getAttribute('data-protein') || '0',
+                    fa: opt.getAttribute('data-fat') || '0',
+                    ch: opt.getAttribute('data-cho') || '0'
+                };
+                document.getElementById('vegetable-exchange').textContent = d.ex + ' exchange';
+                document.getElementById('vegetable-weight-pill').textContent = d.wt + (d.wt !== '-' ? 'g' : '');
+                document.getElementById('vegetable-energy').textContent = d.en;
+                document.getElementById('vegetable-protein').textContent = d.pr;
+                document.getElementById('vegetable-fat').textContent = d.fa;
+                document.getElementById('vegetable-cho').textContent = d.ch;
+                document.getElementById('vegetable-kcal-badge').textContent = d.en;
+                triggerHologram('vegetables');
+                addSelectedItem('Vegetables', opt.text, { exchange: d.ex, weight: d.wt, energy: d.en, protein: d.pr, fat: d.fa, cho: d.ch });
             }
 
             function updateFruitDetails(select) {
-                const selectedOption = select.options[select.selectedIndex];
-                if (selectedOption.value) {
-                    const data = {
-                        exchange: selectedOption.getAttribute('data-exchange') || '1',
-                        weight: selectedOption.getAttribute('data-weight') || '-',
-                        energy: selectedOption.getAttribute('data-energy') || '0',
-                        protein: selectedOption.getAttribute('data-protein') || '0',
-                        fat: selectedOption.getAttribute('data-fat') || '0',
-                        cho: selectedOption.getAttribute('data-cho') || '0'
-                    };
-
-                    document.getElementById('fruit-exchange').textContent = data.exchange;
-                    document.getElementById('fruit-weight').textContent = data.weight;
-                    document.getElementById('fruit-energy').textContent = data.energy;
-                    document.getElementById('fruit-protein').textContent = data.protein;
-                    document.getElementById('fruit-fat').textContent = data.fat;
-                    document.getElementById('fruit-cho').textContent = data.cho;
-
-                    addSelectedItem('Fruits', selectedOption.text, data);
-                }
+                const opt = select.options[select.selectedIndex];
+                if (!opt.value) return;
+                const d = {
+                    ex: opt.getAttribute('data-exchange') || '1',
+                    wt: opt.getAttribute('data-weight') || '-',
+                    en: opt.getAttribute('data-energy') || '0',
+                    pr: opt.getAttribute('data-protein') || '0',
+                    fa: opt.getAttribute('data-fat') || '0',
+                    ch: opt.getAttribute('data-cho') || '0'
+                };
+                document.getElementById('fruit-exchange').textContent = d.ex + ' exchange';
+                document.getElementById('fruit-weight-pill').textContent = d.wt + (d.wt !== '-' ? 'g' : '');
+                document.getElementById('fruit-energy').textContent = d.en;
+                document.getElementById('fruit-protein').textContent = d.pr;
+                document.getElementById('fruit-fat').textContent = d.fa;
+                document.getElementById('fruit-cho').textContent = d.ch;
+                document.getElementById('fruit-kcal-badge').textContent = d.en;
+                triggerHologram('fruits');
+                addSelectedItem('Fruits', opt.text, { exchange: d.ex, weight: d.wt, energy: d.en, protein: d.pr, fat: d.fa, cho: d.ch });
             }
 
             function updateMilkDetails(select) {
-                const selectedOption = select.options[select.selectedIndex];
-                if (selectedOption.value) {
-                    const data = {
-                        exchange: selectedOption.getAttribute('data-exchange') || '1',
-                        weight: selectedOption.getAttribute('data-weight') || '-',
-                        energy: selectedOption.getAttribute('data-energy') || '0',
-                        protein: selectedOption.getAttribute('data-protein') || '0',
-                        fat: selectedOption.getAttribute('data-fat') || '0',
-                        cho: selectedOption.getAttribute('data-cho') || '0'
-                    };
-
-                    document.getElementById('milk-exchange').textContent = data.exchange;
-                    document.getElementById('milk-weight').textContent = data.weight;
-                    document.getElementById('milk-energy').textContent = data.energy;
-                    document.getElementById('milk-protein').textContent = data.protein;
-                    document.getElementById('milk-fat').textContent = data.fat;
-                    document.getElementById('milk-cho').textContent = data.cho;
-
-                    addSelectedItem('Milk', selectedOption.text, data);
-                }
+                const opt = select.options[select.selectedIndex];
+                if (!opt.value) return;
+                const d = {
+                    ex: opt.getAttribute('data-exchange') || '1',
+                    wt: opt.getAttribute('data-weight') || '-',
+                    en: opt.getAttribute('data-energy') || '0',
+                    pr: opt.getAttribute('data-protein') || '0',
+                    fa: opt.getAttribute('data-fat') || '0',
+                    ch: opt.getAttribute('data-cho') || '0'
+                };
+                document.getElementById('milk-exchange').textContent = d.ex + ' exchange';
+                document.getElementById('milk-weight-pill').textContent = d.wt + (d.wt !== '-' ? 'g' : '');
+                document.getElementById('milk-energy').textContent = d.en;
+                document.getElementById('milk-protein').textContent = d.pr;
+                document.getElementById('milk-fat').textContent = d.fa;
+                document.getElementById('milk-cho').textContent = d.ch;
+                document.getElementById('milk-kcal-badge').textContent = d.en;
+                triggerHologram('milk');
+                addSelectedItem('Milk', opt.text, { exchange: d.ex, weight: d.wt, energy: d.en, protein: d.pr, fat: d.fa, cho: d.ch });
             }
 
             function updateRiceDetails(select) {
-                const selectedOption = select.options[select.selectedIndex];
-                if (selectedOption.value) {
-                    const data = {
-                        exchange: selectedOption.getAttribute('data-exchange') || '1',
-                        weight: selectedOption.getAttribute('data-weight') || '-',
-                        energy: selectedOption.getAttribute('data-energy') || '0',
-                        protein: selectedOption.getAttribute('data-protein') || '0',
-                        fat: selectedOption.getAttribute('data-fat') || '0',
-                        cho: selectedOption.getAttribute('data-cho') || '0'
-                    };
-
-                    document.getElementById('rice-exchange').textContent = data.exchange;
-                    document.getElementById('rice-weight').textContent = data.weight;
-                    document.getElementById('rice-energy').textContent = data.energy;
-                    document.getElementById('rice-protein').textContent = data.protein;
-                    document.getElementById('rice-fat').textContent = data.fat;
-                    document.getElementById('rice-cho').textContent = data.cho;
-
-                    addSelectedItem('Rice & Grains', selectedOption.text, data);
-                }
+                const opt = select.options[select.selectedIndex];
+                if (!opt.value) return;
+                const d = {
+                    ex: opt.getAttribute('data-exchange') || '1',
+                    wt: opt.getAttribute('data-weight') || '-',
+                    en: opt.getAttribute('data-energy') || '0',
+                    pr: opt.getAttribute('data-protein') || '0',
+                    fa: opt.getAttribute('data-fat') || '0',
+                    ch: opt.getAttribute('data-cho') || '0'
+                };
+                document.getElementById('rice-exchange').textContent = d.ex + ' exchange';
+                document.getElementById('rice-weight-pill').textContent = d.wt + (d.wt !== '-' ? 'g' : '');
+                document.getElementById('rice-energy').textContent = d.en;
+                document.getElementById('rice-protein').textContent = d.pr;
+                document.getElementById('rice-fat').textContent = d.fa;
+                document.getElementById('rice-cho').textContent = d.ch;
+                document.getElementById('rice-kcal-badge').textContent = d.en;
+                triggerHologram('rice');
+                addSelectedItem('Rice & Grains', opt.text, { exchange: d.ex, weight: d.wt, energy: d.en, protein: d.pr, fat: d.fa, cho: d.ch });
             }
 
             function updateMeatDetails(select) {
-                const selectedOption = select.options[select.selectedIndex];
-                if (selectedOption.value) {
-                    const data = {
-                        exchange: selectedOption.getAttribute('data-exchange') || '1',
-                        weight: selectedOption.getAttribute('data-weight') || '-',
-                        energy: selectedOption.getAttribute('data-energy') || '0',
-                        protein: selectedOption.getAttribute('data-protein') || '0',
-                        fat: selectedOption.getAttribute('data-fat') || '0',
-                        cho: selectedOption.getAttribute('data-cho') || '0'
-                    };
-
-                    document.getElementById('meat-exchange').textContent = data.exchange;
-                    document.getElementById('meat-weight').textContent = data.weight;
-                    document.getElementById('meat-energy').textContent = data.energy;
-                    document.getElementById('meat-protein').textContent = data.protein;
-                    document.getElementById('meat-fat').textContent = data.fat;
-                    document.getElementById('meat-cho').textContent = data.cho;
-
-                    addSelectedItem('Meat & Fish', selectedOption.text, data);
-                }
+                const opt = select.options[select.selectedIndex];
+                if (!opt.value) return;
+                const d = {
+                    ex: opt.getAttribute('data-exchange') || '1',
+                    wt: opt.getAttribute('data-weight') || '-',
+                    en: opt.getAttribute('data-energy') || '0',
+                    pr: opt.getAttribute('data-protein') || '0',
+                    fa: opt.getAttribute('data-fat') || '0',
+                    ch: opt.getAttribute('data-cho') || '0'
+                };
+                document.getElementById('meat-exchange').textContent = d.ex + ' exchange';
+                document.getElementById('meat-weight-pill').textContent = d.wt + (d.wt !== '-' ? 'g' : '');
+                document.getElementById('meat-energy').textContent = d.en;
+                document.getElementById('meat-protein').textContent = d.pr;
+                document.getElementById('meat-fat').textContent = d.fa;
+                document.getElementById('meat-cho').textContent = d.ch;
+                document.getElementById('meat-kcal-badge').textContent = d.en;
+                triggerHologram('meat');
+                addSelectedItem('Meat & Fish', opt.text, { exchange: d.ex, weight: d.wt, energy: d.en, protein: d.pr, fat: d.fa, cho: d.ch });
             }
 
             function updateFatDetails(select) {
-                const selectedOption = select.options[select.selectedIndex];
-                if (selectedOption.value) {
-                    const data = {
-                        exchange: selectedOption.getAttribute('data-exchange') || '1',
-                        weight: selectedOption.getAttribute('data-weight') || '-',
-                        energy: selectedOption.getAttribute('data-energy') || '0',
-                        protein: selectedOption.getAttribute('data-protein') || '0',
-                        fat: selectedOption.getAttribute('data-fat') || '0',
-                        cho: selectedOption.getAttribute('data-cho') || '0'
-                    };
-
-                    document.getElementById('fat-exchange').textContent = data.exchange;
-                    document.getElementById('fat-weight').textContent = data.weight;
-                    document.getElementById('fat-energy').textContent = data.energy;
-                    document.getElementById('fat-protein').textContent = data.protein;
-                    document.getElementById('fat-fat').textContent = data.fat;
-                    document.getElementById('fat-cho').textContent = data.cho;
-
-                    addSelectedItem('Fats & Oils', selectedOption.text, data);
-                }
+                const opt = select.options[select.selectedIndex];
+                if (!opt.value) return;
+                const d = {
+                    ex: opt.getAttribute('data-exchange') || '1',
+                    wt: opt.getAttribute('data-weight') || '-',
+                    en: opt.getAttribute('data-energy') || '0',
+                    pr: opt.getAttribute('data-protein') || '0',
+                    fa: opt.getAttribute('data-fat') || '0',
+                    ch: opt.getAttribute('data-cho') || '0'
+                };
+                document.getElementById('fat-exchange').textContent = d.ex + ' exchange';
+                document.getElementById('fat-weight-pill').textContent = d.wt + (d.wt !== '-' ? 'g' : '');
+                document.getElementById('fat-energy').textContent = d.en;
+                document.getElementById('fat-protein').textContent = d.pr;
+                document.getElementById('fat-fat').textContent = d.fa;
+                document.getElementById('fat-cho').textContent = d.ch;
+                document.getElementById('fat-kcal-badge').textContent = d.en;
+                triggerHologram('fats');
+                addSelectedItem('Fats & Oils', opt.text, { exchange: d.ex, weight: d.wt, energy: d.en, protein: d.pr, fat: d.fa, cho: d.ch });
             }
+
 
             // Helper Functions (Global Scope)
             function addSelectedItem(group, name, data) {

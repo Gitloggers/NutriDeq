@@ -42,6 +42,19 @@ if (isset($_SESSION['user_id'])) {
     }
 }
 ?>
+<link rel="stylesheet" href="css/sidebar.css">
+<link rel="stylesheet" href="css/global-elite.css">
+
+<!-- Global Scroll Bar -->
+<div id="nd-scroll-bar"></div>
+
+<!-- Global Ambient Mesh Orbs -->
+<div class="global-mesh-wrap">
+    <div class="global-orb global-orb-1"></div>
+    <div class="global-orb global-orb-2"></div>
+    <div class="global-orb global-orb-3"></div>
+</div>
+
 
 <!-- Mobile Top Header -->
 <div class="mobile-header">
@@ -49,8 +62,8 @@ if (isset($_SESSION['user_id'])) {
         <img src="assets/img/logo.png" alt="NutriDeq" style="height: 32px; width: auto;">
         <span>NutriDeq</span>
     </div>
-    <div class="mobile-header-actions" style="display: flex; align-items: center; gap: 10px;">
-        <button class="mobile-header-logout" id="mobileLogoutTrigger" title="Logout" style="background: rgba(255, 107, 107, 0.1); border: none; border-radius: 10px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; color: #ff6b6b; cursor: pointer;">
+    <div class="mobile-header-actions">
+        <button class="mobile-header-logout" id="mobileLogoutTrigger" title="Logout">
             <i class="fas fa-sign-out-alt"></i>
         </button>
         <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle Menu">
@@ -69,7 +82,7 @@ if (isset($_SESSION['user_id'])) {
         </a>
         <div class="sidebar-controls">
             <button class="sidebar-collapse-btn" id="sidebarCollapseBtn" title="Toggle Sidebar">
-                <i class="fas fa-bars"></i>
+                <i class="fas fa-sidebar" id="collapseIcon"></i>
             </button>
             <button class="mobile-sidebar-close" id="mobileSidebarClose" title="Close Menu">
                 <i class="fas fa-times"></i>
@@ -77,7 +90,7 @@ if (isset($_SESSION['user_id'])) {
         </div>
     </div>
 
-    <ul class="nav-links">
+    <ul class="nav-links" id="navLinksList">
         <?php foreach ($sidebar_nav_links as $nav_item): 
             $item_text = $nav_item['text'] ?? 'Untitled';
             $item_icon = $nav_item['icon'] ?? 'fas fa-circle';
@@ -92,10 +105,9 @@ if (isset($_SESSION['user_id'])) {
                 <li>
                     <a href="<?php echo htmlspecialchars($item_href); ?>" 
                        class="<?php echo !empty($nav_item['active']) ? 'active' : ''; ?>" 
-                       title="<?php echo htmlspecialchars($item_text); ?>"
-                       style="display: flex !important; visibility: visible !important; opacity: 1 !important;">
-                        <i class="<?php echo htmlspecialchars($item_icon); ?>" style="visibility: visible !important; opacity: 1 !important;"></i>
-                        <span class="nav-text" style="display: inline-block !important; visibility: visible !important; opacity: 1 !important;"><?php echo htmlspecialchars($item_text); ?></span>
+                       title="<?php echo htmlspecialchars($item_text); ?>">
+                        <i class="<?php echo htmlspecialchars($item_icon); ?>"></i>
+                        <span class="nav-text"><?php echo htmlspecialchars($item_text); ?></span>
                     </a>
                 </li>
             <?php endif; ?>
@@ -167,72 +179,6 @@ if (isset($_SESSION['user_id'])) {
     </div>
 </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const logoutTrigger = document.getElementById('logoutTrigger');
-        const mobileLogoutTrigger = document.getElementById('mobileLogoutTrigger');
-        const logoutModal = document.getElementById('logoutModal');
-        const cancelLogout = document.getElementById('cancelLogout');
-        
-        // Mobile Navigation Elements
-        const mobileNavToggle = document.getElementById('mobileNavToggle');
-        const mobileSidebarClose = document.getElementById('mobileSidebarClose');
-        const sidebarOverlay = document.getElementById('sidebarOverlay');
-        const mainSidebar = document.getElementById('mainSidebar');
-        const mobileMenuTrigger = document.getElementById('mobileMenuTrigger');
-
-        const toggleSidebar = () => {
-            mainSidebar.classList.toggle('active');
-            sidebarOverlay.classList.toggle('active');
-            document.body.style.overflow = mainSidebar.classList.contains('active') ? 'hidden' : '';
-        };
-
-        const closeSidebar = () => {
-            mainSidebar.classList.remove('active');
-            sidebarOverlay.classList.remove('active');
-            document.body.style.overflow = '';
-        };
-
-        if (mobileNavToggle) mobileNavToggle.addEventListener('click', toggleSidebar);
-        if (mobileSidebarClose) mobileSidebarClose.addEventListener('click', closeSidebar);
-        if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
-        if (mobileMenuTrigger) mobileMenuTrigger.addEventListener('click', toggleSidebar);
-
-        if (logoutTrigger && logoutModal) {
-            logoutTrigger.addEventListener('click', (e) => {
-                e.preventDefault();
-                logoutModal.classList.add('active');
-            });
-        }
-
-        if (mobileLogoutTrigger && logoutModal) {
-            mobileLogoutTrigger.addEventListener('click', (e) => {
-                e.preventDefault();
-                logoutModal.classList.add('active');
-            });
-        }
-        
-        if (cancelLogout && logoutModal) {
-            cancelLogout.addEventListener('click', () => {
-                logoutModal.classList.remove('active');
-            });
-        }
-        
-        // Close modal when clicking on the backdrop
-        if (logoutModal) {
-            logoutModal.addEventListener('click', (e) => {
-                if (e.target === logoutModal) {
-                    logoutModal.classList.remove('active');
-                }
-            });
-        }
-    });
-</script>
-
-<link rel="stylesheet" href="css/sidebar.css?v=119">
-<link rel="stylesheet" href="css/logout-modal.css?v=119">
-<link rel="stylesheet" href="css/interactive-animations.css?v=119">
-
 <!-- Global Notification Toast -->
 <div id="notificationToast" class="notification-toast">
     <div class="toast-icon">
@@ -247,202 +193,228 @@ if (isset($_SESSION['user_id'])) {
     </button>
 </div>
 
+<link rel="stylesheet" href="css/sidebar.css?v=200">
+<link rel="stylesheet" href="css/logout-modal.css?v=119">
+<link rel="stylesheet" href="css/interactive-animations.css?v=119">
+
+<!-- Scripts are now at the bottom for reliability -->
+
+
 <style>
-    .notification-toast {
-        position: fixed; 
-        bottom: 30px; 
-        right: 30px;
-        background: white; 
-        border-radius: 16px; 
-        padding: 16px 24px;
-        box-shadow: 0 15px 50px rgba(0,0,0,0.12); 
-        display: flex; 
-        align-items: center; 
-        gap: 16px;
-        transform: translateY(150px) scale(0.9); 
-        opacity: 0; 
-        transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-        z-index: 10001; 
-        border-left: 6px solid #2D8A56; 
-        cursor: pointer;
-        max-width: 380px;
-    }
-
-    .notification-toast.show { 
-        transform: translateY(0) scale(1); 
-        opacity: 1; 
-    }
-
-    .notification-toast:hover { 
-        transform: translateY(-5px) scale(1.02); 
-        background: #fbfdfc; 
-        box-shadow: 0 20px 60px rgba(45,138,86,0.15);
-    }
-
-    .toast-icon { 
-        width: 44px; 
-        height: 44px; 
-        border-radius: 12px; 
-        background: rgba(45,138,86,0.1); 
-        color: #2D8A56; 
-        display: flex; 
-        align-items: center; 
-        justify-content: center;
-        font-size: 1.2rem;
-    }
-
-    .toast-content {
-        flex: 1;
-    }
-
-    .toast-title { 
-        margin: 0; 
-        font-size: 1rem; 
-        font-weight: 700; 
-        color: #1a1a1a; 
-        font-family: 'Poppins', sans-serif;
-    }
-
-    .toast-message { 
-        margin: 2px 0 0; 
-        font-size: 0.85rem; 
-        color: #666; 
-    }
-
-    .toast-close { 
-        background: none; 
-        border: none; 
-        color: #aaa; 
-        cursor: pointer; 
-        font-size: 1.1rem;
-        padding: 4px;
-        transition: all 0.2s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-    }
-
-    .toast-close:hover {
-        color: #ef4444;
-        background: rgba(239, 68, 68, 0.1);
-        transform: rotate(90deg);
-    }
-    
-    /* NUCLEAR FIX: Ensure sidebar links are always visible regardless of clashing global CSS */
+    /* ─── Force Nav Visibility (nuclear override) ─── */
     .nav-links li {
         display: block !important;
         visibility: visible !important;
-        opacity: 1 !important;
         height: auto !important;
-        min-height: 48px !important;
+        min-height: 44px !important;
     }
     .nav-links a {
         color: #4b5563 !important;
         width: 100% !important;
         text-decoration: none !important;
     }
-    .nav-links a:hover, .nav-links a.active {
-        color: #2D8A56 !important;
+    .nav-links a:hover,
+    .nav-links a.active {
+        color: #059669 !important;
     }
     .nav-links .nav-text {
         color: inherit !important;
     }
+
+    /* ─── Notification Toast ─── */
+    .notification-toast {
+        position: fixed; 
+        bottom: 30px; right: 30px;
+        background: white; 
+        border-radius: 16px; 
+        padding: 16px 24px;
+        box-shadow: 0 15px 50px rgba(0,0,0,0.12); 
+        display: flex; 
+        align-items: center; gap: 16px;
+        transform: translateY(150px) scale(0.9); 
+        opacity: 0; 
+        transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        z-index: 10001; 
+        border-left: 6px solid #059669; 
+        cursor: pointer;
+        max-width: 380px;
+    }
+    .notification-toast.show { transform: translateY(0) scale(1); opacity: 1; }
+    .notification-toast:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 20px 60px rgba(45,138,86,0.15); }
+    .toast-icon { width: 44px; height: 44px; border-radius: 12px; background: rgba(5,150,105,0.1); color: #059669; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+    .toast-content { flex: 1; }
+    .toast-title { margin: 0; font-size: 1rem; font-weight: 700; color: #1a1a1a; font-family: 'Poppins', sans-serif; }
+    .toast-message { margin: 2px 0 0; font-size: 0.85rem; color: #666; }
+    .toast-close { background: none; border: none; color: #aaa; cursor: pointer; font-size: 1.1rem; padding: 4px; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+    .toast-close:hover { color: #ef4444; background: rgba(239,68,68,0.1); transform: rotate(90deg); }
 </style>
 
+
+
+<!-- GSAP Core & Plugins -->
+<!-- GSAP Core & Plugins -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const toast = document.getElementById('notificationToast');
-        const closeBtn = document.getElementById('closeToastBtn');
-        const audio = new Audio('assets/notification.mp3');
-        let knownMessageIds = new Set();
-        let isManuallyClosed = false;
+/**
+ * NUTRIDEQ SIDEBAR ENGINE
+ * Unified mobile/desktop controller
+ */
+document.addEventListener('DOMContentLoaded', () => {
+    const mainSidebar        = document.getElementById('mainSidebar');
+    const sidebarOverlay     = document.getElementById('sidebarOverlay');
+    const collapseBtn        = document.getElementById('sidebarCollapseBtn');
+    const mobileNavToggle    = document.getElementById('mobileNavToggle');
+    const mobileSidebarClose = document.getElementById('mobileSidebarClose');
+    const mobileMenuTrigger  = document.getElementById('mobileMenuTrigger'); // From bottom app bar
+    const logoutTrigger      = document.getElementById('logoutTrigger');
+    const mobileLogoutTrigger= document.getElementById('mobileLogoutTrigger');
+    const logoutModal        = document.getElementById('logoutModal');
+    const cancelLogout       = document.getElementById('cancelLogout');
+    const mainLayout         = document.querySelector('.main-layout');
+    const navItems           = document.querySelectorAll('.nav-links a');
+    const navHeaders         = document.querySelectorAll('.nav-header');
 
-        function checkMessages() {
-            // Using absolute path or relative to root
-            fetch('handlers/get_dashboard_messages.php')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        const unreadCount = data.unread_count || 0;
-                        
-                        if (unreadCount === 0) {
-                            hideToast();
-                            isManuallyClosed = false;
-                        } else {
-                            checkForNewMessages(data.messages);
-                        }
+    if (!mainSidebar || !gsap) return;
 
-                        const badge = document.getElementById('unreadMessages');
-                        if (badge) badge.textContent = unreadCount;
-                    }
-                })
-                .catch(err => console.error('Polling error:', err));
+    // 1. Initial State & Entrance
+    const sidebarTL = gsap.timeline({ delay: 0.1 });
+    sidebarTL.from(mainSidebar, { x: -20, opacity: 0, duration: 0.6, ease: "power3.out" })
+             .to(navHeaders, { opacity: 1, duration: 0.4, stagger: 0.05 }, "-=0.3")
+             .to(navItems, { opacity: 1, y: 0, duration: 0.5, stagger: 0.04, ease: "power3.out" }, "-=0.25");
+
+    gsap.set(navItems, { y: 10 });
+
+    // 2. Mobile Logic
+    let isMobileSidebarOpen = false;
+
+    const openMobileSidebar = (e) => {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        if (isMobileSidebarOpen || !mainSidebar) return;
+        isMobileSidebarOpen = true;
+
+        // Reset any desktop-collapse widths for mobile mode
+        gsap.set(mainSidebar, { 
+            x: '-100%', 
+            display: 'flex', 
+            width: '280px',
+            opacity: 1,
+            visibility: 'visible',
+            zIndex: 10005 // Higher than overlay (10002) and header (10001)
+        });
+        
+        mainSidebar.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        if (sidebarOverlay) {
+            sidebarOverlay.style.display = 'block';
+            sidebarOverlay.classList.add('active');
         }
 
-        function checkForNewMessages(messages) {
-            if (!messages) return;
-            let hasNew = false;
-            let latestSender = '';
-            
-            messages.forEach(msg => {
-                const id = parseInt(msg.id);
-                if (!knownMessageIds.has(id)) {
-                    knownMessageIds.add(id);
-                    if (!msg.is_read) {
-                        hasNew = true;
-                        latestSender = msg.client_name;
-                    }
+        gsap.to(mainSidebar, { 
+            x: '0%', 
+            duration: 0.5, 
+            ease: "expo.out",
+            force3D: true
+        });
+
+        
+        gsap.fromTo(navItems, 
+            { x: -15, opacity: 0 }, 
+            { x: 0, opacity: 1, stagger: 0.04, duration: 0.45, ease: "power3.out", delay: 0.1 }
+        );
+    };
+
+    const closeMobileSidebar = (e) => {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        if (!isMobileSidebarOpen || !mainSidebar) return;
+        isMobileSidebarOpen = false;
+
+        gsap.to(mainSidebar, {
+            x: '-100%', duration: 0.4, ease: "power3.in",
+            onComplete: () => {
+                document.body.style.overflow = '';
+                mainSidebar.classList.remove('active');
+                if (sidebarOverlay) {
+                    sidebarOverlay.classList.remove('active');
+                    setTimeout(() => { if (!isMobileSidebarOpen) sidebarOverlay.style.display = 'none'; }, 300);
                 }
-            });
-
-            if (hasNew) {
-                isManuallyClosed = false;
-                showToast(latestSender);
-            } else if (messages.some(m => !m.is_read)) {
-                // If there are unread messages but none are "new" to this session,
-                // we still show the toast if it hasn't been closed.
-                const firstUnread = messages.find(m => !m.is_read);
-                if (firstUnread) showToast(firstUnread.client_name);
+                mainSidebar.style.transform = '';
             }
-        }
+        });
+    };
 
-        function showToast(sender) {
-            const text = document.getElementById('toastMessageText');
-            if (text) text.textContent = `New message from ${sender}`;
-            if (toast && !isManuallyClosed) {
-                toast.classList.add('show');
-            }
-            // Optional: only play audio for ACTUAL new messages
-        }
+    // Resilient Listeners
+    if (mobileNavToggle) mobileNavToggle.onclick = openMobileSidebar;
+    if (mobileMenuTrigger) mobileMenuTrigger.onclick = openMobileSidebar;
+    if (mobileSidebarClose) mobileSidebarClose.onclick = closeMobileSidebar;
+    if (sidebarOverlay) sidebarOverlay.onclick = closeMobileSidebar;
 
-        function hideToast() {
-            if (toast) toast.classList.remove('show');
-        }
 
-        if (toast) {
-            toast.onclick = function(e) {
-                if (e.target.closest('#closeToastBtn')) return;
-                const userRole = '<?php echo $sidebar_user_role; ?>';
-                window.location.href = (userRole === 'admin') ? 'admin-internal-messages.php' : 'staff-messages.php';
-            };
-        }
-
-        if (closeBtn) {
-            closeBtn.onclick = function(e) {
-                e.stopPropagation();
-                hideToast();
-                isManuallyClosed = true;
-            };
-        }
-
-        // Global polling for messages
-        if ('<?php echo $sidebar_user_role; ?>' === 'admin' || '<?php echo $sidebar_user_role; ?>' === 'staff') {
-            setInterval(checkMessages, 5000);
-            checkMessages();
-        }
+    // 3. Desktop Collapse
+    let isCollapsed = false;
+    collapseBtn?.addEventListener('click', () => {
+        isCollapsed = !isCollapsed;
+        const width = isCollapsed ? '76px' : '260px';
+        gsap.to(mainSidebar, { width, duration: 0.4, ease: isCollapsed ? "power3.inOut" : "expo.out" });
+        gsap.to('.nav-text, .user-info, .logo-text, .nav-header', { opacity: isCollapsed ? 0 : 1, duration: 0.2, stagger: 0.02 });
+        mainSidebar.classList.toggle('collapsed', isCollapsed);
+        mainLayout?.classList.toggle('sidebar-collapsed', isCollapsed);
     });
+
+    // 4. Logout Modal
+    const toggleLogout = (show) => {
+        if (!logoutModal) return;
+        if (show) {
+            // If mobile sidebar is open, close it first
+            if (isMobileSidebarOpen) closeMobileSidebar();
+            logoutModal.classList.add('active');
+        }
+        gsap.to(logoutModal, { opacity: show ? 1 : 0, duration: 0.3, onComplete: () => !show && logoutModal.classList.remove('active') });
+        gsap.fromTo(logoutModal.querySelector('.logout-modal-content') || logoutModal, 
+            { scale: show ? 0.9 : 1, y: show ? 20 : 0 },
+            { scale: show ? 1 : 0.9, y: show ? 0 : 20, duration: 0.4, ease: show ? "back.out(1.5)" : "power2.in" });
+    };
+
+
+    [logoutTrigger, mobileLogoutTrigger].forEach(btn => btn?.addEventListener('click', (e) => { e.preventDefault(); toggleLogout(true); }));
+    cancelLogout?.addEventListener('click', () => toggleLogout(false));
+    logoutModal?.addEventListener('click', (e) => e.target === logoutModal && toggleLogout(false));
+
+    // 5. Message Polling
+    const toast = document.getElementById('notificationToast');
+    const pollMessages = () => {
+        if ('<?php echo $sidebar_user_role; ?>' !== 'admin' && '<?php echo $sidebar_user_role; ?>' !== 'staff') return;
+        fetch('handlers/get_dashboard_messages.php').then(r => r.json()).then(data => {
+            if (data.success) {
+                const badge = document.getElementById('unreadMessages');
+                if (badge) badge.textContent = data.unread_count || 0;
+                if (data.unread_count > 0 && toast && !toast.classList.contains('show')) {
+                    const latest = data.messages[0]?.client_name || 'System';
+                    document.getElementById('toastMessageText').textContent = `New message from ${latest}`;
+                    toast.classList.add('show');
+                }
+            }
+        });
+    };
+    if (toast) {
+        setInterval(pollMessages, 10000);
+        pollMessages();
+        document.getElementById('closeToastBtn')?.addEventListener('click', (e) => { e.stopPropagation(); toast.classList.remove('show'); });
+        toast.addEventListener('click', () => { 
+            const role = '<?php echo $sidebar_user_role; ?>';
+            window.location.href = (role === 'admin') ? 'admin-internal-messages.php' : 'staff-messages.php';
+        });
+    }
+});
 </script>
 
 <script src="scripts/dashboard.js?v=119" defer></script>
 <script src="scripts/interactive-effects.js?v=119" defer></script>
+<script src="scripts/global-gsap.js" defer></script>

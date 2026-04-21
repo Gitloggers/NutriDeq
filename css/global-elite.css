@@ -1,0 +1,250 @@
+/* ================================================================
+   NUTRIDEQ — GLOBAL ELITE CSS
+   Applied to ALL pages via sidebar.php include.
+   Uses generic class selectors that exist across every feature page.
+   ================================================================ */
+
+/* ─── Scroll Progress Bar ─── */
+#nd-scroll-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    width: 0%;
+    background: linear-gradient(90deg, #10b981, #34d399, #059669);
+    z-index: 99999;
+    border-radius: 0 3px 3px 0;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+    pointer-events: none;
+    transition: width 0.06s linear;
+}
+
+/* ─── Universal Card Aesthetics ─── */
+.stat-card,
+.card,
+.chart-container,
+.management-section,
+.nutri-glass,
+.dash-panel,
+.command-tile,
+.bento-stat,
+.quick-action-card,
+.meal-plan-card,
+.activity-item,
+.data-card,
+.info-card,
+.hydration-card,
+.action-card {
+    position: relative;
+    overflow: visible !important;
+    /* removed will-change to prevent layer-caching blurriness */
+    transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.3s ease !important;
+    backface-visibility: hidden;
+    -webkit-font-smoothing: subpixel-antialiased;
+    transform: translateZ(0); /* Force GPU without will-change side effects */
+}
+
+/* Shimmer Masking (applied specifically to background layers if they exist) */
+.shimmer-mask {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: inherit;
+    pointer-events: none;
+}
+
+
+/* Shine sweep on hover */
+.stat-card::after,
+.card::after,
+.chart-container::after,
+.nutri-glass::after,
+.dash-panel::after,
+.command-tile::after,
+.bento-stat::after,
+.quick-action-card::after,
+.meal-plan-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -120%;
+    width: 55%;
+    height: 100%;
+    background: linear-gradient(105deg, transparent 20%, rgba(255,255,255,0.13) 50%, transparent 80%);
+    transform: skewX(-15deg);
+    pointer-events: none;
+    transition: left 0s;
+    z-index: 10;
+}
+
+.stat-card:hover::after,
+.card:hover::after,
+.chart-container:hover::after,
+.nutri-glass:hover::after,
+.dash-panel:hover::after,
+.command-tile:hover::after,
+.bento-stat:hover::after,
+.quick-action-card:hover::after,
+.meal-plan-card:hover::after {
+    left: 130%;
+    transition: left 0.65s ease;
+}
+
+/* ─── Hero Ribbon Shimmer (all roles) ─── */
+.dash-hero-ribbon {
+    position: relative;
+    overflow: hidden;
+}
+
+.dash-hero-ribbon::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -120%;
+    width: 60%; height: 100%;
+    background: linear-gradient(105deg, transparent 20%, rgba(255,255,255,0.12) 50%, transparent 80%);
+    transform: skewX(-15deg);
+    animation: globalHeroShimmer 5s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 1;
+}
+
+@keyframes globalHeroShimmer {
+    0%   { left: -120%; }
+    60%  { left: 130%; }
+    100% { left: 130%; }
+}
+
+/* ─── 3D Tilt Container (perspective parent) ─── */
+.bento-grid,
+.stats-grid,
+.dashboard-grid,
+.user-grid {
+    perspective: 1200px;
+}
+
+/* ─── Command/Quick Action Tiles ─── */
+.command-tile,
+.quick-action-card {
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease !important;
+}
+
+/* ─── Activity Items ─── */
+.activity-item {
+    transition: background 0.2s ease, transform 0.25s ease !important;
+    border-radius: 12px;
+    padding: 12px;
+    margin: 0 -12px;
+}
+
+.activity-item:hover {
+    background: rgba(16, 185, 129, 0.04);
+}
+
+/* ─── Meal Plan Cards ─── */
+.meal-plan-card {
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease !important;
+}
+
+/* ─── Word Cascade (hero h1 split) ─── */
+.dash-hero-content h1 .word {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+    margin-right: 0.22em;
+}
+
+.dash-hero-content h1 .word-inner {
+    display: inline-block;
+    transform: translateY(100%);
+    opacity: 0;
+}
+
+/* ─── Button Tactile Press ─── */
+.btn, .btn-primary, .btn-outline, .btn-secondary {
+    transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease !important;
+    will-change: transform;
+}
+
+/* ─── Section / Panel Headers Fade In ─── */
+.section-header,
+.dash-panel-header {
+    animation: none; /* let GSAP handle it */
+}
+
+/* ─── Ambient Mesh (applies to all pages) ─── */
+.global-mesh-wrap {
+    position: fixed;
+    top: 0; left: 260px;      /* right of sidebar */
+    right: 0; bottom: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+@media (max-width: 1024px) {
+    .global-mesh-wrap { left: 0; }
+}
+
+.global-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+}
+
+.global-orb-1 {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, #10b981 0%, transparent 70%);
+    opacity: 0.07;
+    top: -150px; left: -80px;
+    animation: orbDrift1 16s ease-in-out infinite alternate;
+}
+
+.global-orb-2 {
+    width: 420px; height: 420px;
+    background: radial-gradient(circle, #3b82f6 0%, transparent 70%);
+    opacity: 0.045;
+    bottom: -100px; right: 8%;
+    animation: orbDrift2 20s ease-in-out infinite alternate;
+}
+
+.global-orb-3 {
+    width: 350px; height: 350px;
+    background: radial-gradient(circle, #34d399 0%, transparent 70%);
+    opacity: 0.055;
+    top: 35%; left: 38%;
+    animation: orbDrift3 24s ease-in-out infinite alternate;
+}
+
+@keyframes orbDrift1 {
+    0%   { transform: translate(0, 0) scale(1); }
+    50%  { transform: translate(70px, 50px) scale(1.08); }
+    100% { transform: translate(30px, -40px) scale(0.96); }
+}
+
+@keyframes orbDrift2 {
+    0%   { transform: translate(0, 0) scale(1); }
+    50%  { transform: translate(-70px, -50px) scale(1.1); }
+    100% { transform: translate(50px, 30px) scale(0.92); }
+}
+
+@keyframes orbDrift3 {
+    0%   { transform: translate(0, 0); }
+    50%  { transform: translate(60px, -55px) scale(1.1); }
+    100% { transform: translate(-60px, 55px) scale(0.95); }
+}
+
+/* ─── Ensure page content stays above orbs ─── */
+.main-content > *:not(.global-mesh-wrap):not(.mesh-gradient-container) {
+    position: relative;
+    z-index: 1;
+}
+
+.page-container {
+    position: relative;
+    z-index: 1;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+    .global-orb { filter: blur(60px); }
+    .activity-item { margin: 0; }
+}

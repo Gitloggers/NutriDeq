@@ -89,9 +89,7 @@ $pdo = $database->getConnection();
     <!-- External CSS Files -->
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/logout-modal.css">
-    <link rel="stylesheet" href="css/sidebar.css">
     <link rel="stylesheet" href="css/dashboard.css">
-    <link rel="stylesheet" href="css/mobile-style.css">
     <?php if ($user_role === 'admin'): ?>
         <link rel="stylesheet" href="css/admin.css">
     <?php elseif ($user_role === 'staff'): ?>
@@ -101,7 +99,6 @@ $pdo = $database->getConnection();
     <?php endif; ?>
     <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="css/mobile-style.css">
-    <link rel="stylesheet" href="css/user-premium.css">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="css/hydration-premium.css">
     <link rel="stylesheet" href="css/dashboard-premium.css">
@@ -109,6 +106,7 @@ $pdo = $database->getConnection();
     <script src="scripts/info-component.js" defer></script>
     <script src="scripts/premium-effects.js" defer></script>
     <script src="scripts/dashboard-store.js" defer></script>
+
     <style>
         .recovery-key-banner {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
@@ -261,6 +259,7 @@ $pdo = $database->getConnection();
                 <div class="mesh-blob blob-1"></div>
                 <div class="mesh-blob blob-2"></div>
                 <div class="mesh-blob blob-3"></div>
+                <div class="mesh-blob blob-4"></div>
             </div>
 
             <!-- Nutri-Glass Noise Texture -->
@@ -370,6 +369,7 @@ $pdo = $database->getConnection();
                             <i class="fas fa-arrow-up"></i>
                             <span><?php echo ($users_week_diff >= 0 ? '+' : '') . $users_week_diff; ?> this week</span>
                         </div>
+                        <canvas class="bento-sparkline" id="spark-0" width="110" height="55" aria-hidden="true"></canvas>
                     </div>
 
                     <div class="bento-stat stat-secondary" onclick="location.href='admin-staff-management.php'">
@@ -382,6 +382,7 @@ $pdo = $database->getConnection();
                             <i class="fas fa-arrow-up"></i>
                             <span><?php echo ($staff_month_diff >= 0 ? '+' : '') . $staff_month_diff; ?> this month</span>
                         </div>
+                        <canvas class="bento-sparkline" id="spark-1" width="110" height="55" aria-hidden="true"></canvas>
                     </div>
 
                     <div class="bento-stat stat-accent" onclick="location.href='admin-user-management.php'">
@@ -394,6 +395,7 @@ $pdo = $database->getConnection();
                             <i class="fas fa-pulse"></i>
                             <span>Real-time Monitoring</span>
                         </div>
+                        <canvas class="bento-sparkline" id="spark-2" width="110" height="55" aria-hidden="true"></canvas>
                     </div>
 
                     <div class="bento-stat stat-danger" onclick="location.href='admin-internal-messages.php'">
@@ -412,6 +414,7 @@ $pdo = $database->getConnection();
                             <i class="fas fa-bolt"></i>
                             <span>Priority Tickets</span>
                         </div>
+                        <canvas class="bento-sparkline" id="spark-3" width="110" height="55" aria-hidden="true"></canvas>
                     </div>
                 </div>
 
@@ -840,12 +843,12 @@ $pdo = $database->getConnection();
                 <!-- ── Premium Hero Ribbon ── -->
                 <div class="dash-hero-ribbon stagger d-1">
                     <div class="dash-hero-content">
-                        <h1>Clinical Monitoring Board</h1>
+                        <h1>Clinical Intelligence Terminal</h1>
                         <p>Overseeing <?php echo $clients_count; ?> active clients under your care.</p>
                     </div>
                     <div class="dash-hero-badge nutri-glass">
-                        <i class="fas fa-user-md"></i>
-                        <span>Clinical Mode Active</span>
+                        <i class="fas fa-stethoscope"></i>
+                        <span>Clinical Status: Optimal</span>
                     </div>
                 </div>
 
@@ -861,6 +864,7 @@ $pdo = $database->getConnection();
                             <i class="fas fa-user-check"></i>
                             <span>Assigned to you</span>
                         </div>
+                        <canvas class="bento-sparkline" id="spark-s0" width="110" height="55" aria-hidden="true"></canvas>
                     </div>
 
                     <div class="bento-stat stat-secondary" onclick="location.href='anthropometric-information.php'">
@@ -873,6 +877,7 @@ $pdo = $database->getConnection();
                             <i class="fas fa-arrow-<?php echo $progress_diff >= 0 ? 'up' : 'down'; ?>"></i>
                             <span><?php echo ($progress_diff >= 0 ? '+' : '') . $progress_diff; ?> from last week</span>
                         </div>
+                        <canvas class="bento-sparkline" id="spark-s1" width="110" height="55" aria-hidden="true"></canvas>
                     </div>
 
                     <div class="bento-stat stat-danger" onclick="location.href='staff-messages.php'">
@@ -885,6 +890,7 @@ $pdo = $database->getConnection();
                             <i class="fas fa-<?php echo $messages_count > 0 ? 'exclamation-circle' : 'check-circle'; ?>"></i>
                             <span><?php echo $messages_count > 0 ? 'Needs attention' : 'All caught up'; ?></span>
                         </div>
+                        <canvas class="bento-sparkline" id="spark-s2" width="110" height="55" aria-hidden="true"></canvas>
                     </div>
 
                     <div class="bento-stat stat-accent" onclick="openModal('appointments')">
@@ -903,6 +909,7 @@ $pdo = $database->getConnection();
                             <i class="fas fa-clock"></i>
                             <span>Next: 2:00 PM</span>
                         </div>
+                        <canvas class="bento-sparkline" id="spark-s3" width="110" height="55" aria-hidden="true"></canvas>
                     </div>
                 </div>
 
@@ -1440,12 +1447,12 @@ $pdo = $database->getConnection();
                 <script>setTimeout(() => { document.querySelector('[style*="slideDown"]').style.opacity = '0'; document.querySelector('[style*="slideDown"]').style.transition = 'all 0.5s ease'; }, 3000);</script>
                 <?php endif; ?>
                 <div class="dash-hero-content">
-                    <h1>Welcome back, <?php echo htmlspecialchars($user_name); ?>!</h1>
+                    <h1>Personal Wellness Command</h1>
                     <p>You have consumed <b id="caloriesConsumedDisplay"><?php echo $calories_today; ?></b><b> kcal</b> today. Keep tracking!</p>
                 </div>
                 <div class="dash-hero-badge nutri-glass">
-                    <i class="fas fa-heartbeat"></i>
-                    <span id="healthScoreDisplay">Score: 92</span>
+                    <i class="fas fa-microchip"></i>
+                    <span id="healthScoreDisplay">System Status: 92%</span>
                 </div>
             </div>
             <!-- ── Management Section (Quick Actions) ── -->
@@ -1457,6 +1464,7 @@ $pdo = $database->getConnection();
                             <h3 style="color: #1e293b; font-weight: 700;">Calculator</h3>
                             <p style="color: #64748b;">Daily macro needs</p>
                         </div>
+                        <canvas class="bento-sparkline" width="110" height="40" style="position: absolute; bottom: 0; right: 0; opacity: 0.1;"></canvas>
                     </a>
                     <a href="food-exchange.php" class="command-tile nutri-glass" style="text-decoration: none;">
                         <div class="command-tile-icon" style="background: rgba(240, 147, 251, 0.1); color: #f093fb;"><i class="fas fa-exchange-alt"></i></div>
@@ -1464,6 +1472,7 @@ $pdo = $database->getConnection();
                             <h3 style="color: #1e293b; font-weight: 700;">Exchange</h3>
                             <p style="color: #64748b;">Healthy alternatives</p>
                         </div>
+                        <canvas class="bento-sparkline" width="110" height="40" style="position: absolute; bottom: 0; right: 0; opacity: 0.1;"></canvas>
                     </a>
                     <a href="user-health-tracker.php" class="command-tile nutri-glass" style="text-decoration: none;">
                         <div class="command-tile-icon" style="background: rgba(17, 153, 142, 0.1); color: #11998e;"><i class="fas fa-book-medical"></i></div>
@@ -1471,6 +1480,7 @@ $pdo = $database->getConnection();
                             <h3 style="color: #1e293b; font-weight: 700;">Log Food</h3>
                             <p style="color: #64748b;">Daily Tracking</p>
                         </div>
+                        <canvas class="bento-sparkline" width="110" height="40" style="position: absolute; bottom: 0; right: 0; opacity: 0.1;"></canvas>
                     </a>
                     <a href="user-messages.php" class="command-tile nutri-glass" style="text-decoration: none;">
                         <div class="command-tile-icon" style="background: rgba(225, 29, 72, 0.1); color: #e11d48;"><i class="fas fa-comment-dots"></i></div>
@@ -1478,6 +1488,7 @@ $pdo = $database->getConnection();
                             <h3 style="color: #1e293b; font-weight: 700;">Messages</h3>
                             <p id="unreadMsgCount" style="color: #64748b;"><?php echo $unread_count; ?> unread</p>
                         </div>
+                        <canvas class="bento-sparkline" width="110" height="40" style="position: absolute; bottom: 0; right: 0; opacity: 0.1;"></canvas>
                     </a>
                 </div>
             </div>
@@ -1543,20 +1554,30 @@ $pdo = $database->getConnection();
                     </div>
                 </div>
 
-                <div class="dash-panel nutri-glass" style="min-height: auto; padding: 25px; position: relative; overflow: hidden;">
-                    <div class="hydration-wave-bg" id="waterWave" style="position: absolute; bottom: 0; left: 0; width: 100%; height: <?php echo min($water_today * 12.5, 100); ?>%; background: rgba(79, 172, 254, 0.1); transition: height 0.5s ease; z-index: 0;"></div>
-                    <div class="dash-panel-header" style="position: relative; z-index: 1;">
-                        <h2 class="dash-panel-title" style="display: flex; align-items: center; gap: 8px;"><i class="fas fa-tint" style="color: #4facfe;"></i> Hydration Flow <info-button feature="hydration_flow" role="<?php echo $_SESSION['role'] ?? 'regular'; ?>"></info-button></h2>
+                <div class="dash-panel nutri-glass" style="min-height: auto; padding: 25px; position: relative; overflow: visible;">
+                    <!-- Masked Wave Container to allow info-button to pop out -->
+                    <div class="hydration-wave-mask" style="position: absolute; inset: 0; border-radius: inherit; overflow: hidden; pointer-events: none; z-index: 0;">
+                        <div class="hydration-wave-bg" id="waterWave" style="position: absolute; bottom: 0; left: 0; width: 100%; height: <?php echo min($water_today * 12.5, 100); ?>%; transition: height 1s cubic-bezier(0.16, 1, 0.3, 1);">
+                            <!-- Front Wave -->
+                            <div class="wave front-wave"></div>
+                            <!-- Back Wave -->
+                            <div class="wave back-wave"></div>
+                        </div>
                     </div>
-                    <div style="position: relative; z-index: 1; text-align: center; margin-top: 15px;">
-                        <div id="waterCount" style="font-size: 2.5rem; font-weight: 800; font-family: 'Outfit'; color: #0f172a;"><?php echo $water_today; ?></div>
-                        <div style="font-size: 0.85rem; color: #64748b; font-weight: 600;">Glasses Logged</div>
-                        <div style="display: flex; justify-content: center; gap: 15px; margin-top: 15px;">
-                            <button class="btn btn-outline" style="width: 40px; height: 40px; border-radius: 50%; padding: 0;" onclick="updateWater('remove')"><i class="fas fa-minus"></i></button>
-                            <button class="btn btn-primary" style="width: 40px; height: 40px; border-radius: 50%; padding: 0; background: #4facfe;" onclick="updateWater('add')"><i class="fas fa-plus"></i></button>
+                    
+                    <div class="dash-panel-header" style="position: relative; z-index: 2;">
+                        <h2 class="dash-panel-title" style="display: flex; align-items: center; gap: 8px;"><i class="fas fa-tint" style="color: #3b82f6;"></i> Hydration Flow <info-button feature="hydration_flow" role="<?php echo $_SESSION['role'] ?? 'regular'; ?>"></info-button></h2>
+                    </div>
+                    <div style="position: relative; z-index: 2; text-align: center; margin-top: 15px;">
+                        <div id="waterCount" style="font-size: 2.8rem; font-weight: 800; font-family: 'Outfit'; color: #1e293b; text-shadow: 0 4px 10px rgba(255,255,255,0.5);"><?php echo $water_today; ?></div>
+                        <div style="font-size: 0.85rem; color: #475569; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Glasses Logged</div>
+                        <div style="display: flex; justify-content: center; gap: 18px; margin-top: 18px;">
+                            <button class="btn btn-outline" style="width: 44px; height: 44px; border-radius: 12px; padding: 0; border-color: rgba(59, 130, 246, 0.2);" onclick="updateWater('remove')"><i class="fas fa-minus" style="color: #3b82f6;"></i></button>
+                            <button class="btn btn-primary" style="width: 44px; height: 44px; border-radius: 12px; padding: 0; background: #3b82f6; box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3);" onclick="updateWater('add')"><i class="fas fa-plus"></i></button>
                         </div>
                     </div>
                 </div>
+
             </div>
 
             <!-- ── BMI Body Insight Row ── -->
@@ -2244,9 +2265,8 @@ $pdo = $database->getConnection();
         <?php elseif ($user_role === 'regular'): ?>
             <script src="scripts/user-realtime.js"></script>
         <?php endif; ?>
-        
-        <script src="scripts/premium-effects.js"></script>
     </main>
 </div> <!-- Close .main-layout -->
+
 </body>
 </html>

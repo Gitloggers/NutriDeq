@@ -8,331 +8,420 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta name="theme-color" content="#10b981">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#059669">
     <link rel="manifest" href="../manifest.json">
-    <title>NutriDeq - Create Portal</title>
+    <title>NutriDeq - Create Elite Account</title>
+    <link rel="icon" type="image/png" href="../assets/img/logo.png">
     <link rel="stylesheet" href="../css/base.css?v=205">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <style>
-        /* =========================================================
-           NUTRI-GLASS : ULTRA-DYNAMIC AUTH (WOW FACTOR)
-           ========================================================= */
         :root {
-            --text-dark: #0f172a;
-            --text-muted: #475569;
-            --primary: #10b981; 
-            --primary-dark: #047857;
-            --accent: #f59e0b; 
-            --accent-alt: #3b82f6; 
-            --glass-border: rgba(255, 255, 255, 0.8);
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --emerald-soft: rgba(16, 185, 129, 0.2);
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --bg-body: #f8fafc;
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 1);
+            --bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         body {
             margin: 0; padding: 0; min-height: 100vh;
-            display: flex; align-items: center; justify-content: center;
+            background-color: var(--bg-body);
             font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
-            overflow: hidden; 
+            overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
         }
 
-        /* --- Mega Gradient & Interactivity Base --- */
-        .page-wrapper {
-            position: absolute; top:0; left:0; width:100%; height:100%;
-            z-index: 1; display:flex; justify-content:center; align-items:center;
-        }
-
-        /* Mouse Spotlight Follower */
-        .spotlight {
+        /* --- INTERACTIVE DYNAMIC BACKDROP --- */
+        .backdrop {
             position: fixed;
-            top: 0; left: 0; width: 600px; height: 600px;
-            background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, transparent 70%);
-            border-radius: 50%; pointer-events: none; z-index: -1;
-            transform: translate(-50%, -50%); transition: opacity 0.5s ease;
+            top:0; left:0; width:100%; height:100%;
+            z-index: -1;
+            pointer-events: none;
         }
 
-        /* Abstract Fluid Gradient Mesh Background */
-        .gradient-mesh { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2; background: #f8fafc; }
-        .mesh-blob { position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.7; animation: moveBlobs 20s infinite alternate ease-in-out; }
-        .mesh-1 { width: 50vw; height: 50vw; background: rgba(16, 185, 129, 0.15); top: -10%; left: -10%; }
-        .mesh-2 { width: 40vw; height: 40vw; background: rgba(59, 130, 246, 0.1); bottom: -10%; right: -10%; animation-delay: -5s; }
-        .mesh-3 { width: 45vw; height: 45vw; background: rgba(245, 158, 11, 0.1); top: 30%; left: 40%; animation-delay: -10s; }
-
-        @keyframes moveBlobs {
-            0% { transform: scale(1) translate(0,0) rotate(0deg); }
-            50% { transform: scale(1.1) translate(10%, 10%) rotate(45deg); }
-            100% { transform: scale(0.9) translate(-10%, -10%) rotate(90deg); }
+        #particle-canvas {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0.4;
         }
 
-        /* 2D Floating Molecular Objects */
-        .floating-object {
-            position: absolute; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.9); box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 24px; color: var(--primary); z-index: 0; pointer-events: none;
+        .bg-grid {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(rgba(16, 185, 129, 0.08) 1.5px, transparent 1.5px);
+            background-size: 40px 40px;
         }
-        .obj-1 { width: 80px; height: 80px; top: 20%; left: 20%; animation: floatObj 8s infinite alternate; }
-        .obj-2 { width: 60px; height: 60px; bottom: 20%; right: 20%; animation: floatObj 6s infinite alternate-reverse; color: var(--accent-alt);}
 
-        @keyframes floatObj { 0% { transform: translateY(0); } 100% { transform: translateY(-30px); } }
+        .interactive-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.7;
+            will-change: transform;
+        }
 
-        /* Perspective Wrapper for 3D Card Tilt */
-        .tilt-wrapper { perspective: 1200px; z-index: 10; padding: 20px;}
+        .orb-1 { width: 600px; height: 600px; background: rgba(5, 150, 105, 0.18); top: -15%; left: -10%; }
+        .orb-2 { width: 500px; height: 500px; background: rgba(16, 185, 129, 0.15); bottom: 5%; right: -10%; }
+        .orb-3 { width: 450px; height: 450px; background: rgba(5, 150, 105, 0.1); top: 35%; left: 25%; }
+        .orb-special { width: 700px; height: 700px; background: rgba(16, 185, 129, 0.1); bottom: -20%; left: 30%; opacity: 0.15; }
 
-        /* Central Glass Card */
+        /* --- THE ELITE GLASS CARD --- */
+        .tilt-wrapper {
+            perspective: 2000px;
+            z-index: 10;
+            padding: 20px;
+            width: 100%;
+            display: flex; justify-content: center;
+        }
+
         .auth-card {
-            width: 100vw; max-width: 480px;
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-            border: 1px solid rgba(255,255,255,1); border-radius: 36px;
-            box-shadow: 0 30px 80px rgba(0,0,0,0.1), inset 0 0 0 2px rgba(255,255,255,0.8);
-            transform-style: preserve-3d; transition: transform 0.1s ease;
-            position: relative; 
-            max-height: 90vh; display: flex; flex-direction: column;
+            width: 100%;
+            max-width: 500px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+            border: 2px solid var(--glass-border);
+            border-radius: 40px;
+            padding: 3.5rem 3rem;
+            position: relative;
+            transform-style: preserve-3d;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.06), 
+                        inset 0 0 0 1px rgba(255,255,255,0.8);
+            overflow: visible;
+            opacity: 0;
+            transform: scale(0.96) translateY(20px);
+            filter: blur(15px);
         }
 
-        .auth-card-inner {
-            padding: 50px 40px; overflow-y: auto; overflow-x: hidden;
-            transform: translateZ(40px); /* Pushes content out in 3D space */
+        .glass-reflection {
+            position: absolute;
+            top: -100%; left: -100%; width: 300%; height: 300%;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.3) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 0.5s;
         }
-        .auth-card-inner::-webkit-scrollbar { width: 4px; }
-        .auth-card-inner::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
 
-        /* Animating load-in */
-        .tilt-wrapper { animation: popIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(30px) scale(0.95); }
-        @keyframes popIn { to { transform: translateY(0) scale(1); opacity: 1; } }
+        .card-content { position: relative; z-index: 2; transform: translateZ(50px); }
 
-        /* Logo & Header */
-        .auth-header { text-align: center; margin-bottom: 30px; }
-        .logo-link { display: inline-flex; align-items: center; justify-content: center; gap: 12px; text-decoration: none; margin-bottom: 24px; position: relative; }
-        .logo-link img { height: 40px; border-radius: 10px; transition: 0.5s; }
-        .logo-link:hover img { transform: rotate(15deg) scale(1.1); }
-        .logo-text { font-family: 'Outfit', sans-serif; font-size: 28px; font-weight: 900; color: var(--text-dark); }
-        .logo-text span { color: var(--primary); }
+        .back-home-link {
+            display: inline-flex; align-items: center; gap: 8px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            transition: all 0.3s;
+            opacity: 1 !important;
+        }
+        .back-home-link:hover { color: var(--primary-dark); transform: translateX(-4px); }
 
-        .auth-header h1 { font-family: 'Outfit'; font-size: 2.2rem; color: var(--text-dark); margin: 0 0 8px 0; letter-spacing: -1px; }
-        .auth-header p { color: var(--text-muted); margin: 0; font-size: 1rem; line-height: 1.6;}
+        .auth-header { text-align: center; margin-bottom: 2.5rem; }
+        .logo-box {
+            width: 60px; height: 60px;
+            background: white;
+            border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 1.2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.04);
+            position: relative;
+        }
+        .logo-box img { width: 35px; }
 
-        /* Form styling */
-        .form-group { margin-bottom: 20px; position: relative; }
-        .form-group label { display: block; font-size: 0.9rem; font-weight: 700; color: #334155; margin-bottom: 8px; }
+        .auth-header h1 { font-family: 'Outfit'; font-size: 2.2rem; color: var(--text-main); margin-bottom: 0.6rem; letter-spacing: -1px; }
+        .auth-header p { color: var(--text-muted); font-size: 1rem; font-weight: 500; }
+
+        /* Form Engine */
+        .form-group { position: relative; margin-bottom: 1.8rem; }
         
-        .input-wrapper { position: relative; display: flex; align-items: center; }
-        .input-icon { position: absolute; left: 16px; color: #94a3b8; font-size: 16px; transition: 0.3s; pointer-events: none; }
-        
-        .form-control {
-            width: 100%; padding: 12px 16px 12px 44px;
-            background: rgba(255,255,255,0.8); border: 2px solid #e2e8f0; border-radius: 14px;
-            font-size: 15px; font-family: 'Inter'; color: var(--text-dark);
-            transition: all 0.3s ease; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        .form-group input {
+            width: 100%;
+            padding: 1.4rem 1rem 0.6rem;
+            font-size: 1rem;
+            font-family: inherit;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid #e2e8f0;
+            color: var(--text-main);
+            transition: border-color 0.4s var(--bounce);
+            outline: none;
         }
 
-        .form-control::placeholder { color: #94a3b8; font-weight: 400; }
-        .form-control:focus { outline: none; border-color: var(--primary); background: #ffffff; box-shadow: 0 4px 15px rgba(16,185,129,0.1); transform: translateY(-2px); }
-        .form-control:focus + .input-icon { color: var(--primary); transform: scale(1.1); }
-
-        /* Submit Button Glow Effect */
-        .btn-submit {
-            width: 100%; padding: 14px; font-size: 16px; font-weight: 700;
-            background: var(--primary); color: white; border: none; border-radius: 14px;
-            cursor: pointer; transition: all 0.4s ease; box-shadow: 0 10px 25px rgba(16,185,129,0.3);
-            position: relative; overflow: hidden; margin-top: 10px;
-        }
-        .btn-submit::after { content: ''; position: absolute; top:0; left:-100%; width: 100%; height:100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); transition: 0.5s; }
-        .btn-submit:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 20px 40px rgba(16, 185, 129, 0.4); }
-        .btn-submit:active { transform: translateY(-1px); }
-
-        /* Google Login Button */
-        .google-auth-separator {
-            display: flex; align-items: center; text-align: center;
-            margin: 25px 0; color: var(--text-muted); font-size: 0.85rem;
+        .form-group label {
+            position: absolute;
+            top: 1.4rem; left: 1rem;
+            font-size: 1rem;
+            color: var(--text-muted);
+            pointer-events: none;
+            transition: all 0.3s var(--bounce);
             font-weight: 500;
         }
-        .google-auth-separator::before, .google-auth-separator::after {
-            content: ''; flex: 1; border-bottom: 1px solid rgba(0,0,0,0.05);
-        }
-        .google-auth-separator:not(:empty)::before { margin-right: 15px; }
-        .google-auth-separator:not(:empty)::after { margin-left: 15px; }
 
-        .btn-google {
-            width: 100%; padding: 14px; background: white; color: var(--text-dark);
-            border: 1px solid #e2e8f0; border-radius: 20px; font-weight: 600;
-            display: flex; align-items: center; justify-content: center; gap: 12px;
-            cursor: pointer; transition: all 0.3s var(--bounce);
-            text-decoration: none; font-size: 0.95rem;
-        }
-        .btn-google img { width: 20px; height: 20px; }
-        .btn-google:hover {
-            background: #f8fafc; border-color: #cbd5e1;
-            transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        .form-group input:focus ~ label,
+        .form-group input:valid ~ label {
+            top: 0;
+            left: 0;
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: var(--primary-dark);
         }
 
-        .auth-footer { margin-top: 30px; text-align: center; color: #64748b; font-size: 0.95rem; }
-        .auth-footer a { color: var(--primary); font-weight: 800; text-decoration: none; }
-        .auth-footer a:hover { text-decoration: underline; }
+        .input-accent {
+            position: absolute;
+            bottom: 0; left: 50%; width: 0; height: 2px;
+            background: var(--primary);
+            transition: all 0.4s var(--bounce);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+        }
+        .form-group input:focus ~ .input-accent { width: 100%; left: 0; }
 
-        .error-message { background: #fef2f2; border: 1px solid #fecaca; color: #ef4444; padding: 14px; border-radius: 12px; margin-bottom: 20px; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; animation: shake 0.5s; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.1);}
-        .success-message { background: #F0FDF4; border: 1px solid #BBF7D0; color: #15803D; padding: 14px; border-radius: 12px; margin-bottom: 20px; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(21, 128, 61, 0.1);}
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        .btn-elite {
+            width: 100%;
+            padding: 1.2rem;
+            background: var(--primary-dark);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s var(--bounce);
+            box-shadow: 0 10px 30px rgba(5, 150, 105, 0.2);
+            margin-top: 1rem;
+        }
+        .btn-elite:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 20px 45px rgba(5, 150, 105, 0.3); background: var(--primary); }
+        .btn-elite:active { transform: translateY(-2px) scale(0.98); }
 
-        /* Form Stagger Reveals */
-        .stagger { opacity: 0; transform: translateY(15px) translateZ(40px); animation: fadeUp 0.5s ease forwards; }
-        .d-1 { animation-delay: 0.2s; } .d-2 { animation-delay: 0.3s; } .d-3 { animation-delay: 0.4s; } .d-4 { animation-delay: 0.5s; } .d-5 { animation-delay: 0.6s; }
-        @keyframes fadeUp { to { opacity: 1; transform: translateY(0) translateZ(40px); } }
+        .google-auth {
+            display: flex; align-items: center; justify-content: center; gap: 0.8rem;
+            width: 100%; padding: 1rem; background: white; border: 1px solid #e2e8f0;
+            border-radius: 14px; margin-top: 1.5rem; text-decoration: none;
+            color: var(--text-main); font-weight: 600; font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+        .google-auth:hover { background: #f8fafc; border-color: #cbd5e1; transform: translateY(-2px); }
+        .google-auth img { width: 22px; }
+
+        .auth-footer { margin-top: 2.5rem; text-align: center; color: var(--text-muted); font-weight: 500; }
+        .auth-footer a { color: var(--primary-dark); font-weight: 800; text-decoration: none; position: relative; }
+
+        .message { padding: 1rem; border-radius: 12px; margin-bottom: 2rem; display: flex; align-items: center; gap: 0.8rem; font-weight: 600; }
+        .error-message { background: #fff1f2; border-left: 4px solid #ef4444; color: #ef4444; }
+        .success-message { background: #f0fdf4; border-left: 4px solid #10b981; color: #10b981; }
+
+        /* Staggers */
+        .stagger { opacity: 0; transform: translateY(15px); }
 
         @media (max-width: 480px) {
-            .tilt-wrapper { padding: 16px; perspective: none; }
-            .auth-card { border-radius: 24px; transform: none !important;}
-            .auth-card-inner { padding: 40px 24px; transform: none !important;}
-            .auth-header h1 { font-size: 1.8rem; }
-            .spotlight, .floating-object { display: none; }
+            .auth-card { padding: 3rem 1.5rem; border-radius: 30px; }
         }
     </style>
 </head>
+
 <body>
+    <div class="backdrop">
+        <div class="bg-grid"></div>
+        <canvas id="particle-canvas"></canvas>
+        <div class="interactive-orb orb-1"></div>
+        <div class="interactive-orb orb-2"></div>
+        <div class="interactive-orb orb-3"></div>
+        <div class="interactive-orb orb-special"></div>
+    </div>
 
-    <div class="page-wrapper" id="page-wrapper">
-        <!-- Background Mechanics -->
-        <div class="gradient-mesh">
-            <div class="mesh-blob mesh-1"></div>
-            <div class="mesh-blob mesh-2"></div>
-            <div class="mesh-blob mesh-3"></div>
-        </div>
+    <div class="tilt-wrapper">
+        <div class="auth-card" id="auth-card">
+            <div class="glass-reflection" id="glass-reflection"></div>
+            
+            <div class="card-content">
+                <a href="../index.php" class="back-home-link stagger">
+                    <i class="fas fa-chevron-left"></i> Back to Home
+                </a>
 
-        <div class="spotlight" id="spotlight"></div>
-
-        <div class="floating-object obj-1 parallax-obj" data-speed="1.5"><i class="fas fa-heartbeat"></i></div>
-        <div class="floating-object obj-2 parallax-obj" data-speed="-2"><i class="fas fa-cookie-bite"></i></div>
-
-        <!-- Central Auth Architecture -->
-        <div class="tilt-wrapper" id="tilt-wrapper">
-            <div class="auth-card" id="auth-card">
-                <div class="auth-card-inner">
-                    <a href="../index.php" class="back-home-btn stagger d-1" style="display: inline-flex; align-items: center; gap: 8px; color: #64748b; text-decoration: none; font-weight: 600; margin-bottom: 20px; font-size: 0.9rem; transition: 0.3s;"><i class="fas fa-arrow-left"></i> Back to Home</a>
-                    <div class="auth-header">
-                        <a href="../index.php" class="logo-link stagger d-1">
+                <div class="auth-header">
+                    <a href="../index.php" style="text-decoration:none;">
+                        <div class="logo-box stagger">
                             <img src="../assets/img/logo.png" alt="NutriDeq Logo">
-                            <div class="logo-text">Nutri<span>Deq</span></div>
-                        </a>
-                        <h1 class="stagger d-1">Create Account</h1>
-                        <p class="stagger d-1">Register for free forever access</p>
+                        </div>
+                    </a>
+                    <h1 class="stagger">Initialize Account</h1>
+                    <p class="stagger">Set up your clinical portal</p>
+                </div>
+
+                <?php if (isset($_GET['error'])): ?>
+                    <div class="message error-message stagger">
+                        <i class="fas fa-circle-exclamation"></i>
+                        <?php echo htmlspecialchars($_GET['error']); ?>
+                    </div>
+                <?php endif; ?>
+                
+                <?php if (isset($_GET['success'])): ?>
+                    <div class="message success-message stagger">
+                        <i class="fas fa-circle-check"></i>
+                        <?php echo htmlspecialchars($_GET['success']); ?>
+                    </div>
+                <?php endif; ?>
+
+                <form action="process_register.php" method="POST">
+                    <div class="form-group stagger">
+                        <input type="text" id="name" name="name" required value="<?php echo isset($_GET['name']) ? htmlspecialchars($_GET['name']) : ''; ?>">
+                        <label for="name">Professional Name</label>
+                        <div class="input-accent"></div>
                     </div>
 
-                    <?php if (isset($_GET['error'])): ?>
-                        <div class="error-message stagger d-2">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <?php echo htmlspecialchars($_GET['error']); ?>
-                        </div>
-                    <?php endif; ?>
-                    
-                    <?php if (isset($_GET['success'])): ?>
-                        <div class="success-message stagger d-2">
-                            <i class="fas fa-check-circle"></i>
-                            <?php echo htmlspecialchars($_GET['success']); ?>
-                        </div>
-                    <?php endif; ?>
-
-                    <form action="process_register.php" method="POST">
-                        <div class="form-group stagger d-2">
-                            <label for="name">Full Name</label>
-                            <div class="input-wrapper">
-                                <input type="text" id="name" name="name" class="form-control" placeholder="Jane Doe" required value="<?php echo isset($_GET['name']) ? htmlspecialchars($_GET['name']) : ''; ?>">
-                                <i class="fas fa-user input-icon"></i>
-                            </div>
-                        </div>
-
-                        <div class="form-group stagger d-2">
-                            <label for="email">Email Address</label>
-                            <div class="input-wrapper">
-                                <input type="email" id="email" name="email" class="form-control" placeholder="jane@clinic.com" required value="<?php echo isset($_GET['email']) ? htmlspecialchars($_GET['email']) : ''; ?>">
-                                <i class="fas fa-envelope input-icon"></i>
-                            </div>
-                        </div>
-
-                        <div class="form-group stagger d-3">
-                            <label for="password">Password</label>
-                            <div class="input-wrapper">
-                                <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required>
-                                <i class="fas fa-lock input-icon"></i>
-                            </div>
-                        </div>
-
-                        <div class="form-group stagger d-3">
-                            <label for="confirm_password">Confirm Password</label>
-                            <div class="input-wrapper">
-                                <input type="password" id="confirm_password" name="confirm_password" class="form-control" placeholder="••••••••" required>
-                                <i class="fas fa-check input-icon"></i>
-                            </div>
-                        </div>
-
-                        <div class="stagger d-4" style="margin-top: 20px;">
-                            <button type="submit" class="btn-submit">Initialize Portal</button>
-                        </div>
-
-                        <div class="google-auth-separator stagger d-4">OR</div>
-
-                        <a href="google-callback.php" class="btn-google stagger d-4">
-                            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo">
-                            Sign up with Google
-                        </a>
-                    </form>
-
-                    <div class="auth-footer stagger d-5">
-                        Already registered? <a href="NutriDeqN-Login.php">Sign In</a>
+                    <div class="form-group stagger">
+                        <input type="email" id="email" name="email" required value="<?php echo isset($_GET['email']) ? htmlspecialchars($_GET['email']) : ''; ?>">
+                        <label for="email">Work Email</label>
+                        <div class="input-accent"></div>
                     </div>
+
+                    <div class="form-group stagger">
+                        <input type="password" id="password" name="password" required>
+                        <label for="password">Create Portal Password</label>
+                        <div class="input-accent"></div>
+                    </div>
+
+                    <div class="form-group stagger">
+                        <input type="password" id="confirm_password" name="confirm_password" required>
+                        <label for="confirm_password">Verify Password</label>
+                        <div class="input-accent"></div>
+                    </div>
+
+                    <button type="submit" class="btn-elite stagger">Launch Account</button>
+
+                    <a href="google-callback.php" class="google-auth stagger">
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+                        Sign up with Physician Account
+                    </a>
+                </form>
+
+                <div class="auth-footer stagger">
+                    Registered? <a href="NutriDeqN-Login.php">Portal Access</a>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Interface WOW Logic -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const spotlight = document.getElementById('spotlight');
             const authCard = document.getElementById('auth-card');
-            const parallaxObjs = document.querySelectorAll('.parallax-obj');
+            const glassReflection = document.getElementById('glass-reflection');
+            const orbs = document.querySelectorAll('.interactive-orb');
 
+            // --- 1. PARTICLE SYSTEM ---
+            const canvas = document.getElementById('particle-canvas');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            let width, height;
+
+            const resize = () => {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+            };
+
+            window.addEventListener('resize', resize);
+            resize();
+
+            class Particle {
+                constructor() {
+                    this.reset();
+                }
+                reset() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                    this.vx = (Math.random() - 0.5) * 0.5;
+                    this.vy = (Math.random() - 0.5) * 0.5;
+                    this.radius = Math.random() * 2 + 1;
+                    this.alpha = Math.random() * 0.5 + 0.2;
+                }
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    if (this.x < 0 || this.x > width) this.vx *= -1;
+                    if (this.y < 0 || this.y > height) this.vy *= -1;
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(16, 185, 129, ${this.alpha})`;
+                    ctx.fill();
+                }
+            }
+
+            for (let i = 0; i < 40; i++) particles.push(new Particle());
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                particles.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+                
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dist = Math.hypot(particles[i].x - particles[j].x, particles[i].y - particles[j].y);
+                        if (dist < 100) {
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.strokeStyle = `rgba(16, 185, 129, ${0.1 * (1 - dist / 100)})`;
+                            ctx.stroke();
+                        }
+                    }
+                    const mouseDist = Math.hypot(particles[i].x - mouseX, particles[i].y - mouseY);
+                    if (mouseDist < 150) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(mouseX, mouseY);
+                        ctx.strokeStyle = `rgba(16, 185, 129, ${0.3 * (1 - mouseDist / 150)})`;
+                        ctx.stroke();
+                    }
+                }
+                requestAnimationFrame(animate);
+            }
+
+            // Focus-Resolve Entrance
+            gsap.to(authCard, {
+                opacity: 1, scale: 1, y: 0, filter: "blur(0px)",
+                duration: 1.5, ease: "expo.out",
+                onComplete: () => {
+                    gsap.to('.stagger', { opacity: 1, y: 0, stagger: 0.08, duration: 0.8, ease: "power3.out" });
+                }
+            });
+
+            // Interactive Repel Backdrop
             let mouseX = window.innerWidth / 2;
             let mouseY = window.innerHeight / 2;
 
             document.addEventListener('mousemove', (e) => {
                 mouseX = e.clientX;
                 mouseY = e.clientY;
-                
-                requestAnimationFrame(() => {
-                    // Spotlight Background
-                    spotlight.style.left = mouseX + 'px';
-                    spotlight.style.top = mouseY + 'px';
-
-                    // Math for tilt
-                    let xOffset = (mouseX - window.innerWidth / 2) / window.innerWidth;
-                    let yOffset = (mouseY - window.innerHeight / 2) / window.innerHeight;
-
-                    // 3D Card Tilt 
-                    if (window.innerWidth > 480) { // Keep disabled on mobile
-                        authCard.style.transform = `rotateY(${xOffset * 10}deg) rotateX(${-yOffset * 10}deg)`;
-                    }
-
-                    // 2D Floating Molecular Parallax
-                    parallaxObjs.forEach(obj => {
-                        let speed = parseFloat(obj.getAttribute('data-speed'));
-                        obj.style.transform = `translate(${xOffset * 80 * speed}px, ${yOffset * 80 * speed}px)`;
-                    });
+                orbs.forEach((orb, i) => {
+                    const factor = (i + 1) * 0.04;
+                    gsap.to(orb, { x: -(mouseX - window.innerWidth / 2) * factor, y: -(mouseY - window.innerHeight / 2) * factor, duration: 1.8, ease: "power2.out" });
                 });
+                const rect = authCard.getBoundingClientRect();
+                const cardX = mouseX - rect.left - rect.width / 2, cardY = mouseY - rect.top - rect.height / 2;
+                gsap.to(authCard, { rotateX: (cardY / (rect.height / 2)) * -5, rotateY: (cardX / (rect.width / 2)) * 5, duration: 0.6 });
+                gsap.set(glassReflection, { opacity: 0.4 });
+                gsap.to(glassReflection, { x: (cardX / rect.width) * 100 + "%", y: (cardY / rect.height) * 100 + "%", duration: 0.5 });
             });
-        });
 
-        // Register Service Worker for PWA
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('../service-worker.js?v=3')
-                    .catch(err => console.error('PWA Engine failure:', err));
-            });
-        }
+            animate();
+        });
     </script>
 </body>
+
 </html>

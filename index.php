@@ -9,1326 +9,1566 @@ header("Pragma: no-cache");
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta name="theme-color" content="#10b981">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#059669">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="manifest" href="manifest.json">
-    <title>NutriDeq - Next-Gen Clinical Intelligence</title>
+    <title>NutriDeq - Clinical Nutrition Intelligence</title>
     <link rel="icon" type="image/png" href="assets/img/logo.png">
-
     <link rel="stylesheet" href="css/base.css?v=205">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
     <style>
-        /* =========================================================
-           NUTRI-GLASS : ULTRA-DYNAMIC (WOW FACTOR)
-           ========================================================= */
-        :root {
-            --text-dark: #0f172a;
-            --text-muted: #475569;
-            --primary: #10b981;
-            /* Vibrant Emerald */
-            --primary-dark: #047857;
-            --accent: #f59e0b;
-            /* Amber */
-            --accent-alt: #3b82f6;
-            /* Blue for contrast */
-            --glass-bg: rgba(255, 255, 255, 0.75);
-            --glass-border: rgba(255, 255, 255, 0.6);
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: linear-gradient(90deg, #059669, #10b981, #34d399);
+            z-index: 10000;
+            transform-origin: left;
         }
 
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #f8fafc;
-            color: var(--text-dark);
-            overflow-x: hidden;
-            scroll-behavior: smooth;
-            font-family: 'Inter', sans-serif;
-        }
-
-        h1,
-        h2,
-        h3,
-        h4,
-        .logo-text {
-            font-family: 'Outfit', sans-serif;
-        }
-
-        /* --- Mega Gradient & Interactivity Base --- */
-        .page-wrapper {
-            position: relative;
+        .cursor-highlight {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(5, 150, 105, 0.15) 0%, transparent 70%);
+            pointer-events: none;
             z-index: 1;
-        }
-
-        /* Mouse Spotlight Follower */
-        .spotlight {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 800px;
-            height: 800px;
-            background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 60%);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: -1;
             transform: translate(-50%, -50%);
-            transition: opacity 0.5s ease;
+            mix-blend-mode: multiply;
         }
 
-        /* Abstract Fluid Gradient Mesh Background */
-        .gradient-mesh {
+        .cursor-dot {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -2;
-            background: #f8fafc;
-        }
-
-        .mesh-blob {
-            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--primary);
             border-radius: 50%;
-            filter: blur(140px);
-            opacity: 0.8;
-            animation: moveBlobs 20s infinite alternate ease-in-out;
-        }
-
-        .mesh-1 {
-            width: 50vw;
-            height: 50vw;
-            background: rgba(16, 185, 129, 0.2);
-            top: -20%;
-            left: -10%;
-        }
-
-        .mesh-2 {
-            width: 40vw;
-            height: 40vw;
-            background: rgba(59, 130, 246, 0.15);
-            bottom: -10%;
-            right: -10%;
-            animation-delay: -5s;
-        }
-
-        .mesh-3 {
-            width: 45vw;
-            height: 45vw;
-            background: rgba(245, 158, 11, 0.1);
-            top: 30%;
-            left: 40%;
-            animation-delay: -10s;
-        }
-
-        @keyframes moveBlobs {
-            0% {
-                transform: scale(1) translate(0, 0) rotate(0deg);
-            }
-
-            50% {
-                transform: scale(1.2) translate(10%, 10%) rotate(45deg);
-            }
-
-            100% {
-                transform: scale(0.8) translate(-10%, -10%) rotate(90deg);
-            }
-        }
-
-        /* 2D Floating Molecular Objects */
-        .floating-object {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.9);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            color: var(--primary);
-            z-index: 0;
             pointer-events: none;
+            z-index: 10001;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px rgba(5, 150, 105, 0.8);
+            transition: width 0.3s, height 0.3s, background 0.3s;
         }
 
-        /* JS Parallax Targets */
-        .obj-1 {
-            width: 80px;
-            height: 80px;
-            top: 15%;
-            left: 10%;
-            font-size: 24px;
-            animation: floatObj 8s infinite alternate;
-        }
-
-        .obj-2 {
+        .cursor-dot.active {
             width: 40px;
             height: 40px;
-            top: 40%;
-            right: 15%;
-            animation: floatObj 6s infinite alternate-reverse;
-            color: var(--accent-alt);
+            background: rgba(5, 150, 105, 0.1);
+            border: 2px solid var(--primary);
+            box-shadow: none;
+            mix-blend-mode: normal;
         }
 
-        .obj-3 {
-            width: 60px;
-            height: 60px;
-            bottom: 20%;
-            left: 20%;
-            animation: floatObj 7s infinite alternate;
-            color: var(--accent);
+        /* Lenis Setup */
+        html.lenis,
+        html.lenis body {
+            height: auto;
         }
 
-        .obj-4 {
-            width: 50px;
-            height: 50px;
-            top: 60%;
-            right: 5%;
-            animation: floatObj 9s infinite alternate-reverse;
+        .lenis.lenis-smooth {
+            scroll-behavior: auto !important;
         }
 
-        @keyframes floatObj {
-            0% {
-                transform: translateY(0);
-            }
-
-            100% {
-                transform: translateY(-30px);
-            }
+        .lenis.lenis-smooth [data-lenis-prevent] {
+            overscroll-behavior: contain;
         }
 
-        .container {
-            width: 100%;
-            max-width: 1300px;
-            margin: 0 auto;
-            padding: 0 24px;
-            position: relative;
-            z-index: 10;
-        }
-
-        /* Header Engine */
-        header {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 95%;
-            max-width: 1300px;
-            background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            border: 1px solid var(--glass-border);
-            border-radius: 50px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
-            z-index: 1000;
-            padding: 12px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.4s ease;
-        }
-
-        header.scrolled {
-            top: 10px;
-            background: rgba(255, 255, 255, 0.85);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            position: relative;
+        .lenis.lenis-stopped {
             overflow: hidden;
         }
 
-        .logo img {
-            height: 38px;
-            margin-right: 12px;
-            border-radius: 8px;
-            z-index: 2;
-            transition: transform 0.5s;
-        }
-
-        .logo:hover img {
-            transform: rotate(15deg) scale(1.1);
-        }
-
-        .logo-text {
-            font-size: 26px;
-            font-weight: 900;
-            color: var(--text-dark);
-            z-index: 2;
-        }
-
-        .logo-text span {
-            color: var(--primary);
-        }
-
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 32px;
-            margin: 0;
-            padding: 0;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-dark);
-            font-weight: 600;
-            font-size: 15px;
-            position: relative;
-            padding: 5px 0;
-        }
-
-        /* Hover line animation */
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--primary);
-            transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-
-        .auth-buttons {
-            display: flex;
-            gap: 12px;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            border-radius: 100px;
-            padding: 12px 28px;
-            font-weight: 700;
-            font-size: 15px;
-            text-decoration: none;
-            transition: 0.4s;
-            cursor: pointer;
-            border: none;
-            letter-spacing: 0.3px;
-        }
-
-        /* Magnetic / Animated Buttons */
-        .btn-glass {
-            background: rgba(255, 255, 255, 0.5);
-            color: var(--text-dark);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-        }
-
-        .btn-glass:hover {
-            background: rgba(255, 255, 255, 1);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
-            transform: translateY(-2px);
-        }
-
-        .btn-glow {
-            background: var(--primary);
-            color: white;
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
-        }
-
-        .btn-glow::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-            transition: 0.5s;
-            z-index: -1;
-        }
-
-        .btn-glow:hover {
-            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
-            transform: translateY(-3px) scale(1.02);
-        }
-
-        .btn-glow:hover::before {
-            left: 100%;
-        }
-
-        /* ================= HERO SECTION ================= */
-        .hero {
-            padding: 220px 0 120px;
-            min-height: 90vh;
-            display: flex;
-            align-items: center;
-        }
-
-        .hero-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 80px;
-            align-items: center;
-        }
-
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(59, 130, 246, 0.1);
-            color: var(--accent-alt);
-            padding: 8px 16px;
-            border-radius: 100px;
-            font-weight: 700;
-            font-size: 13px;
-            margin-bottom: 24px;
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            animation: fadeUp 1s ease forwards;
-        }
-
-        .hero-text h1 {
-            font-size: 5rem;
-            line-height: 1.05;
-            margin-bottom: 24px;
-            letter-spacing: -2px;
-            text-wrap: balance;
-            animation: fadeUp 1s ease forwards 0.1s;
-            opacity: 0;
-            transform: translateY(30px);
-        }
-
-        .hero-text h1 span {
-            background: linear-gradient(to right, var(--primary), var(--accent-alt));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .hero-text p {
-            font-size: 1.25rem;
-            color: var(--text-muted);
-            margin-bottom: 40px;
-            max-width: 500px;
-            animation: fadeUp 1s ease forwards 0.2s;
-            opacity: 0;
-            transform: translateY(30px);
-        }
-
-        .hero-cta {
-            display: flex;
-            gap: 16px;
-            animation: fadeUp 1s ease forwards 0.3s;
-            opacity: 0;
-            transform: translateY(30px);
-        }
-
-        /* 3D Tilt Mockup */
-        .mockup-wrapper {
-            perspective: 1500px;
-            position: relative;
-            animation: floatGently 6s infinite ease-in-out;
-        }
-
-        .mockup-card {
-            background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(40px);
-            -webkit-backdrop-filter: blur(40px);
-            border: 1px solid rgba(255, 255, 255, 1);
-            border-radius: 36px;
-            padding: 4px;
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.1), inset 0 0 0 2px rgba(255, 255, 255, 0.5);
-            transform-style: preserve-3d;
-            transition: transform 0.1s ease;
-        }
-
-        .mockup-inner {
-            background: white;
-            border-radius: 32px;
-            padding: 30px;
-            transform: translateZ(30px);
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
-        }
-
-        .mock-head {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .mh-group {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .mh-ava {
-            width: 50px;
-            height: 50px;
-            background: #f1f5f9;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--primary);
-            font-size: 20px;
-            box-shadow: inset 0 0 0 1px #e2e8f0;
-        }
-
-        .mh-line1 {
-            width: 120px;
-            height: 14px;
-            background: #cbd5e1;
-            border-radius: 7px;
-            margin-bottom: 8px;
-        }
-
-        .mh-line2 {
-            width: 80px;
-            height: 10px;
-            background: #e2e8f0;
-            border-radius: 5px;
-        }
-
-        .mock-chart {
-            height: 180px;
-            background: linear-gradient(180deg, rgba(16, 185, 129, 0.05) 0%, transparent 100%);
-            border-radius: 20px;
-            margin-bottom: 24px;
-            position: relative;
-            border-bottom: 2px solid #e2e8f0;
-            display: flex;
-            align-items: flex-end;
-            gap: 12px;
-            padding: 0 16px;
-        }
-
-        .c-bar {
-            flex: 1;
-            height: 100%;
-            background: var(--primary);
-            border-radius: 8px 8px 0 0;
-            opacity: 0.3;
-            transition: 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-            transform-origin: bottom;
-            transform: scaleY(0.2);
-        }
-
-        .c-bar:nth-child(1) { transform: scaleY(0.3); }
-        .c-bar:nth-child(2) { transform: scaleY(0.5); }
-        .c-bar:nth-child(3) { transform: scaleY(0.4); }
-        .c-bar:nth-child(4) { transform: scaleY(0.7); background: #94a3b8; }
-        .c-bar:nth-child(5) { transform: scaleY(0.4); }
-
-        .mockup-wrapper:hover .c-bar {
-            opacity: 0.9;
-        }
-
-        .mockup-wrapper:hover .c-bar:nth-child(1) {
-            transform: scaleY(0.4);
-        }
-
-        .mockup-wrapper:hover .c-bar:nth-child(2) {
-            transform: scaleY(0.7);
-        }
-
-        .mockup-wrapper:hover .c-bar:nth-child(3) {
-            transform: scaleY(0.5);
-        }
-
-        .mockup-wrapper:hover .c-bar:nth-child(4) {
-            transform: scaleY(1.0);
-            background: var(--accent-alt);
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
-        }
-
-        .mockup-wrapper:hover .c-bar:nth-child(5) {
-            transform: scaleY(0.6);
-        }
-
-        .data-cards {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-
-        .d-card {
-            background: #f8fafc;
-            padding: 16px;
-            border-radius: 16px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .d-title {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .d-val {
-            font-size: 24px;
-            font-weight: 900;
-            font-family: 'Outfit';
-            color: var(--text-dark);
-        }
-
-        /* Floating interaction widgets */
-        .float-badge {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            padding: 12px 20px;
-            border-radius: 100px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border: 1px solid #ffffff;
-            z-index: 10;
-            font-size: 14px;
-            animation: floatBadge 4s infinite alternate ease-in-out;
-        }
-
-        .fb-1 {
-            top: 40px;
-            right: -40px;
-            transform: translateZ(60px);
-        }
-
-        .fb-2 {
-            bottom: 60px;
-            left: -50px;
-            transform: translateZ(80px);
-            animation-delay: -2s;
-        }
-
-        .fb-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-        }
-
-        @keyframes floatBadge {
-            0% {
-                transform: translateY(0);
-            }
-
-            100% {
-                transform: translateY(-15px);
-            }
-        }
-
-        /* ================= FEATURES SECTION (REACTABLE) ================= */
-        .section {
-            padding: 140px 0;
-            position: relative;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 80px;
-        }
-
-        .section-header h2 {
-            font-size: 3.5rem;
-            letter-spacing: -1px;
-            margin-bottom: 16px;
-        }
-
-        .section-header p {
-            font-size: 1.25rem;
-            color: var(--text-muted);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-        }
-
-        .feature-card {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.9);
-            border-radius: 32px;
-            padding: 40px;
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
-        }
-
-        /* Mouse Reactivity via CSS Hover Layer */
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
-            opacity: 0;
-            transition: 0.5s;
-            z-index: -1;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08);
-            border-color: var(--primary);
-        }
-
-        .feature-card:hover::before {
-            opacity: 1;
-        }
-
-        .f-icon-box {
-            width: 72px;
-            height: 72px;
-            background: #ffffff;
-            border-radius: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            color: var(--primary);
-            margin-bottom: 30px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
-            transition: 0.5s;
-            transform-origin: center;
-        }
-
-        .feature-card:hover .f-icon-box {
-            background: var(--primary);
-            color: white;
-            border-radius: 40px;
-            transform: rotate(360deg);
-            box-shadow: 0 15px 30px rgba(16, 185, 129, 0.3);
-        }
-
-        .feature-card h3 {
-            font-size: 1.8rem;
-            margin-bottom: 16px;
-            font-weight: 800;
-        }
-
-        .feature-card p {
-            font-size: 1.1rem;
-            line-height: 1.6;
-        }
-
-        /* ================= DATABASE INFO & BENEFITS (Information Replaced) ================= */
-        .data-showcase {
-            background: var(--text-dark);
-            border-radius: 40px;
-            padding: 80px;
-            position: relative;
-            overflow: hidden;
-            text-align: center;
-            color: white;
-            box-shadow: 0 40px 100px rgba(15, 23, 42, 0.3);
-            margin: 40px 0;
-        }
-
-        .data-showcase::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, transparent 60%);
+        .lenis.lenis-smooth iframe {
             pointer-events: none;
-            animation: spinBg 20s linear infinite;
         }
 
-        @keyframes spinBg {
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        .ds-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 40px;
-            margin-top: 60px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .ds-stat h4 {
-            font-size: 4rem;
-            margin: 0 0 8px 0;
-            color: white;
-        }
-
-        .ds-stat h4 span {
-            color: var(--primary);
-        }
-
-        .ds-stat p {
-            color: #94a3b8;
-            font-size: 1.1rem;
-            font-weight: 500;
-        }
-
-        /* ================= FOOTER ================= */
-        footer {
-            margin-top: 100px;
-            padding: 80px 0 40px;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(255, 255, 255, 0.9);
-        }
-
-        .f-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            gap: 60px;
-            margin-bottom: 60px;
-        }
-
-        .f-brand {
+        .split-h1 {
             display: flex;
-            flex-direction: column;
+            flex-wrap: wrap;
+            gap: 0.6rem;
         }
 
-        .f-logo {
-            font-size: 32px;
-            font-weight: 900;
-            font-family: 'Outfit';
-            color: var(--text-dark);
-            text-decoration: none;
-            margin-bottom: 20px;
+        .h1-word {
+            display: inline-block;
+            transform-origin: bottom;
         }
 
-        .f-logo span {
-            color: var(--primary);
+        .gsap-failsafe {
+            visibility: visible !important;
+            opacity: 1 !important;
+            transform: none !important;
         }
 
-        .f-col h4 {
-            font-size: 1.2rem;
-            margin-bottom: 24px;
-        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
 
-        .f-col ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .f-col li {
-            margin-bottom: 16px;
-        }
-
-        .f-col a {
-            color: var(--text-muted);
-            text-decoration: none;
-            transition: 0.3s;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .f-col a:hover {
-            color: var(--primary);
-            gap: 12px;
-        }
-
-        /* Scroll Reveals */
-        .reveal {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        @keyframes fadeUp {
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
 
-        @media (max-width: 1024px) {
-            .hero-grid {
-                grid-template-columns: 1fr;
-                gap: 60px;
-                text-align: center;
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
             }
 
-            .hero-text h1 {
-                font-size: 4rem;
-                margin: 0 auto 24px;
-            }
-
-            .hero-text p {
-                margin: 0 auto 40px;
-            }
-
-            .hero-cta {
-                justify-content: center;
-            }
-
-            .feature-grid,
-            .ds-grid {
-                grid-template-columns: 1fr;
-                gap: 40px;
-            }
-
-            .f-grid {
-                grid-template-columns: 1fr;
-                gap: 40px;
+            to {
+                opacity: 1;
             }
         }
 
-        @media (max-width: 768px) {
-            header {
-                padding: 12px 20px;
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.03);
+            }
+        }
+
+        .animate-fadeInUp {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        .animate-pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .h1-highlight {
+            background: linear-gradient(135deg, #059669, #065f46);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn .btn-magnetic {
+            position: relative;
+            z-index: 2;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        :root {
+            --primary: #059669;
+            --primary-dark: #064e3b;
+            --secondary: #3b82f6;
+            --accent: #d97706;
+            --gradient: linear-gradient(135deg, #059669, #065f46);
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --bg-main: #f1f5f9;
+            --bg-surface: #ffffff;
+            --border-color: #e2e8f0;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --glass-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(180deg, #f0fdf4 0%, #f8fafc 50%, #f1f5f9 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5 {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+        }
+
+        .page {
+            position: relative;
+            z-index: 1;
+        }
+
+        .bg-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .bg-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.45;
+            will-change: transform;
+        }
+
+        .orb-1 {
+            width: 700px;
+            height: 700px;
+            background: #059669;
+            top: -250px;
+            left: -200px;
+        }
+
+        .orb-2 {
+            width: 600px;
+            height: 600px;
+            background: #10b981;
+            bottom: -200px;
+            right: -150px;
+        }
+
+        .orb-3 {
+            width: 450px;
+            height: 450px;
+            background: #34d399;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .food-animation-container {
+            position: absolute;
+            top: 10%;
+            right: 5%;
+            z-index: 5;
+            opacity: 0;
+        }
+
+        .food-item {
+            position: absolute;
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 15px 35px rgba(5, 150, 105, 0.15);
+            color: var(--primary);
+        }
+
+        .food-1 {
+            top: 0;
+            left: 0;
+        }
+
+        .food-2 {
+            top: 50px;
+            left: 90px;
+            color: #d97706;
+        }
+
+        .food-3 {
+            top: 120px;
+            left: 10px;
+            color: #3b82f6;
+        }
+
+        .bg-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(148, 163, 184, 0.07) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(148, 163, 184, 0.07) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: all 0.4s ease;
+        }
+
+        .nav.scrolled {
+            background: rgba(248, 250, 252, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-img {
+            height: 45px;
+            border-radius: 10px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1.7rem;
+            font-weight: 900;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(27, 67, 50, 0.15);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(27, 67, 50, 0.25);
+            filter: brightness(1.05);
+        }
+
+        .btn-outline {
+            background: rgba(255, 255, 255, 0.6);
+            color: var(--primary);
+            border: 1.5px solid var(--primary);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-outline:hover {
+            background: rgba(27, 67, 50, 0.04);
+            transform: translateY(-2px);
+        }
+
+        .hero {
+            min-height: 100vh;
+            padding: 13rem 0 7rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 5rem;
+            align-items: center;
+            perspective: 1200px;
+        }
+
+        .hero-left {
+            position: relative;
+            will-change: transform, opacity;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: rgba(5, 150, 105, 0.12);
+            color: var(--primary-dark);
+            padding: 0.7rem 1.4rem;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 1.8rem;
+            border: 1px solid rgba(5, 150, 105, 0.25);
+        }
+
+        .hero-text h1 {
+            font-size: clamp(3rem, 7vw, 5.8rem);
+            line-height: 1.03;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-text h1 span {
+            background: linear-gradient(135deg, #059669, #065f46);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-text p {
+            font-size: 1.4rem;
+            color: var(--text-secondary);
+            margin-bottom: 2.8rem;
+            line-height: 1.75;
+            max-width: 620px;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-right {
+            position: relative;
+            perspective: 1200px;
+            will-change: transform, opacity;
+        }
+
+        .model-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(35px);
+            border: 1px solid var(--glass-border);
+            border-radius: 32px;
+            padding: 2.2rem;
+            box-shadow: var(--glass-shadow);
+            transform-style: preserve-3d;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .model-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(5, 150, 105, 0.15) 0%, transparent 60%);
+            animation: pulse-glow 6s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .model-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .icon-placeholder {
+            width: 100%;
+            height: 200px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, rgba(5, 150, 105, 0.15), rgba(59, 130, 246, 0.08));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .icon-placeholder i {
+            font-size: 4rem;
+            color: var(--primary);
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2.5rem;
+            margin-top: 9rem;
+        }
+
+        .stat-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            padding: 3rem 2.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card h3 {
+            font-size: 3.8rem;
+            background: linear-gradient(135deg, #059669, #065f46);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.6rem;
+        }
+
+        .stat-card p {
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .section {
+            padding: 10rem 0;
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 5.5rem;
+        }
+
+        .section-header h2 {
+            font-size: clamp(2.6rem, 5vw, 4.2rem);
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            font-size: 1.35rem;
+            color: var(--text-secondary);
+            max-width: 750px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2.8rem;
+            perspective: 1500px;
+        }
+
+        .feature-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .feature-card:hover .glass-sweep {
+            left: 200%;
+            transition: left 0.8s ease-in-out;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-14px) scale(1.02);
+            box-shadow: 0 28px 55px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary);
+        }
+
+        .feature-icon {
+            width: 85px;
+            height: 85px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, rgba(5, 150, 105, 0.18), rgba(59, 130, 246, 0.12));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 2rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        .how-grid-container {
+            position: relative;
+        }
+
+        .how-grid-svg {
+            position: absolute;
+            top: 20%;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: visible;
+        }
+
+        .how-grid-svg path {
+            fill: none;
+            stroke: url(#strokeGradient);
+            stroke-width: 4;
+            stroke-dasharray: 2000;
+            stroke-dashoffset: 2000;
+            stroke-linecap: round;
+        }
+
+        .how-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2.8rem;
+            position: relative;
+            z-index: 2;
+            perspective: 1500px;
+        }
+
+        .step-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step-card:hover .glass-sweep {
+            left: 200%;
+            transition: left 0.8s ease-in-out;
+        }
+
+        .step-number {
+            font-size: 4.2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #059669, #065f46);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .showcase {
+            padding: 9rem 0;
+        }
+
+        .showcase-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+            align-items: center;
+        }
+
+        .showcase-content h3 {
+            font-size: 3rem;
+            margin-bottom: 1.6rem;
+        }
+
+        .showcase-content p {
+            color: var(--text-secondary);
+            font-size: 1.25rem;
+            margin-bottom: 2.2rem;
+            line-height: 1.8;
+        }
+
+        .check-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .check-item {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+        }
+
+        .check-item i {
+            color: var(--primary);
+            font-size: 1.3rem;
+            margin-top: 0.1rem;
+        }
+
+        .capabilities-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2.5rem;
+            margin-top: 4.5rem;
+        }
+
+        .cap-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cap-card:hover .glass-sweep {
+            left: 200%;
+            transition: left 0.8s ease-in-out;
+        }
+
+        .cap-card h4 {
+            font-size: 1.4rem;
+            margin-bottom: 1.2rem;
+            color: var(--primary-dark);
+        }
+
+        .cap-card ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .cap-card ul li i {
+            color: var(--primary);
+            margin-right: 0.7rem;
+        }
+
+        .advanced-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2.5rem;
+            perspective: 1500px;
+        }
+
+        .cta {
+            padding: 11rem 0;
+            text-align: center;
+        }
+
+        .cta h2 {
+            font-size: clamp(2.7rem, 5vw, 4.4rem);
+            margin-bottom: 1.5rem;
+        }
+
+        .cta p {
+            font-size: 1.4rem;
+            color: var(--text-secondary);
+            margin-bottom: 3.2rem;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        footer {
+            padding: 4.5rem 0;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        footer p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        /* Max Premium Upgrades */
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://grainy-gradients.vercel.app/noise.svg');
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 20000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #f8fafc;
+            color: var(--primary-dark);
+            overflow: hidden;
+            will-change: transform, opacity;
+        }
+
+        .splash-bg-decor {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+        }
+
+        .splash-logo-container {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .splash-icon-symbol {
+            width: 100px;
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: scale(0.8);
+        }
+
+        .splash-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3.8rem;
+            font-weight: 900;
+            letter-spacing: -2px;
+            margin-bottom: 2.5rem;
+            display: flex;
+            gap: 2px;
+            overflow: hidden;
+            padding-bottom: 5px;
+            color: var(--primary-dark);
+        }
+
+        .splash-char {
+            display: inline-block;
+            transform: translateY(105%);
+        }
+
+        .splash-progress-container {
+            width: 280px;
+            height: 3px;
+            background: rgba(5, 150, 105, 0.1);
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+        }
+
+        .splash-progress-bar {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: var(--primary);
+            box-shadow: 0 0 15px rgba(5, 150, 105, 0.3);
+            transform: scaleX(0);
+            transform-origin: left;
+        }
+
+        .splash-percent {
+            font-family: 'Inter', sans-serif;
+            font-weight: 800;
+            font-size: 1rem;
+            margin-top: 1.2rem;
+            letter-spacing: 5px;
+            color: var(--primary);
+            opacity: 0.8;
+        }
+
+        .glass-sweep {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: skewX(-25deg);
+            pointer-events: none;
+        }
+
+        .scroll-indicator {
+            position: relative;
+            margin-top: 5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 700;
+            font-size: 0.9rem;
+            z-index: 10;
+        }
+
+        .scroll-mouse {
+            width: 24px;
+            height: 40px;
+            border: 2px solid var(--text-secondary);
+            border-radius: 20px;
+            position: relative;
+        }
+
+        .scroll-wheel {
+            width: 4px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 2px;
+            position: absolute;
+            top: 6px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: scrollWheel 2s infinite;
+        }
+
+        @keyframes scrollWheel {
+            0% { transform: translate(-50%, 0); opacity: 1; }
+            100% { transform: translate(-50%, 15px); opacity: 0; }
+        }
+
+        .name-blend-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 2.8rem;
+        }
+
+        .blend-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.4rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+            transition: transform 0.3s ease;
+        }
+
+        .blend-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .blend-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        .blend-card h4 {
+            font-size: 1.25rem;
+            margin-bottom: 0.8rem;
+            color: var(--primary-dark);
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .blend-sub {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .blend-card ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .blend-card li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            font-weight: 500;
+            line-height: 1.3;
+        }
+
+        .blend-card li i {
+            color: var(--primary);
+            font-size: 1rem;
+            width: 18px;
+            text-align: center;
+            margin-top: 0.15rem;
+        }
+
+        .holo-tag {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 50px;
+            padding: 0.5rem 1.2rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .holo-tag i {
+            color: var(--accent);
+        }
+
+        .tag-1 {
+            top: -20px;
+            left: -40px;
+            animation: floatHolo 5s ease-in-out infinite;
+        }
+
+        .tag-2 {
+            bottom: -20px;
+            right: -20px;
+            animation: floatHolo 6s ease-in-out infinite reverse;
+        }
+
+        @keyframes floatHolo {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(-2deg);
+            }
+
+            50% {
+                transform: translateY(-15px) rotate(2deg);
+            }
+        }
+
+        .marquee-container {
+            width: 100%;
+            overflow: hidden;
+            background: var(--primary-dark);
+            color: rgba(255, 255, 255, 0.95);
+            padding: 1.2rem 0;
+            display: flex;
+            white-space: nowrap;
+            align-items: center;
+            transform: skewY(-2deg) translateY(-2rem);
+            box-shadow: 0 15px 40px rgba(5, 150, 105, 0.25);
+            position: relative;
+            z-index: 10;
+            border-top: 2px solid #34d399;
+            border-bottom: 2px solid #34d399;
+            margin-bottom: 2rem;
+        }
+
+        .marquee-content {
+            display: flex;
+            gap: 3rem;
+            animation: marquee 35s linear infinite;
+            font-weight: 700;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+        }
+
+        .marquee-content i {
+            color: #34d399;
+            margin-right: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        @keyframes marquee {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        @media (max-width:1024px) {
+
+            .hero-grid,
+            .showcase-grid,
+            .capabilities-grid,
+            .advanced-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .features-grid,
+            .how-grid,
+            .stats-row {
+                grid-template-columns: 1fr;
+                gap: 2rem;
             }
 
             .nav-links {
                 display: none;
             }
+        }
 
-            .hero-text h1 {
-                font-size: 3rem;
+        @media (max-width:640px) {
+
+            .hero-cta,
+            .cta-buttons {
+                flex-direction: column;
+                width: 100%;
             }
 
-            .spotlight,
-            .floating-object {
-                display: none;
-            }
-
-            .data-showcase {
-                padding: 60px 24px;
-            }
-
-            .ds-stat h4 {
-                font-size: 3rem;
+            .hero-cta .btn,
+            .cta-buttons .btn {
+                width: 100%;
+                justify-content: center;
             }
         }
     </style>
 </head>
 
 <body>
-    <!-- PWA Preamble Intro Splash -->
-    <div id="pwa-intro-splash" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(248, 250, 252, 0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); z-index: 999999; display: flex; align-items: center; justify-content: center; transition: opacity 0.8s ease, visibility 0.8s ease;">
-        <div style="text-align: center; animation: introPulse 2s ease-in-out infinite;">
-            <img src="assets/img/logo.png" alt="NutriDeq Start" style="width: 120px; height: 120px; border-radius: 28px; box-shadow: 0 20px 50px rgba(16, 185, 129, 0.2);">
-            <div style="margin-top: 20px; font-family: 'Outfit', sans-serif; font-size: 32px; font-weight: 900; color: #0f172a; letter-spacing: -1px;">Nutri<span style="color: #10b981;">Deq</span></div>
-            <div style="font-family: 'Inter', sans-serif; color: #64748b; font-size: 14px; margin-top: 5px; font-weight: 500;">Initializing Clinical Environment...</div>
+    <div id="splash-screen">
+        <div class="splash-bg-decor">
+            <div class="bg-orb orb-1"></div>
+            <div class="bg-orb orb-2"></div>
+            <div class="bg-grid"></div>
+        </div>
+        
+        <div class="splash-logo-container">
+            <img src="assets/img/logo.png" alt="NutriDeq Logo" class="splash-icon-symbol">
+            <div class="splash-title">
+                <span class="splash-char">N</span>
+                <span class="splash-char">u</span>
+                <span class="splash-char">t</span>
+                <span class="splash-char">r</span>
+                <span class="splash-char">i</span>
+                <span class="splash-char">D</span>
+                <span class="splash-char">e</span>
+                <span class="splash-char">q</span>
+            </div>
+            <div class="splash-progress-container">
+                <div class="splash-progress-bar"></div>
+            </div>
+            <div class="splash-percent">0%</div>
         </div>
     </div>
-    <style>
-        @keyframes introPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-    </style>
-
-    <!-- Ultra Dynamic Background Wrapper -->
-    <div class="page-wrapper">
-        <div class="gradient-mesh">
-            <div class="mesh-blob mesh-1"></div>
-            <div class="mesh-blob mesh-2"></div>
-            <div class="mesh-blob mesh-3"></div>
+    <div class="noise-overlay"></div>
+    <div class="scroll-progress" id="scroll-progress"></div>
+    <div class="cursor-highlight" id="cursor-highlight"></div>
+    <div class="cursor-dot" id="cursor-dot"></div>
+    <div class="page" style="filter: blur(15px); transform: scale(0.96); opacity: 0; will-change: transform, filter, opacity;">
+        <div class="bg-layer">
+            <div class="bg-orb orb-1"></div>
+            <div class="bg-orb orb-2"></div>
+            <div class="bg-orb orb-3"></div>
+            <div class="bg-grid"></div>
+            <div id="particles-container" style="position:absolute; width:100%; height:100%; top:0; left:0; z-index:1;">
+            </div>
+        </div>
+        <nav class="nav" id="nav">
+            <div class="container">
+                <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                    <div class="logo-container">
+                        <img src="assets/img/logo.png" alt="NutriDeq Logo" class="logo-img">
+                        <a href="#" class="logo">NutriDeq</span></a>
+                    </div>
+                    <ul class="nav-links">
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="#showcase">Showcase</a></li> I
+                        <li><a href="#capabilities">Capabilities</a></li>
+                        <li><a href="#advanced">Advanced</a></li>
+                    </ul>
+                    <div style="display:flex; gap:1rem;">
+                        <a href="login-logout/NutriDeqN-Login.php" class="btn btn-outline">Sign In</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <section class="hero" id="hero">
+            <div class="container">
+                <div class="hero-grid">
+                    <div class="hero-left">
+                        <div class="hero-badge"><i class="fas fa-leaf"></i> Clinical Nutrition Intelligence</div>
+                        <div class="hero-text">
+                            <h1 class="split-h1">
+                                <span class="h1-word">Transform</span>
+                                <span class="h1-word">Your</span>
+                                <span class="h1-word h1-highlight">Nutrition</span>
+                                <span class="h1-word h1-highlight">Clinic</span>
+                                <span class="h1-word">with</span>
+                                <span class="h1-word">NutriDeq</span>
+                            </h1>
+                            <p>From patient management to meal calculation, anthropometric tracking to secure
+                                messaging—everything you need to run a world‑class nutrition clinic in one beautiful
+                                platform.</p>
+                        </div>
+                        <div class="hero-cta">
+                            <a href="login-logout/NutriDeqN-Login.php" class="btn btn-primary"><i
+                                    class="fas fa-sign-in-alt"></i> Sign In</a>
+                        </div>
+                        <div class="name-blend-grid">
+                            <div class="blend-card">
+                                <div class="glass-sweep"></div>
+                                <h4>NUTRI <span class="blend-sub">Nutrition</span></h4>
+                                <ul>
+                                    <li><i class="fas fa-apple-whole"></i> Food intake</li>
+                                    <li><i class="fas fa-fire"></i> Calories & servings</li>
+                                    <li><i class="fas fa-utensils"></i> Diet tracking</li>
+                                </ul>
+                            </div>
+                            <div class="blend-card">
+                                <div class="glass-sweep"></div>
+                                <h4>DEQ <span class="blend-sub">Data, Equity, Quantification</span></h4>
+                                <ul>
+                                    <li><i class="fas fa-chart-pie"></i> Health statistics</li>
+                                    <li><i class="fas fa-weight-scale"></i> BMI computation</li>
+                                    <li><i class="fas fa-database"></i> Structured records</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hero-right">
+                        <div class="holo-tag tag-1"><i class="fas fa-shield-alt"></i> HIPAA Compliant</div>
+                        <div class="holo-tag tag-2"><i class="fas fa-bolt"></i> Real-Time Sync</div>
+                        <div class="model-card" id="model-card">
+                            <div class="glass-sweep"></div>
+                            <div class="model-content">
+                                <div class="icon-placeholder">
+                                    <i class="fas fa-stethoscope"></i>
+                                </div>
+                                <h3 style="font-size:1.3rem; margin-bottom:1.2rem; color:var(--primary-dark);">Live Patient Overview</h3>
+                                <div style="display:grid; gap:1.5rem;">
+                                    <div style="background: linear-gradient(135deg, rgba(5,150,105,0.14), rgba(59,130,246,0.08)); border-radius:20px; padding:1.5rem;">
+                                        <p style="color:var(--text-secondary); font-size:0.95rem; margin-bottom:0.6rem;">Today's Progress</p>
+                                        <h4 style="font-size:2.4rem;">98.7% <span style="font-size:1.1rem; color:var(--primary);">↑</span></h4>
+                                    </div>
+                                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.2rem;">
+                                        <div style="background:rgba(255,255,255,0.85); border-radius:16px; padding:1.4rem;">
+                                            <p style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:0.5rem;">Protein</p>
+                                            <h4 style="font-size:1.7rem;">165g</h4>
+                                        </div>
+                                        <div style="background:rgba(255,255,255,0.85); border-radius:16px; padding:1.4rem;">
+                                            <p style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:0.5rem;">Calories</p>
+                                            <h4 style="font-size:1.7rem;">2,200</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="food-animation-container" id="food-animation">
+                    <div class="food-item food-1"><i class="fas fa-leaf"></i></div>
+                    <div class="food-item food-2"><i class="fas fa-apple-whole"></i></div>
+                    <div class="food-item food-3"><i class="fas fa-droplet"></i></div>
+                </div>
+                <div class="scroll-indicator">
+                    <span>EXPLORE</span>
+                    <div class="scroll-mouse">
+                        <div class="scroll-wheel"></div>
+                    </div>
+                </div>
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <h3 data-count="20" data-suffix="+">0</h3>
+                        <p>Features Built</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 data-count="10" data-suffix="+">0</h3>
+                        <p>Clinical Tools</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 data-count="5" data-suffix="+">0</h3>
+                        <p>User Roles</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <div class="marquee-container">
+            <div class="marquee-content">
+                <span><i class="fas fa-check-circle"></i> CLINICALLY VERIFIED</span>
+                <span><i class="fas fa-bolt"></i> ADVANCED MACRO ENGINE</span>
+                <span><i class="fas fa-lock"></i> SECURE PATIENT MESSAGING</span>
+                <span><i class="fas fa-chart-line"></i> DATA-DRIVEN HEALTH</span>
+                <span><i class="fas fa-check-circle"></i> CLINICALLY VERIFIED</span>
+                <span><i class="fas fa-bolt"></i> ADVANCED MACRO ENGINE</span>
+                <span><i class="fas fa-lock"></i> SECURE PATIENT MESSAGING</span>
+                <span><i class="fas fa-chart-line"></i> DATA-DRIVEN HEALTH</span>
+                <span><i class="fas fa-check-circle"></i> CLINICALLY VERIFIED</span>
+                <span><i class="fas fa-bolt"></i> ADVANCED MACRO ENGINE</span>
+                <span><i class="fas fa-lock"></i> SECURE PATIENT MESSAGING</span>
+                <span><i class="fas fa-chart-line"></i> DATA-DRIVEN HEALTH</span>
+            </div>
         </div>
 
-        <div class="spotlight" id="spotlight"></div>
-
-        <!-- Floating Objects for Parallax -->
-        <div class="floating-object obj-1 data-parallax" data-speed="-1"><i class="fas fa-apple-alt"></i></div>
-        <div class="floating-object obj-2 data-parallax" data-speed="2"><i class="fas fa-dna"></i></div>
-        <div class="floating-object obj-3 data-parallax" data-speed="-1.5"><i class="fas fa-heartbeat"></i></div>
-        <div class="floating-object obj-4 data-parallax" data-speed="1.2"><i class="fas fa-seedling"></i></div>
-
-        <!-- Header -->
-        <header id="header">
-            <a href="#" class="logo">
-                <img src="assets/img/logo.png" alt="NutriDeq Logo">
-                <div class="logo-text">Nutri<span>Deq</span></div>
-            </a>
-            <ul class="nav-links">
-                <li><a href="#features">Capabilities</a></li>
-                <li><a href="#database">Database Integrity</a></li>
-            </ul>
-            <div class="auth-buttons" style="display: flex; gap: 8px; align-items: center;">
-                <button id="pwa-install-btn" class="btn btn-glow pwa-btn-responsive" style="display: none;"><i class="fas fa-download"></i> <span class="pwa-text">Install App</span></button>
-                <a href="login-logout/NutriDeqN-Login.php" class="btn btn-glass">Sign in</a>
-            </div>
-        </header>
-
-        <style>
-            .pwa-btn-responsive {
-                font-size: 0.9rem;
-                padding: 10px 18px;
-                white-space: nowrap;
-            }
-            @media (max-width: 480px) {
-                .pwa-btn-responsive {
-                    padding: 8px 12px;
-                    font-size: 0.85rem;
-                }
-                .pwa-btn-responsive .pwa-text {
-                    display: none;
-                }
-                .auth-buttons {
-                    gap: 5px !important;
-                }
-                header .logo-text {
-                    font-size: 1.2rem;
-                }
-            }
-        </style>
-
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="container hero-grid">
-                <div class="hero-text">
-                    <div class="badge"><i class="fas fa-bolt"></i> Fast, Smart & Free</div>
-                    <h1>Smarter Nutrition <span>Made Simple</span></h1>
-                    <p>The easiest way to track patient progress, calculate meals, and manage your health clinic. Built
-                        for dietitians who want to save time and get results.</p>
-                    <div class="hero-cta">
-                        <a href="login-logout/NutriDeqN-Signup.php" class="btn btn-glow"><i
-                                class="fas fa-user-plus"></i> Get Started</a>
-                        <a href="#features" class="btn btn-glass"><i class="fas fa-star"></i> See Features</a>
+        <section id="features" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Everything You Need to Excel</h2>
+                    <p>From macro calculation to patient messaging, we've got every detail covered for your nutrition clinic</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="glass-sweep"></div>
+                        <div class="feature-icon"><i class="fas fa-calculator"></i></div>
+                        <h3>Meal & Macro Calculator</h3>
+                        <p>Search our verified food database and calculate perfect macros in milliseconds. No manual math ever again for your patients.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-users"></i></div>
+                        <h3>Patient Management</h3>
+                        <p>Complete patient records, appointment tracking, and beautiful progress visualization right at your fingertips.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-heartbeat"></i></div>
+                        <h3>Anthropometric Tracking</h3>
+                        <p>Track BMI, waist-to-hip ratio, body fat percentage, and more with beautiful charts and printable reports.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-comments"></i></div>
+                        <h3>Secure Messaging</h3>
+                        <p>End-to-end encrypted communication with patients. Always organized, always professional and compliant.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-calendar-check"></i></div>
+                        <h3>Appointment Scheduler</h3>
+                        <p>Manage your clinic schedule, set appointments, and send automatic reminders—all in one unified place.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+                        <h3>Analytics & Reports</h3>
+                        <p>Beautiful, printable reports and real-time analytics to keep your clinic running at peak performance.</p>
                     </div>
                 </div>
-
-                <!-- 3D Interactive Reactable Mockup -->
-                <div class="mockup-wrapper" id="tilting-mockup">
-
-                    <div class="float-badge fb-1">
-                        <div class="fb-icon" style="background:#f59e0b;"><i class="fas fa-fire"></i></div>
-                        Macro Sync Active
+            </div>
+        </section>
+        <section id="how-it-works" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>How NutriDeq Works</h2>
+                    <p>Simple, 3-step process to get your clinic up and running in no time</p>
+                </div>
+                <div class="how-grid-container" id="how-grid-container">
+                    <svg class="how-grid-svg" viewBox="0 0 1000 200" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="strokeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#059669" />
+                                <stop offset="50%" stop-color="#3b82f6" />
+                                <stop offset="100%" stop-color="#10b981" />
+                            </linearGradient>
+                        </defs>
+                        <!-- A curved line bridging the 3 cards horizontally -->
+                        <path id="connection-path" d="M 150,100 C 300, -50 400, 250 500, 100 C 600, -50 700, 250 850, 100"></path>
+                    </svg>
+                    <div class="how-grid">
+                    <div class="step-card">
+                        <div class="glass-sweep"></div>
+                        <div class="step-number">01</div>
+                        <h3>Create Your Account</h3>
+                        <p>Sign up for free, set up your clinic profile, and add your staff members in just a few minutes.</p>
                     </div>
-                    <div class="float-badge fb-2">
-                        <div class="fb-icon" style="background:var(--primary);"><i class="fas fa-check"></i></div>
-                        Diet Plan Generated
+                    <div class="step-card">
+                        <div class="step-number">02</div>
+                        <h3>Onboard Your Patients</h3>
+                        <p>Add patient profiles, track anthropometric data, and start creating meal plans right away.</p>
                     </div>
-
-                    <div class="mockup-card">
-                        <div class="mockup-inner">
-                            <div class="mock-head">
-                                <div class="mh-group">
-                                    <div class="mh-ava"><i class="fas fa-user-circle"></i></div>
-                                    <div>
-                                        <div class="mh-line1"></div>
-                                        <div class="mh-line2"></div>
+                    <div class="step-card">
+                        <div class="step-number">03</div>
+                        <h3>Deliver Exceptional Care</h3>
+                        <p>Use real-time messaging, beautiful analytics, and printable reports to provide the best possible care.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="showcase" class="section showcase">
+            <div class="container">
+                <div class="showcase-grid">
+                    <div class="showcase-content">
+                        <h3>Built for Speed & Precision</h3>
+                        <p>Every second counts in a busy clinic. NutriDeq is optimized to be fast, responsive, and incredibly intuitive—so you can focus on what matters most: your patients.</p>
+                        <div class="check-list">
+                            <div class="check-item"><i class="fas fa-check-circle"></i><span>Calculates 100+ meals per second with verified data</span></div>
+                            <div class="check-item"><i class="fas fa-check-circle"></i><span>Real-time sync across all your devices</span></div>
+                            <div class="check-item"><i class="fas fa-check-circle"></i><span>Beautiful progress visualizations & charts</span></div>
+                            <div class="check-item"><i class="fas fa-check-circle"></i><span>Professional, printable patient reports</span></div>
+                        </div>
+                    </div>
+                    <div class="showcase-visual">
+                        <div class="model-card" style="transform-style:preserve-3d;">
+                            <div class="model-content">
+                                <div class="icon-placeholder">
+                                    <i class="fas fa-utensils"></i>
+                                </div>
+                                <h3 style="font-size:1.3rem; margin-bottom:1.2rem; color:var(--primary-dark);">Meal Plan Engine</h3>
+                                <div style="display:grid; gap:1.1rem;">
+                                    <div style="display:flex; justify-content:space-between; align-items:center; padding:1.1rem; background:rgba(255,255,255,0.88); border-radius:16px;">
+                                        <span style="font-weight:600;">Breakfast</span><span style="color:var(--primary); font-weight:700;">520 kcal</span>
+                                    </div>
+                                    <div style="display:flex; justify-content:space-between; align-items:center; padding:1.1rem; background:rgba(255,255,255,0.88); border-radius:16px;">
+                                        <span style="font-weight:600;">Lunch</span><span style="color:var(--primary); font-weight:700;">780 kcal</span>
+                                    </div>
+                                    <div style="display:flex; justify-content:space-between; align-items:center; padding:1.1rem; background:rgba(255,255,255,0.88); border-radius:16px;">
+                                        <span style="font-weight:600;">Dinner</span><span style="color:var(--primary); font-weight:700;">900 kcal</span>
                                     </div>
                                 </div>
-                                <div
-                                    style="background: rgba(16,185,129,0.1); color: var(--primary); padding: 4px 12px; border-radius: 100px; font-size: 13px; font-weight:700;">
-                                    Live Feed</div>
-                            </div>
-
-                            <div style="font-family:'Outfit'; font-size: 20px; font-weight: 800; margin-bottom:16px;">
-                                Formulation Trajectory</div>
-
-                            <div class="mock-chart">
-                                <div class="c-bar"></div>
-                                <div class="c-bar"></div>
-                                <div class="c-bar"></div>
-                                <div class="c-bar"></div>
-                                <div class="c-bar"></div>
-                            </div>
-
-                            <div class="data-cards">
-                                <div class="d-card">
-                                    <div class="d-title">Caloric Threshold</div>
-                                    <div class="d-val">2,150 <span style="font-size:14px;color:#94a3b8;">kcal</span>
-                                    </div>
-                                </div>
-                                <div class="d-card">
-                                    <div class="d-title">Protein Target</div>
-                                    <div class="d-val">160 <span style="font-size:14px;color:#94a3b8;">g</span></div>
-                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-
-        <!-- Features Matrix -->
-        <section class="section" id="features">
+        <section id="capabilities" class="section">
             <div class="container">
-                <div class="section-header reveal">
-                    <h2>Powerful Tools <span>for Better Health</span></h2>
-                    <p>Everything you need to manage your patients, automatically calculate meals, and track progress
-                        without the headache.</p>
+                <div class="section-header">
+                    <h2>Complete Clinic Capabilities</h2>
+                    <p>All the tools you need to manage every aspect of your nutrition practice in one place</p>
                 </div>
-
-                <div class="feature-grid">
-                    <div class="feature-card reveal" style="transition-delay: 0.1s;">
-                        <div class="f-icon-box"><i class="fas fa-calculator"></i></div>
-                        <h3>Auto-Calculate Macros</h3>
-                        <p>No more manual math. Just search our huge food database, and we instantly calculate calories,
-                            protein, carbs, and fats for your patient's meal plan.</p>
+                <div class="capabilities-grid">
+                    <div class="cap-card">
+                        <div class="glass-sweep"></div>
+                        <h4><i class="fas fa-user-md" style="margin-right:0.7rem; color:var(--primary);"></i>Admin & Staff Management</h4>
+                        <ul>
+                            <li><i class="fas fa-check"></i>Admin dashboard with full controls</li>
+                            <li><i class="fas fa-check"></i>Staff management & role permissions</li>
+                            <li><i class="fas fa-check"></i>Clinic settings & configuration</li>
+                            <li><i class="fas fa-check"></i>User activity logs & reports</li>
+                        </ul>
                     </div>
-                    <div class="feature-card reveal" style="transition-delay: 0.2s;">
-                        <div class="f-icon-box"><i class="fas fa-users"></i></div>
-                        <h3>Simple Client Management</h3>
-                        <p>Keep all your patients organized in one place. Track their weight loss, measurements, and
-                            daily habits with easy-to-read charts.</p>
+                    <div class="cap-card">
+                        <h4><i class="fas fa-file-medical" style="margin-right:0.7rem; color:var(--primary);"></i>Patient Records</h4>
+                        <ul>
+                            <li><i class="fas fa-check"></i>Complete patient profiles</li>
+                            <li><i class="fas fa-check"></i>Anthropometric data tracking</li>
+                            <li><i class="fas fa-check"></i>Progress history & clinical notes</li>
+                            <li><i class="fas fa-check"></i>Document storage & attachments</li>
+                        </ul>
                     </div>
-                    <div class="feature-card reveal" style="transition-delay: 0.3s;">
-                        <div class="f-icon-box"><i class="fas fa-comments"></i></div>
-                        <h3>Direct Patient Messaging</h3>
-                        <p>Stay connected! Patients can securely message you directly through your dashboard, keeping
-                            them engaged and on track with their goals.</p>
+                    <div class="cap-card">
+                        <h4><i class="fas fa-utensils" style="margin-right:0.7rem; color:var(--primary);"></i>Nutrition Tools</h4>
+                        <ul>
+                            <li><i class="fas fa-check"></i>Verified food database search</li>
+                            <li><i class="fas fa-check"></i>Macro & calorie calculator</li>
+                            <li><i class="fas fa-check"></i>Meal plan builder & templates</li>
+                            <li><i class="fas fa-check"></i>Dietary restriction management</li>
+                        </ul>
+                    </div>
+                    <div class="cap-card">
+                        <h4><i class="fas fa-sync-alt" style="margin-right:0.7rem; color:var(--primary);"></i>Real-Time Sync</h4>
+                        <ul>
+                            <li><i class="fas fa-check"></i>Data syncs instantly across all devices</li>
+                            <li><i class="fas fa-check"></i>Secure cloud backup</li>
+                            <li><i class="fas fa-check"></i>Multi-device & offline support</li>
+                            <li><i class="fas fa-check"></i>Data export & import</li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </section>
-
-        <!-- Data Infograph -->
-        <section class="section" style="padding-top:0;" id="database">
+        <section id="advanced" class="section">
             <div class="container">
-                <div class="data-showcase reveal">
-                    <h2 style="font-size: 3.5rem; margin-bottom: 24px; position:relative; z-index:2;">Massive Food
-                        Database</h2>
-                    <p
-                        style="font-size: 1.25rem; max-width: 700px; margin: 0 auto; color: #cbd5e1; position:relative; z-index:2; line-height: 1.8;">
-                        NutriDeq connects to verified, official nutrition databases so you can instantly search for
-                        thousands of real foods and get perfectly accurate nutritional facts without guessing.</p>
-
-                    <div class="ds-grid">
-                        <div class="ds-stat">
-                            <h4>0<span>ms</span></h4>
-                            <p>Calculation Latency</p>
-                        </div>
-                        <div class="ds-stat">
-                            <h4>100<span>%</span></h4>
-                            <p>Free for Clinics</p>
-                        </div>
-                        <div class="ds-stat">
-                            <h4>24<span>/7</span></h4>
-                            <p>Real-time Access</p>
-                        </div>
+                <div class="section-header">
+                    <h2>Advanced Features</h2>
+                    <p>Powerful tools to take your nutrition practice to the next level</p>
+                </div>
+                <div class="advanced-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-database"></i></div>
+                        <h3>Food Database</h3>
+                        <p>Access thousands of verified foods with accurate nutrition information, including custom food entry.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-print"></i></div>
+                        <h3>Printable Reports</h3>
+                        <p>Generate professional, customizable patient reports that you can print or share digitally.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-mobile-alt"></i></div>
+                        <h3>Mobile Friendly</h3>
+                        <p>Works perfectly on phones and tablets, so you can access your clinic anywhere, anytime.</p>
                     </div>
                 </div>
             </div>
         </section>
-
-        <!-- Footer -->
+        <section class="cta">
+            <div class="container">
+                <h2>Ready to Transform Your Clinic?</h2>
+                <p>Join thousands of dietitians already using NutriDeq to deliver exceptional care</p>
+                <div class="cta-buttons">
+                    <a href="login-logout/NutriDeqN-Login.php" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Sign In</a>
+                </div>
+            </div>
+        </section>
         <footer>
-            <div class="container f-grid reveal">
-                <div class="f-brand">
-                    <a href="#" class="f-logo">Nutri<span>Deq</span></a>
-                    <p style="color: var(--text-muted); line-height: 1.7; max-width: 300px;">The pinnacle of clinical
-                        dietary formulation. Smooth. Accurate. Free.</p>
+            <div class="container">
+                <div style="display:flex; justify-content:center; align-items:center; gap:1rem; margin-bottom:1rem;">
+                    <img src="assets/img/logo.png" alt="NutriDeq Logo" class="logo-img" style="height:40px;">
+                    <span style="font-size:1.5rem; font-weight:900;">Nutri<span style="color:var(--primary);">Deq</span></span>
                 </div>
-                <div class="f-col">
-                    <h4>Operations</h4>
-                    <ul>
-                        <li><a href="login-logout/NutriDeqN-Signup.php">Sign Up Free <i
-                                    class="fas fa-arrow-right"></i></a></li>
-                        <li><a href="login-logout/NutriDeqN-Login.php">Log In <i class="fas fa-arrow-right"></i></a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="f-col">
-                    <h4>Information</h4>
-                    <ul>
-                        <li><a href="#">Privacy Protocol <i class="fas fa-arrow-right"></i></a></li>
-                        <li><a href="#">Security Integrity <i class="fas fa-arrow-right"></i></a></li>
-                    </ul>
-                </div>
-            </div>
-            <div
-                style="text-align:center; padding: 24px 0; border-top: 1px solid rgba(0,0,0,0.05); color: #94a3b8; font-size: 0.9rem;">
-                &copy; <?php echo date('Y'); ?> NutriDeq Intelligence. All rights reserved.
+                <p>&copy; <?php echo date('Y'); ?> NutriDeq Intelligence. All rights reserved.</p>
             </div>
         </footer>
-
     </div>
-
-    <!-- JS for WOW Factor interactions -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Header scroll
-            const header = document.getElementById('header');
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 50) header.classList.add('scrolled');
-                else header.classList.remove('scrolled');
-            });
-
-            // Intersection Observer
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
-            }, { threshold: 0.1 });
-            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-            // Mouse interactives
-            const spotlight = document.getElementById('spotlight');
-            const mockup = document.getElementById('tilting-mockup');
-            const parallaxObjs = document.querySelectorAll('.data-parallax');
-
-            let mouseX = window.innerWidth / 2;
-            let mouseY = window.innerHeight / 2;
-
-            document.addEventListener('mousemove', (e) => {
-                mouseX = e.clientX;
-                mouseY = e.clientY;
-
-                // Spotlight follow
-                requestAnimationFrame(() => {
-                    spotlight.style.left = mouseX + 'px';
-                    spotlight.style.top = mouseY + 'px';
-
-                    // Center calculations for tilt and parallax
-                    let xOffset = (mouseX - window.innerWidth / 2) / window.innerWidth;
-                    let yOffset = (mouseY - window.innerHeight / 2) / window.innerHeight;
-
-                    // 3D Tilt Mockup Card
-                    if (mockup) {
-                        mockup.style.transform = `rotateY(${-12 + xOffset * 15}deg) rotateX(${8 + -yOffset * 15}deg)`;
-                    }
-
-                    // 2D Floating Objects Mouse Parallax
-                    parallaxObjs.forEach(obj => {
-                        let speed = parseFloat(obj.getAttribute('data-speed'));
-                        obj.style.transform = `translate(${xOffset * 100 * speed}px, ${yOffset * 100 * speed}px)`;
-                    });
-                });
-            });
-        });
-
-        // PWA Splash Screen Logic
-        window.addEventListener('load', () => {
-            const splash = document.getElementById('pwa-intro-splash');
-            if (splash) {
-                // If it's the very first visit this session, show the animation longer
-                const isFirstVisit = !sessionStorage.getItem('nutrideq_splash_shown');
-                const delay = isFirstVisit ? 1500 : 300;
-                
-                setTimeout(() => {
-                    splash.style.opacity = '0';
-                    splash.style.visibility = 'hidden';
-                    sessionStorage.setItem('nutrideq_splash_shown', 'true');
-                }, delay);
-            }
-        });
-
-        // Register Service Worker for PWA
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('service-worker.js?v=3')
-                    .then(reg => console.log('NutriDeq PWA Engine Registered', reg.scope))
-                    .catch(err => console.error('PWA Engine failure:', err));
-            });
-        }
-
-        // Distribution Modal Logic
-        let deferredPrompt;
-        const installBtn = document.getElementById('pwa-install-btn');
-        const distModal = document.getElementById('dist-modal');
-        const closeDistModal = document.getElementById('close-dist-modal');
-        const btnNative = document.getElementById('btn-native-install');
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-        });
-
-        if (installBtn && distModal) {
-            installBtn.style.display = 'block';
-            installBtn.addEventListener('click', () => {
-                distModal.style.display = 'flex';
-                // Show/hide Native option based on readiness
-                if(btnNative) {
-                    btnNative.style.display = deferredPrompt ? 'flex' : 'none';
-                }
-            });
-        }
-
-        if (closeDistModal) {
-            closeDistModal.addEventListener('click', () => {
-                distModal.style.display = 'none';
-            });
-        }
-
-        if (btnNative) {
-            btnNative.addEventListener('click', () => {
-                if (deferredPrompt) {
-                    distModal.style.display = 'none';
-                    deferredPrompt.prompt();
-                    deferredPrompt.userChoice.then((choiceResult) => {
-                        if (choiceResult.outcome === 'accepted') {
-                            installBtn.style.display = 'none';
-                        }
-                        deferredPrompt = null;
-                    });
-                }
-            });
-        }
-
-        window.addEventListener('appinstalled', (evt) => {
-            console.log('INSTALL: Success');
-            if (installBtn) installBtn.style.display = 'none';
-            if (distModal) distModal.style.display = 'none';
-        });
-    </script>
-
-    <!-- App Distribution Modal -->
-    <div id="dist-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(15, 23, 42, 0.6); backdrop-filter:blur(10px); z-index:99999; align-items:center; justify-content:center;">
-        <div style="background:white; padding:30px; border-radius:24px; max-width:400px; width:90%; box-shadow:0 25px 50px rgba(0,0,0,0.15); position:relative;">
-            <button id="close-dist-modal" style="position:absolute; top:20px; right:20px; background:none; border:none; font-size:20px; color:#64748b; cursor:pointer;"><i class="fas fa-times"></i></button>
-            <div style="text-align:center; margin-bottom:24px;">
-                <img src="assets/img/logo.png" style="width:60px; height:60px; border-radius:16px; margin-bottom:12px;">
-                <h3 style="margin:0; font-family:'Outfit'; font-size:24px; color:#0f172a;">Get NutriDeq App</h3>
-                <p style="margin:8px 0 0; color:#64748b; font-size:14px; line-height:1.5;">Choose your preferred platform to install the secure clinic application.</p>
-            </div>
-            
-            <div style="display:flex; flex-direction:column; gap:12px;">
-                <button id="btn-native-install" style="display:none; align-items:center; gap:12px; padding:16px; border:2px solid #10b981; border-radius:16px; background:rgba(16,185,129,0.05); cursor:pointer; color:#0f172a; font-weight:700; text-align:left; transition:0.3s;" onmouseover="this.style.background='rgba(16,185,129,0.1)'" onmouseout="this.style.background='rgba(16,185,129,0.05)'">
-                    <i class="fab fa-chrome" style="font-size:24px; color:#10b981;"></i>
-                    <div style="flex:1;"><div style="font-size:15px;">Native Web App</div><div style="font-size:12px; color:#64748b; font-weight:500;">Zero configuration required</div></div>
-                    <i class="fas fa-arrow-right" style="color:#10b981;"></i>
-                </button>
-
-                <a href="downloads/NutriDeq-Android-v1.apk" download style="display:flex; align-items:center; gap:12px; padding:16px; border:1px solid #e2e8f0; border-radius:16px; background:white; cursor:pointer; color:#0f172a; font-weight:700; text-decoration:none; transition:0.3s;" onmouseover="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 4px 15px rgba(59,130,246,0.1)'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
-                    <i class="fab fa-android" style="font-size:24px; color:#3b82f6;"></i>
-                    <div style="flex:1;"><div style="font-size:15px;">Android Package</div><div style="font-size:12px; color:#64748b; font-weight:500;">Download .apk format</div></div>
-                    <i class="fas fa-download" style="color:#94a3b8;"></i>
-                </a>
-
-                <a href="downloads/NutriDeq-Windows-v1.exe" download style="display:flex; align-items:center; gap:12px; padding:16px; border:1px solid #e2e8f0; border-radius:16px; background:white; cursor:pointer; color:#0f172a; font-weight:700; text-decoration:none; transition:0.3s;" onmouseover="this.style.borderColor='#8b5cf6'; this.style.boxShadow='0 4px 15px rgba(139,92,246,0.1)'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'">
-                    <i class="fab fa-windows" style="font-size:24px; color:#8b5cf6;"></i>
-                    <div style="flex:1;"><div style="font-size:15px;">Windows Desktop</div><div style="font-size:12px; color:#64748b; font-weight:500;">Download .exe format</div></div>
-                    <i class="fas fa-download" style="color:#94a3b8;"></i>
-                </a>
-            </div>
-            <div style="text-align:center; margin-top:20px; font-size:12px; color:#94a3b8;">Protected by end-to-end encryption.</div>
-        </div>
-    </div>
+    <script src="assets/js/landing-animations.js"></script>
 </body>
-
 </html>

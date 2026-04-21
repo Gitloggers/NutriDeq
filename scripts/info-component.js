@@ -41,17 +41,17 @@ class InfoButton extends HTMLElement {
                 bottom: 100%;
                 right: 0;
                 margin-bottom: 12px;
-                width: 280px;
+                width: 300px;
                 background: #ffffff;
                 border: 1px solid #e2e8f0;
-                border-radius: 12px;
-                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-                padding: 16px;
+                border-radius: 16px;
+                box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+                padding: 20px;
                 opacity: 0;
                 visibility: hidden;
                 transform: translateY(10px);
                 transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-                z-index: 1000;
+                z-index: 30000; /* Absolute Top Layer */
                 pointer-events: none;
             }
             .tooltip-modal.active {
@@ -61,52 +61,8 @@ class InfoButton extends HTMLElement {
                 pointer-events: auto;
             }
             
-            /* The little caret arrow */
-            .tooltip-modal::after {
-                content: '';
-                position: absolute;
-                top: 100%;
-                right: 6px;
-                margin-left: -8px;
-                border-width: 8px;
-                border-style: solid;
-                border-color: #ffffff transparent transparent transparent;
-                filter: drop-shadow(0 2px 2px rgba(0,0,0,0.02));
-            }
-
-            .tt-header {
-                display: flex;
-                align-items: center;
-                margin-bottom: 8px;
-            }
-            .tt-title {
-                font-size: 0.9rem;
-                font-weight: 700;
-                color: #1e293b;
-                margin: 0;
-                font-family: 'Outfit', sans-serif;
-            }
-            .tt-body {
-                font-size: 0.8rem;
-                color: #64748b;
-                line-height: 1.5;
-                margin: 0;
-            }
-
-            /* Overlay for Mobile Modals */
-            .mobile-overlay {
-                display: none;
-                position: fixed;
-                top: 0; left: 0; right: 0; bottom: 0;
-                background: rgba(15, 23, 42, 0.4);
-                backdrop-filter: blur(4px);
-                z-index: 9999;
-                opacity: 0;
-                transition: opacity 0.3s;
-            }
-
             /* Responsive overrides */
-            @media (max-width: 768px) {
+            @media (max-width: 1024px) {
                 .tooltip-modal {
                     position: fixed;
                     bottom: 0;
@@ -114,13 +70,15 @@ class InfoButton extends HTMLElement {
                     left: 0;
                     width: 100%;
                     margin: 0;
-                    border-radius: 24px 24px 0 0;
-                    padding: 24px 20px;
-                    padding-bottom: env(safe-area-inset-bottom, 30px);
+                    border-radius: 28px 28px 0 0;
+                    padding: 30px 24px;
+                    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 20px);
                     transform: translateY(100%);
-                    z-index: 10000;
+                    z-index: 30000;
+                    box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
                 }
                 .tooltip-modal::after { display: none; }
+                .mobile-overlay { z-index: 29999; }
                 .mobile-overlay.active { display: block; opacity: 1; }
             }
         `;
