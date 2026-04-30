@@ -1011,7 +1011,7 @@ if (isset($_GET['tab'])) {
                                 <div class="fet-weight-pill" id="vegetable-weight-pill">80g</div>
                             </div>
                             <div class="fet-discovery-wrap">
-                                <select id="veg-select" class="fet-search-container" onchange="updateVegetableDetails(this)">
+                                <select id="veg-select" class="fet-search-container">
                                     <option value="">Select vegetable item...</option>
                                     <?php if (!empty($food_items_by_group['vegetable'])): foreach ($food_items_by_group['vegetable'] as $item): ?>
                                     <option value="<?= htmlspecialchars($item['id']) ?>" 
@@ -1045,7 +1045,7 @@ if (isset($_GET['tab'])) {
                                 <div class="fet-weight-pill" id="fruit-weight-pill">100g</div>
                             </div>
                             <div class="fet-discovery-wrap">
-                                <select id="fruit-select" class="fet-search-container" onchange="updateFruitDetails(this)">
+                                <select id="fruit-select" class="fet-search-container">
                                     <option value="">Select fruit item...</option>
                                     <?php if (!empty($food_items_by_group['fruit'])): foreach ($food_items_by_group['fruit'] as $item): ?>
                                     <option value="<?= htmlspecialchars($item['id']) ?>" 
@@ -1079,7 +1079,7 @@ if (isset($_GET['tab'])) {
                                 <div class="fet-weight-pill" id="milk-weight-pill">240g</div>
                             </div>
                             <div class="fet-discovery-wrap">
-                                <select id="milk-select" class="fet-search-container" onchange="updateMilkDetails(this)">
+                                <select id="milk-select" class="fet-search-container">
                                     <option value="">Select milk item...</option>
                                     <?php if (!empty($food_items_by_group['milk'])): foreach ($food_items_by_group['milk'] as $item): ?>
                                     <option value="<?= htmlspecialchars($item['id']) ?>" 
@@ -1113,7 +1113,7 @@ if (isset($_GET['tab'])) {
                                 <div class="fet-weight-pill" id="rice-weight-pill">100g</div>
                             </div>
                             <div class="fet-discovery-wrap">
-                                <select id="rice-select" class="fet-search-container" onchange="updateRiceDetails(this)">
+                                <select id="rice-select" class="fet-search-container">
                                     <option value="">Select rice item...</option>
                                     <?php if (!empty($food_items_by_group['rice'])): foreach ($food_items_by_group['rice'] as $item): ?>
                                     <option value="<?= htmlspecialchars($item['id']) ?>" 
@@ -1147,7 +1147,7 @@ if (isset($_GET['tab'])) {
                                 <div class="fet-weight-pill" id="meat-weight-pill">30g</div>
                             </div>
                             <div class="fet-discovery-wrap">
-                                <select id="meat-select" class="fet-search-container" onchange="updateMeatDetails(this)">
+                                <select id="meat-select" class="fet-search-container">
                                     <option value="">Select meat item...</option>
                                     <?php if (!empty($food_items_by_group['meat'])): foreach ($food_items_by_group['meat'] as $item): ?>
                                     <option value="<?= htmlspecialchars($item['id']) ?>" 
@@ -1181,7 +1181,7 @@ if (isset($_GET['tab'])) {
                                 <div class="fet-weight-pill" id="fat-weight-pill">5g</div>
                             </div>
                             <div class="fet-discovery-wrap">
-                                <select id="fat-select" class="fet-search-container" onchange="updateFatDetails(this)">
+                                <select id="fat-select" class="fet-search-container">
                                     <option value="">Select fat item...</option>
                                     <?php if (!empty($food_items_by_group['fat'])): foreach ($food_items_by_group['fat'] as $item): ?>
                                     <option value="<?= htmlspecialchars($item['id']) ?>" 
@@ -1301,137 +1301,7 @@ if (isset($_GET['tab'])) {
                 );
             }
 
-            function updateVegetableDetails(select) {
-                const opt = select.options[select.selectedIndex];
-                if (!opt.value) return;
-                const d = {
-                    ex: opt.getAttribute('data-exchange') || '1',
-                    wt: opt.getAttribute('data-weight') || '-',
-                    en: opt.getAttribute('data-energy') || '0',
-                    pr: opt.getAttribute('data-protein') || '0',
-                    fa: opt.getAttribute('data-fat') || '0',
-                    ch: opt.getAttribute('data-cho') || '0'
-                };
-                document.getElementById('vegetable-exchange').textContent = d.ex + ' exchange';
-                document.getElementById('vegetable-weight-pill').textContent = d.wt + (d.wt !== '-' ? 'g' : '');
-                document.getElementById('vegetable-energy').textContent = d.en;
-                document.getElementById('vegetable-protein').textContent = d.pr;
-                document.getElementById('vegetable-fat').textContent = d.fa;
-                document.getElementById('vegetable-cho').textContent = d.ch;
-                document.getElementById('vegetable-kcal-badge').textContent = d.en;
-                triggerHologram('vegetables');
-                addSelectedItem('Vegetables', opt.text, { exchange: d.ex, weight: d.wt, energy: d.en, protein: d.pr, fat: d.fa, cho: d.ch });
-            }
 
-            function updateFruitDetails(select) {
-                const opt = select.options[select.selectedIndex];
-                if (!opt.value) return;
-                const d = {
-                    ex: opt.getAttribute('data-exchange') || '1',
-                    wt: opt.getAttribute('data-weight') || '-',
-                    en: opt.getAttribute('data-energy') || '0',
-                    pr: opt.getAttribute('data-protein') || '0',
-                    fa: opt.getAttribute('data-fat') || '0',
-                    ch: opt.getAttribute('data-cho') || '0'
-                };
-                document.getElementById('fruit-exchange').textContent = d.ex + ' exchange';
-                document.getElementById('fruit-weight-pill').textContent = d.wt + (d.wt !== '-' ? 'g' : '');
-                document.getElementById('fruit-energy').textContent = d.en;
-                document.getElementById('fruit-protein').textContent = d.pr;
-                document.getElementById('fruit-fat').textContent = d.fa;
-                document.getElementById('fruit-cho').textContent = d.ch;
-                document.getElementById('fruit-kcal-badge').textContent = d.en;
-                triggerHologram('fruits');
-                addSelectedItem('Fruits', opt.text, { exchange: d.ex, weight: d.wt, energy: d.en, protein: d.pr, fat: d.fa, cho: d.ch });
-            }
-
-            function updateMilkDetails(select) {
-                const opt = select.options[select.selectedIndex];
-                if (!opt.value) return;
-                const d = {
-                    ex: opt.getAttribute('data-exchange') || '1',
-                    wt: opt.getAttribute('data-weight') || '-',
-                    en: opt.getAttribute('data-energy') || '0',
-                    pr: opt.getAttribute('data-protein') || '0',
-                    fa: opt.getAttribute('data-fat') || '0',
-                    ch: opt.getAttribute('data-cho') || '0'
-                };
-                document.getElementById('milk-exchange').textContent = d.ex + ' exchange';
-                document.getElementById('milk-weight-pill').textContent = d.wt + (d.wt !== '-' ? 'g' : '');
-                document.getElementById('milk-energy').textContent = d.en;
-                document.getElementById('milk-protein').textContent = d.pr;
-                document.getElementById('milk-fat').textContent = d.fa;
-                document.getElementById('milk-cho').textContent = d.ch;
-                document.getElementById('milk-kcal-badge').textContent = d.en;
-                triggerHologram('milk');
-                addSelectedItem('Milk', opt.text, { exchange: d.ex, weight: d.wt, energy: d.en, protein: d.pr, fat: d.fa, cho: d.ch });
-            }
-
-            function updateRiceDetails(select) {
-                const opt = select.options[select.selectedIndex];
-                if (!opt.value) return;
-                const d = {
-                    ex: opt.getAttribute('data-exchange') || '1',
-                    wt: opt.getAttribute('data-weight') || '-',
-                    en: opt.getAttribute('data-energy') || '0',
-                    pr: opt.getAttribute('data-protein') || '0',
-                    fa: opt.getAttribute('data-fat') || '0',
-                    ch: opt.getAttribute('data-cho') || '0'
-                };
-                document.getElementById('rice-exchange').textContent = d.ex + ' exchange';
-                document.getElementById('rice-weight-pill').textContent = d.wt + (d.wt !== '-' ? 'g' : '');
-                document.getElementById('rice-energy').textContent = d.en;
-                document.getElementById('rice-protein').textContent = d.pr;
-                document.getElementById('rice-fat').textContent = d.fa;
-                document.getElementById('rice-cho').textContent = d.ch;
-                document.getElementById('rice-kcal-badge').textContent = d.en;
-                triggerHologram('rice');
-                addSelectedItem('Rice & Grains', opt.text, { exchange: d.ex, weight: d.wt, energy: d.en, protein: d.pr, fat: d.fa, cho: d.ch });
-            }
-
-            function updateMeatDetails(select) {
-                const opt = select.options[select.selectedIndex];
-                if (!opt.value) return;
-                const d = {
-                    ex: opt.getAttribute('data-exchange') || '1',
-                    wt: opt.getAttribute('data-weight') || '-',
-                    en: opt.getAttribute('data-energy') || '0',
-                    pr: opt.getAttribute('data-protein') || '0',
-                    fa: opt.getAttribute('data-fat') || '0',
-                    ch: opt.getAttribute('data-cho') || '0'
-                };
-                document.getElementById('meat-exchange').textContent = d.ex + ' exchange';
-                document.getElementById('meat-weight-pill').textContent = d.wt + (d.wt !== '-' ? 'g' : '');
-                document.getElementById('meat-energy').textContent = d.en;
-                document.getElementById('meat-protein').textContent = d.pr;
-                document.getElementById('meat-fat').textContent = d.fa;
-                document.getElementById('meat-cho').textContent = d.ch;
-                document.getElementById('meat-kcal-badge').textContent = d.en;
-                triggerHologram('meat');
-                addSelectedItem('Meat & Fish', opt.text, { exchange: d.ex, weight: d.wt, energy: d.en, protein: d.pr, fat: d.fa, cho: d.ch });
-            }
-
-            function updateFatDetails(select) {
-                const opt = select.options[select.selectedIndex];
-                if (!opt.value) return;
-                const d = {
-                    ex: opt.getAttribute('data-exchange') || '1',
-                    wt: opt.getAttribute('data-weight') || '-',
-                    en: opt.getAttribute('data-energy') || '0',
-                    pr: opt.getAttribute('data-protein') || '0',
-                    fa: opt.getAttribute('data-fat') || '0',
-                    ch: opt.getAttribute('data-cho') || '0'
-                };
-                document.getElementById('fat-exchange').textContent = d.ex + ' exchange';
-                document.getElementById('fat-weight-pill').textContent = d.wt + (d.wt !== '-' ? 'g' : '');
-                document.getElementById('fat-energy').textContent = d.en;
-                document.getElementById('fat-protein').textContent = d.pr;
-                document.getElementById('fat-fat').textContent = d.fa;
-                document.getElementById('fat-cho').textContent = d.ch;
-                document.getElementById('fat-kcal-badge').textContent = d.en;
-                triggerHologram('fats');
-                addSelectedItem('Fats & Oils', opt.text, { exchange: d.ex, weight: d.wt, energy: d.en, protein: d.pr, fat: d.fa, cho: d.ch });
-            }
 
 
             // Helper Functions (Global Scope)
@@ -1661,12 +1531,27 @@ if (isset($_GET['tab'])) {
                                 
                                 const pfx = key; // matches exactly! (vegetable, fruit, milk, rice, meat, fat)
                                 
-                                document.getElementById(`${pfx}-exchange`).textContent = props.exchange;
-                                document.getElementById(`${pfx}-weight`).textContent = props.weight;
-                                document.getElementById(`${pfx}-energy`).textContent = props.energy;
-                                document.getElementById(`${pfx}-protein`).textContent = props.protein;
-                                document.getElementById(`${pfx}-fat`).textContent = props.fat;
-                                document.getElementById(`${pfx}-cho`).textContent = props.cho;
+                                 // Safely update DOM elements with corrected IDs
+                                 const elEx = document.getElementById(`${key}-exchange`);
+                                 if (elEx) elEx.textContent = (props.exchange || '1') + ' exchange';
+                                 const elWt = document.getElementById(`${key}-weight-pill`);
+                                 if (elWt) elWt.textContent = (props.weight || '-') + (props.weight && props.weight !== '-' ? 'g' : '');
+                                 const elEn = document.getElementById(`${key}-energy`);
+                                 if (elEn) elEn.textContent = props.energy || '0';
+                                 const elPr = document.getElementById(`${key}-protein`);
+                                 if (elPr) elPr.textContent = props.protein || '0';
+                                 const elFa = document.getElementById(`${key}-fat`);
+                                 if (elFa) elFa.textContent = props.fat || '0';
+                                 const elCh = document.getElementById(`${key}-cho`);
+                                 if (elCh) elCh.textContent = props.cho || '0';
+                                 const elKc = document.getElementById(`${key}-kcal-badge`);
+                                 if (elKc) elKc.textContent = props.energy || '0';
+
+                                 // Trigger visual effects
+                                 const groupToHologram = { vegetable: 'vegetables', fruit: 'fruits', milk: 'milk', rice: 'rice', meat: 'meat', fat: 'fats' };
+                                 if (typeof triggerHologram === 'function') {
+                                     triggerHologram(groupToHologram[key] || key);
+                                 }
 
                                 const groupNames = { vegetable: 'Vegetables', fruit: 'Fruits', milk: 'Milk', rice: 'Rice & Grains', meat: 'Meat & Fish', fat: 'Fats & Oils' };
                                 
