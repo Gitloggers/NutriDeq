@@ -809,6 +809,7 @@ $nav_links = getNavigationLinks($user_role, 'user-diary.php');
                             <option value="slice">slice(s)</option>
                             <option value="piece">piece(s)</option>
                             <option value="tbsp">tbsp</option>
+                            <option value="tsp">tsp</option>
                         </select>
                     </div>
                 </div>
@@ -1069,7 +1070,8 @@ $nav_links = getNavigationLinks($user_role, 'user-diary.php');
             'cup': 240,       // Approx average for many foods
             'slice': 35,      // Approx average slice
             'piece': 50,      // Approx average piece
-            'tbsp': 15        // Approx 15g
+            'tbsp': 15,       // Approx 15g
+            'tsp': 5          // Approx 5g
         };
 
         function renderFctTable(filter = '') {
@@ -1108,6 +1110,7 @@ $nav_links = getNavigationLinks($user_role, 'user-diary.php');
                                 <option value="slice">slice</option>
                                 <option value="piece">piece</option>
                                 <option value="tbsp">tbsp</option>
+                                <option value="tsp">tsp</option>
                             </select>
                         </div>
                     </td>

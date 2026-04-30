@@ -21,7 +21,7 @@ $protein = !empty($_POST['protein']) ? (float)$_POST['protein'] : 0;
 $carbs = !empty($_POST['carbs']) ? (float)$_POST['carbs'] : 0;
 $fat = !empty($_POST['fat']) ? (float)$_POST['fat'] : 0;
 
-$multipliers = ['g'=>1, 'ml'=>1, 'cup'=>240, 'slice'=>35, 'piece'=>50, 'tbsp'=>15];
+$multipliers = ['g'=>1, 'ml'=>1, 'cup'=>240, 'slice'=>35, 'piece'=>50, 'tbsp'=>15, 'tsp'=>5];
 $total_grams = $serving_qty * ($multipliers[$serving_unit] ?? 1);
 $display_size = $serving_qty . ' ' . $serving_unit;
 
