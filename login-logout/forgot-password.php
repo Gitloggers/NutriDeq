@@ -38,7 +38,7 @@ try {
 
             $stmt = $conn->prepare("SELECT id FROM users WHERE id = ? AND recovery_key = ?");
             $stmt->execute([$user_id, $key]);
-            
+
             if ($stmt->fetch()) {
                 $step = 3;
             } else {
@@ -63,7 +63,7 @@ try {
                 $hashed = password_hash($pass, PASSWORD_DEFAULT);
                 $stmt = $conn->prepare("UPDATE users SET password = ?, updated_at = NOW() WHERE id = ?");
                 $stmt->execute([$hashed, $user_id]);
-                
+
                 $_SESSION['success_message'] = "Password reset successfully! You can now log in.";
                 header("Location: NutriDeqN-Login.php");
                 exit();
@@ -100,30 +100,43 @@ try {
         }
 
         body {
-            margin: 0; padding: 0; min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
             background-color: var(--bg-body);
             font-family: 'Inter', sans-serif;
             overflow: hidden;
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /* --- INTERACTIVE DYNAMIC BACKDROP --- */
         .backdrop {
             position: fixed;
-            top:0; left:0; width:100%; height:100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             z-index: -1;
             pointer-events: none;
         }
 
         #particle-canvas {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             opacity: 0.4;
         }
 
         .bg-grid {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background-image: radial-gradient(rgba(16, 185, 129, 0.08) 1.5px, transparent 1.5px);
             background-size: 40px 40px;
         }
@@ -136,9 +149,29 @@ try {
             will-change: transform;
         }
 
-        .orb-1 { width: 600px; height: 600px; background: rgba(5, 150, 105, 0.18); top: -15%; left: -10%; }
-        .orb-2 { width: 500px; height: 500px; background: rgba(16, 185, 129, 0.15); bottom: 5%; right: -10%; }
-        .orb-3 { width: 450px; height: 450px; background: rgba(5, 150, 105, 0.1); top: 35%; left: 25%; }
+        .orb-1 {
+            width: 600px;
+            height: 600px;
+            background: rgba(5, 150, 105, 0.18);
+            top: -15%;
+            left: -10%;
+        }
+
+        .orb-2 {
+            width: 500px;
+            height: 500px;
+            background: rgba(16, 185, 129, 0.15);
+            bottom: 5%;
+            right: -10%;
+        }
+
+        .orb-3 {
+            width: 450px;
+            height: 450px;
+            background: rgba(5, 150, 105, 0.1);
+            top: 35%;
+            left: 25%;
+        }
 
         /* --- THE ELITE GLASS CARD --- */
         .tilt-wrapper {
@@ -146,21 +179,23 @@ try {
             z-index: 10;
             padding: 20px;
             width: 100%;
-            display: flex; justify-content: center;
+            display: flex;
+            justify-content: center;
         }
 
         .auth-card {
             width: 100%;
             max-width: 480px;
             background: var(--glass-bg);
-            backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
             border: 2px solid var(--glass-border);
             border-radius: 40px;
             padding: 3.5rem 3rem;
             position: relative;
             transform-style: preserve-3d;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.06), 
-                        inset 0 0 0 1px rgba(255,255,255,0.8);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.06),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.8);
             opacity: 0;
             transform: scale(0.96) translateY(20px);
             filter: blur(15px);
@@ -168,18 +203,27 @@ try {
 
         .glass-reflection {
             position: absolute;
-            top: -100%; left: -100%; width: 300%; height: 300%;
-            background: radial-gradient(circle at center, rgba(255,255,255,0.3) 0%, transparent 60%);
+            top: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
+            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.3) 0%, transparent 60%);
             pointer-events: none;
             z-index: 1;
             opacity: 0;
             transition: opacity 0.5s;
         }
 
-        .card-content { position: relative; z-index: 2; transform: translateZ(50px); }
+        .card-content {
+            position: relative;
+            z-index: 2;
+            transform: translateZ(50px);
+        }
 
         .back-home-link {
-            display: inline-flex; align-items: center; gap: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             color: var(--text-muted);
             text-decoration: none;
             font-size: 0.9rem;
@@ -188,25 +232,53 @@ try {
             transition: all 0.3s;
             opacity: 1 !important;
         }
-        .back-home-link:hover { color: var(--primary-dark); transform: translateX(-4px); }
 
-        .auth-header { text-align: center; margin-bottom: 2.5rem; }
+        .back-home-link:hover {
+            color: var(--primary-dark);
+            transform: translateX(-4px);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
         .logo-box {
-            width: 60px; height: 60px;
+            width: 60px;
+            height: 60px;
             background: white;
             border-radius: 16px;
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin: 0 auto 1.2rem;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.04);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.04);
         }
-        .logo-box img { width: 35px; }
 
-        .auth-header h1 { font-family: 'Outfit'; font-size: 1.8rem; color: var(--text-main); margin-bottom: 0.6rem; letter-spacing: -1px; }
-        .auth-header p { color: var(--text-muted); font-size: 0.95rem; font-weight: 500; }
+        .logo-box img {
+            width: 35px;
+        }
+
+        .auth-header h1 {
+            font-family: 'Outfit';
+            font-size: 1.8rem;
+            color: var(--text-main);
+            margin-bottom: 0.6rem;
+            letter-spacing: -1px;
+        }
+
+        .auth-header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
 
         /* Form Engine */
-        .form-group { position: relative; margin-bottom: 1.8rem; }
-        
+        .form-group {
+            position: relative;
+            margin-bottom: 1.8rem;
+        }
+
         .form-group input {
             width: 100%;
             padding: 1.4rem 1rem 0.6rem;
@@ -222,7 +294,8 @@ try {
 
         .form-group label {
             position: absolute;
-            top: 1.4rem; left: 1rem;
+            top: 1.4rem;
+            left: 1rem;
             font-size: 1rem;
             color: var(--text-muted);
             pointer-events: none;
@@ -230,8 +303,8 @@ try {
             font-weight: 500;
         }
 
-        .form-group input:focus ~ label,
-        .form-group input:valid ~ label {
+        .form-group input:focus~label,
+        .form-group input:valid~label {
             top: 0;
             left: 0;
             font-size: 0.85rem;
@@ -241,12 +314,19 @@ try {
 
         .input-accent {
             position: absolute;
-            bottom: 0; left: 50%; width: 0; height: 2px;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
             background: var(--primary);
             transition: all 0.4s var(--bounce);
             box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
         }
-        .form-group input:focus ~ .input-accent { width: 100%; left: 0; }
+
+        .form-group input:focus~.input-accent {
+            width: 100%;
+            left: 0;
+        }
 
         .btn-elite {
             width: 100%;
@@ -262,7 +342,12 @@ try {
             box-shadow: 0 10px 30px rgba(5, 150, 105, 0.2);
             margin-top: 1rem;
         }
-        .btn-elite:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 20px 45px rgba(5, 150, 105, 0.3); background: var(--primary); }
+
+        .btn-elite:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 20px 45px rgba(5, 150, 105, 0.3);
+            background: var(--primary);
+        }
 
         .back-link {
             display: block;
@@ -274,16 +359,45 @@ try {
             font-size: 0.9rem;
             transition: color 0.3s;
         }
-        .back-link:hover { color: var(--primary-dark); }
 
-        .alert { padding: 1rem; border-radius: 12px; margin-bottom: 2rem; font-size: 0.9rem; font-weight: 600; text-align: left; display: flex; align-items: center; gap: 0.8rem; }
-        .alert-success { background: #d1fae5; color: #065f46; border-left: 4px solid #10b981; }
-        .alert-error { background: #fff1f2; color: #ef4444; border-left: 4px solid #ef4444; }
+        .back-link:hover {
+            color: var(--primary-dark);
+        }
 
-        .stagger { opacity: 0; transform: translateY(15px); }
+        .alert {
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+
+        .alert-error {
+            background: #fff1f2;
+            color: #ef4444;
+            border-left: 4px solid #ef4444;
+        }
+
+        .stagger {
+            opacity: 0;
+            transform: translateY(15px);
+        }
 
         @media (max-width: 480px) {
-            .auth-card { padding: 3rem 1.5rem; border-radius: 30px; }
+            .auth-card {
+                padding: 3rem 1.5rem;
+                border-radius: 30px;
+            }
         }
     </style>
 </head>
@@ -300,7 +414,7 @@ try {
     <div class="tilt-wrapper">
         <div class="auth-card" id="auth-card">
             <div class="glass-reflection" id="glass-reflection"></div>
-            
+
             <div class="card-content">
                 <a href="../index.php" class="back-home-link stagger">
                     <i class="fas fa-chevron-left"></i> Back to Home
@@ -313,13 +427,16 @@ try {
                         <p class="stagger">Enter your email address to find your account.</p>
                     </div>
 
-                    <?php if ($error): ?><div class="alert alert-error stagger"><i class="fas fa-circle-exclamation"></i> <?php echo $error; ?></div><?php endif; ?>
+                    <?php if ($error): ?>
+                        <div class="alert alert-error stagger"><i class="fas fa-circle-exclamation"></i> <?php echo $error; ?>
+                        </div><?php endif; ?>
 
                     <form method="POST" class="stagger">
                         <input type="hidden" name="action" value="verify_email">
                         <div class="form-group">
-                            <input type="email" name="email" id="email" required value="<?php echo htmlspecialchars($email); ?>">
-                            <label for="email">Work Email</label>
+                            <input type="email" name="email" id="email" required
+                                value="<?php echo htmlspecialchars($email); ?>">
+                            <label for="email">Enter Email</label>
                             <div class="input-accent"></div>
                         </div>
                         <button type="submit" class="btn-elite">Find Account</button>
@@ -329,15 +446,20 @@ try {
                     <div class="auth-header">
                         <div class="logo-box stagger"><img src="../assets/img/logo.png" alt="NutriDeq"></div>
                         <h1 class="stagger">Recovery Key</h1>
-                        <p class="stagger">Hi, <strong><?php echo htmlspecialchars($_SESSION['reset_user_name']); ?></strong>. Enter your 12-character recovery key.</p>
+                        <p class="stagger">Hi,
+                            <strong><?php echo htmlspecialchars($_SESSION['reset_user_name']); ?></strong>. Enter your
+                            12-character recovery key.</p>
                     </div>
 
-                    <?php if ($error): ?><div class="alert alert-error stagger"><i class="fas fa-circle-exclamation"></i> <?php echo $error; ?></div><?php endif; ?>
+                    <?php if ($error): ?>
+                        <div class="alert alert-error stagger"><i class="fas fa-circle-exclamation"></i> <?php echo $error; ?>
+                        </div><?php endif; ?>
 
                     <form method="POST" class="stagger">
                         <input type="hidden" name="action" value="verify_key">
                         <div class="form-group">
-                            <input type="text" name="recovery_key" id="recovery_key" required pattern="ND-[A-Z0-9]{4}-[A-Z0-9]{4}">
+                            <input type="text" name="recovery_key" id="recovery_key" required
+                                pattern="ND-[A-Z0-9]{4}-[A-Z0-9]{4}">
                             <label for="recovery_key">Key (ND-XXXX-XXXX)</label>
                             <div class="input-accent"></div>
                         </div>
@@ -351,7 +473,9 @@ try {
                         <p class="stagger">Create a new secure password for your account.</p>
                     </div>
 
-                    <?php if ($error): ?><div class="alert alert-error stagger"><i class="fas fa-circle-exclamation"></i> <?php echo $error; ?></div><?php endif; ?>
+                    <?php if ($error): ?>
+                        <div class="alert alert-error stagger"><i class="fas fa-circle-exclamation"></i> <?php echo $error; ?>
+                        </div><?php endif; ?>
 
                     <form method="POST" class="stagger">
                         <input type="hidden" name="action" value="reset_password">
@@ -369,7 +493,8 @@ try {
                     </form>
                 <?php endif; ?>
 
-                <a href="NutriDeqN-Login.php" class="back-link stagger"><i class="fas fa-arrow-left"></i> Back to Login</a>
+                <a href="NutriDeqN-Login.php" class="back-link stagger"><i class="fas fa-arrow-left"></i> Back to
+                    Login</a>
             </div>
         </div>
     </div>
@@ -430,7 +555,7 @@ try {
                     p.update();
                     p.draw();
                 });
-                
+
                 for (let i = 0; i < particles.length; i++) {
                     for (let j = i + 1; j < particles.length; j++) {
                         const dist = Math.hypot(particles[i].x - particles[j].x, particles[i].y - particles[j].y);
@@ -479,7 +604,7 @@ try {
                 const rect = authCard.getBoundingClientRect();
                 const cardX = mouseX - rect.left - rect.width / 2;
                 const cardY = mouseY - rect.top - rect.height / 2;
-                
+
                 gsap.to(authCard, {
                     rotateX: (cardY / (rect.height / 2)) * -5,
                     rotateY: (cardX / (rect.width / 2)) * 5,
