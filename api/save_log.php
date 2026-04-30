@@ -19,6 +19,7 @@ if ($user_role !== 'user' && $user_role !== 'regular') {
 $user_id = $_SESSION['user_id'];
 $meal_type = $_POST['meal_type'] ?? '';
 $batch_data = $_POST['batch_data'] ?? null;
+$log_date = $_POST['log_date'] ?? date('Y-m-d');
 
 if (!$meal_type || (!$batch_data && empty($_POST['food_item_ids']))) {
     echo json_encode(['success' => false, 'message' => 'Missing required data']);
@@ -96,7 +97,7 @@ try {
             ':unit' => 'g',
             ':display' => $display,
             ':meal_type' => $meal_type,
-            ':log_date' => date('Y-m-d')
+            ':log_date' => $log_date
         ]);
     }
 

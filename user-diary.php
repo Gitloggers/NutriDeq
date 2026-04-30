@@ -1201,6 +1201,7 @@ $nav_links = getNavigationLinks($user_role, 'user-diary.php');
                 // Send as JSON data for better handling of mixed serving sizes
                 const payload = new URLSearchParams();
                 payload.append('meal_type', currentMealType);
+                payload.append('log_date', '<?php echo $selected_date; ?>');
                 payload.append('batch_data', JSON.stringify(selectedRows));
 
                 const response = await fetch(BASE_URL + 'api/save_log.php', {
