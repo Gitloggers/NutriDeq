@@ -336,7 +336,7 @@ try {
     <script src="scripts/theme-toggle.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>NutriDeq - Staff Management</title>
+    <title>NutriDeq - Dietician Management</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/base.css">
@@ -389,35 +389,35 @@ try {
         <div class="mgmt-hero">
             <div class="mgmt-hero-left">
                 <div class="mgmt-hero-icon"><i class="fas fa-user-md"></i></div>
-                <h1 class="mgmt-hero-title">Staff Management</h1>
-                <p class="mgmt-hero-subtitle">Manage NutriDeq clinical staff, their accounts, and permissions</p>
+                <h1 class="mgmt-hero-title">Dietician Management</h1>
+                <p class="mgmt-hero-subtitle">Manage NutriDeq clinical dieticians, their accounts, and permissions</p>
             </div>
             <div class="mgmt-hero-right">
-                <button class="btn-premium-add" id="addStaffBtn"><i class="fas fa-user-plus"></i> Add Staff Member</button>
+                <button class="btn-premium-add" id="addStaffBtn"><i class="fas fa-user-plus"></i> Add Dietician</button>
             </div>
         </div>
 
         <!-- Stats -->
         <div class="mgmt-stats">
-            <div class="mgmt-stat stat-total"><div class="mgmt-stat-icon"><i class="fas fa-user-shield"></i></div><div class="mgmt-stat-info"><h4><?php echo $stats['total_staff']??0; ?></h4><p>Total Staff</p></div></div>
+            <div class="mgmt-stat stat-total"><div class="mgmt-stat-icon"><i class="fas fa-user-shield"></i></div><div class="mgmt-stat-info"><h4><?php echo $stats['total_staff']??0; ?></h4><p>Total Dieticians</p></div></div>
             <div class="mgmt-stat stat-active"><div class="mgmt-stat-icon"><i class="fas fa-check-circle"></i></div><div class="mgmt-stat-info"><h4><?php echo $stats['active_staff']??0; ?></h4><p>Active</p></div></div>
             <div class="mgmt-stat stat-deleted"><div class="mgmt-stat-icon"><i class="fas fa-user-times"></i></div><div class="mgmt-stat-info"><h4><?php echo $stats['deleted_staff']??0; ?></h4><p>Deleted</p></div></div>
         </div>
 
         <!-- Tabs -->
         <div class="mgmt-tabs">
-            <button class="mgmt-tab-btn <?php echo $current_tab==='active_staff'?'active':''; ?>" onclick="window.location='?tab=active_staff'"><i class="fas fa-user-shield"></i> Active Staff</button>
+            <button class="mgmt-tab-btn <?php echo $current_tab==='active_staff'?'active':''; ?>" onclick="window.location='?tab=active_staff'"><i class="fas fa-user-shield"></i> Active Dieticians</button>
             <button class="mgmt-tab-btn <?php echo $current_tab==='delete_history'?'active':''; ?>" onclick="window.location='?tab=delete_history'"><i class="fas fa-history"></i> Delete History</button>
         </div>
 
         <!-- Active Staff -->
         <div class="mgmt-tab-panel <?php echo $current_tab==='active_staff'?'active':''; ?>">
             <div class="mgmt-toolbar">
-                <div class="mgmt-section-label"><i class="fas fa-user-shield"></i> Staff Accounts</div>
-                <div class="mgmt-search"><i class="fas fa-search"></i><input type="text" placeholder="Search staff..." oninput="filterCards(this.value,'staffGrid')"></div>
+                <div class="mgmt-section-label"><i class="fas fa-user-shield"></i> Dietician Accounts</div>
+                <div class="mgmt-search"><i class="fas fa-search"></i><input type="text" placeholder="Search dieticians..." oninput="filterCards(this.value,'staffGrid')"></div>
             </div>
             <?php if(empty($staff_members)): ?>
-            <div class="mgmt-empty"><div class="mgmt-empty-icon"><i class="fas fa-user-shield"></i></div><h3>No staff members</h3><p>Add your first staff member to get started.</p></div>
+            <div class="mgmt-empty"><div class="mgmt-empty-icon"><i class="fas fa-user-shield"></i></div><h3>No dieticians</h3><p>Add your first dietician to get started.</p></div>
             <?php else: ?>
             <div class="profile-grid" id="staffGrid">
                 <?php foreach($staff_members as $staff): ?>
@@ -429,7 +429,7 @@ try {
                         <div class="profile-id">#STF-<?php echo str_pad($staff['id'],3,'0',STR_PAD_LEFT); ?></div>
                         <div class="profile-email"><i class="fas fa-envelope"></i><?php echo htmlspecialchars($staff['email']); ?></div>
                         <div class="profile-badges">
-                            <span class="profile-badge badge-role-staff"><i class="fas fa-user-shield"></i> Staff</span>
+                            <span class="profile-badge badge-role-staff"><i class="fas fa-user-shield"></i> Dietician</span>
                             <span class="profile-badge badge-<?php echo $staff['status']; ?>"><i class="fas fa-circle"></i> <?php echo ucfirst($staff['status']); ?></span>
                         </div>
                         <div class="profile-meta"><i class="fas fa-calendar-alt"></i> Joined <?php echo date('M j, Y',strtotime($staff['created_at'])); ?></div>
@@ -437,7 +437,7 @@ try {
                     <div class="profile-card-footer">
                         <form method="POST" class="inline-form" style="flex:1;"><input type="hidden" name="action" value="toggle_status"><input type="hidden" name="staff_id" value="<?php echo $staff['id']; ?>"><button type="submit" class="card-action toggle" style="width:100%;display:flex;justify-content:center;align-items:center;gap:6px;font-size:0.8rem;padding:8px 14px;border-radius:10px;" title="Toggle Status"><i class="fas fa-power-off"></i> <?php echo $staff['status']==='active'?'Deactivate':'Activate'; ?></button></form>
                         <button type="button" class="card-action edit edit-staff-btn" data-staff-id="<?php echo $staff['id']; ?>" data-name="<?php echo htmlspecialchars($staff['name']); ?>" data-email="<?php echo htmlspecialchars($staff['email']); ?>" data-status="<?php echo $staff['status']; ?>" title="Edit"><i class="fas fa-pen"></i></button>
-                        <form method="POST" class="inline-form" onsubmit="return confirm('Delete this staff member?')"><input type="hidden" name="action" value="delete_staff"><input type="hidden" name="staff_id" value="<?php echo $staff['id']; ?>"><button type="submit" class="card-action delete" title="Delete"><i class="fas fa-trash"></i></button></form>
+                        <form method="POST" class="inline-form" onsubmit="return confirm('Delete this dietician?')"><input type="hidden" name="action" value="delete_staff"><input type="hidden" name="staff_id" value="<?php echo $staff['id']; ?>"><button type="submit" class="card-action delete" title="Delete"><i class="fas fa-trash"></i></button></form>
                     </div>
                 </div>
                 <?php endforeach; ?>
@@ -447,9 +447,9 @@ try {
 
         <!-- Delete History -->
         <div class="mgmt-tab-panel <?php echo $current_tab==='delete_history'?'active':''; ?>">
-            <div class="mgmt-section-label" style="margin-bottom:20px;"><i class="fas fa-history"></i> Deleted Staff Archive</div>
+            <div class="mgmt-section-label" style="margin-bottom:20px;"><i class="fas fa-history"></i> Deleted Dietician Archive</div>
             <?php if(empty($deleted_staff)): ?>
-            <div class="mgmt-empty"><div class="mgmt-empty-icon"><i class="fas fa-history"></i></div><h3>No deleted staff</h3><p>Deleted staff will appear here.</p></div>
+            <div class="mgmt-empty"><div class="mgmt-empty-icon"><i class="fas fa-history"></i></div><h3>No deleted dieticians</h3><p>Deleted dieticians will appear here.</p></div>
             <?php else: ?>
             <div class="deleted-grid">
                 <?php foreach($deleted_staff as $ds): $age=floor((time()-strtotime($ds['deleted_at']))/86400); $canPerm=$age>=10; ?>
@@ -481,7 +481,7 @@ try {
 <!-- Add Staff Modal -->
 <div class="premium-modal-overlay" id="addStaffModal">
     <div class="premium-modal">
-        <div class="premium-modal-title"><i class="fas fa-user-plus"></i> Add Staff Member</div>
+        <div class="premium-modal-title"><i class="fas fa-user-plus"></i> Add Dietician</div>
         <form method="POST">
             <input type="hidden" name="action" value="add_staff">
             <div class="premium-form-group"><label>Full Name</label><input type="text" name="name" required placeholder="Enter full name"></div>
@@ -490,7 +490,7 @@ try {
             <div class="premium-form-group"><label>Confirm Password</label><input type="password" name="confirm_password" required placeholder="Confirm password"></div>
             <div class="premium-modal-actions">
                 <button type="button" class="btn-modal-cancel" onclick="document.getElementById('addStaffModal').classList.remove('active');document.body.style.overflow='auto'">Cancel</button>
-                <button type="submit" class="btn-modal-submit">Add Staff</button>
+                <button type="submit" class="btn-modal-submit">Add Dietician</button>
             </div>
         </form>
     </div>
@@ -499,7 +499,7 @@ try {
 <!-- Edit Staff Modal -->
 <div class="premium-modal-overlay" id="editStaffModal">
     <div class="premium-modal">
-        <div class="premium-modal-title"><i class="fas fa-user-edit"></i> Edit Staff</div>
+        <div class="premium-modal-title"><i class="fas fa-user-edit"></i> Edit Dietician</div>
         <form method="POST" id="editStaffForm">
             <input type="hidden" name="action" value="edit_staff">
             <input type="hidden" name="staff_id" id="edit_staff_id">

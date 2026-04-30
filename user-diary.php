@@ -616,7 +616,7 @@ $nav_links = getNavigationLinks($user_role, 'user-diary.php');
                 <?php endforeach; ?>
 
 
-                <!-- Dietitian's Remarks Section -->
+                <!-- Dietician's Remarks Section -->
                 <?php
                 $feedback_sql = "SELECT df.*, u.name as staff_name FROM diary_feedback df JOIN users u ON df.staff_id = u.id WHERE df.user_id = ? AND df.log_date = ? ORDER BY df.created_at DESC";
                 $f_stmt = $conn->prepare($feedback_sql);
@@ -628,7 +628,7 @@ $nav_links = getNavigationLinks($user_role, 'user-diary.php');
                     <div class="remarks-header" style="display:flex; justify-content:space-between; align-items:center;">
                         <div style="display:flex; align-items:center; gap:10px; color:var(--primary); font-weight:600;">
                             <i class="fas fa-user-md"></i>
-                            <span>Dietitian's Remarks</span>
+                            <span>Dietician's Remarks</span>
                         
                     <?php if (empty($feedbacks)): ?>
                         <p style="color: #ccc; font-style: italic; font-size: 0.9rem;">No remarks for this day yet.</p>

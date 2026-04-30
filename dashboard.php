@@ -500,7 +500,7 @@ $pdo = $database->getConnection();
                         <a href="admin-staff-management.php" class="command-tile">
                             <div class="command-tile-icon"><i class="fas fa-user-plus"></i></div>
                             <div class="command-tile-info">
-                                <h3>Manage Staff</h3>
+                                <h3>Manage Dietician</h3>
                                 <p>Onboard and oversee clinical practitioners.</p>
                             </div>
                         </a>
@@ -535,8 +535,8 @@ $pdo = $database->getConnection();
                                 <i class="fas fa-user-check"></i>
                             </div>
                             <div class="activity-details">
-                                <div class="activity-title">New Staff Account Created</div>
-                                <div class="activity-description">Dr. Sarah Johnson registered as staff member</div>
+                                <div class="activity-title">New Dietician Account Created</div>
+                                <div class="activity-description">Dr. Sarah Johnson registered as dietician member</div>
                                 <div class="activity-time">10 minutes ago</div>
                             </div>
                         </div>
@@ -603,7 +603,7 @@ $pdo = $database->getConnection();
 
                     <div class="dash-panel nutri-glass" style="min-height: auto; padding: 25px;">
                         <div class="dash-panel-header" style="margin-bottom: 20px;">
-                            <h2 class="dash-panel-title"><i class="fas fa-user-tie"></i> Active Staff Members</h2>
+                            <h2 class="dash-panel-title"><i class="fas fa-user-tie"></i> Active Dieticians</h2>
                             <div class="status-legend" style="display: flex; gap: 15px; font-size: 0.75rem; font-weight: 700;">
                                 <span><i class="fas fa-circle" style="color: #10b981; font-size: 8px;"></i> Online</span>
                                 <span><i class="fas fa-circle" style="color: #94a3b8; font-size: 8px;"></i> Offline</span>

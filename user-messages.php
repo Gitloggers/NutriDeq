@@ -191,7 +191,7 @@ if ($selected_staff_id) {
                     <div class="contact-list">
                         <?php if (empty($staff_members)): ?>
                             <div style="padding:24px; text-align:center; color:var(--text-tertiary);">
-                                <p>No dietitian assigned yet. <br>Please contact support.</p>
+                                <p>No dietician assigned yet. <br>Please contact support.</p>
                             </div>
                         <?php else: ?>
                             <?php foreach ($staff_members as $staff): ?>
@@ -206,7 +206,7 @@ if ($selected_staff_id) {
                                         <div class="contact-name"><?= htmlspecialchars($staff['name']) ?> -
                                             <?= getUserRoleText('staff') ?>
                                         </div>
-                                        <div class="contact-preview" style="margin-top:4px;">Your Dedicated Dietitian</div>
+                                        <div class="contact-preview" style="margin-top:4px;">Your Dedicated Dietician</div>
                                     </div>
                                 </div>
                             <?php endforeach; ?>
@@ -258,7 +258,7 @@ if ($selected_staff_id) {
 
                             <div class="typing-indicator" id="typingIndicator"
                                 style="position:absolute; top:-20px; left:40px; font-size:0.75rem; color:var(--text-secondary); opacity:0; transition:opacity 0.2s;">
-                                Dietitian is typing...
+                                Dietician is typing...
                             </div>
 
                             <form id="messageForm">
@@ -275,7 +275,7 @@ if ($selected_staff_id) {
                                     </button>
 
                                     <!-- INPUT (Flex Grow) -->
-                                    <textarea class="chat-input" placeholder="Message your dietitian..." rows="1"
+                                    <textarea class="chat-input" placeholder="Message your dietician..." rows="1"
                                         oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
 
                                     <!-- RIGHT ACTIONS (Margin Left Auto) -->
@@ -290,7 +290,7 @@ if ($selected_staff_id) {
                         <div
                             style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--text-tertiary); opacity:0.6;">
                             <i class="fas fa-user-md fa-4x" style="margin-bottom:20px; opacity:0.3;"></i>
-                            <h3 style="font-size:1.1rem; font-weight:500;">Select your Dietitian</h3>
+                            <h3 style="font-size:1.1rem; font-weight:500;">Select your Dietician</h3>
                         </div>
                     <?php endif; ?>
                 </div>

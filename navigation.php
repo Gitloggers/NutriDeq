@@ -26,7 +26,7 @@ function getNavigationLinks($user_role, $current_page = '')
             'staff-messages.php' => [
                 'href' => 'staff-messages.php',
                 'icon' => 'fas fa-envelope',
-                'text' => 'Staff Messages',
+                'text' => 'Dietician Messages',
                 'active' => ($current_page === 'staff-messages.php' ? true : null)
             ],
             'staff-client-diary.php' => [
@@ -52,7 +52,7 @@ function getNavigationLinks($user_role, $current_page = '')
             'admin-staff-management.php' => [
                 'href' => 'admin-staff-management.php',
                 'icon' => 'fas fa-user-tie',
-                'text' => 'Staff Management',
+                'text' => 'Dietician Management',
                 'active' => ($current_page === 'admin-staff-management.php' ? true : null)
             ],
 
@@ -222,7 +222,7 @@ function getUserRoleText($role)
         case 'admin':
             return 'System Administrator';
         case 'staff':
-            return 'Dietician staff';
+            return 'Dietician';
         default:
             return 'User';
     }
