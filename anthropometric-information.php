@@ -96,10 +96,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 exit();
             }
             if ($_POST['action'] === 'update_body_stats') {
-                $weight = $_POST['weight'] ?? null;
-                $height = $_POST['height'] ?? null;
-                $waist = $_POST['waist_circumference'] ?? null;
-                $hip = $_POST['hip_circumference'] ?? null;
+                $weight = isset($_POST['weight']) && $_POST['weight'] !== '' ? $_POST['weight'] : null;
+                $height = isset($_POST['height']) && $_POST['height'] !== '' ? $_POST['height'] : null;
+                $waist = isset($_POST['waist_circumference']) && $_POST['waist_circumference'] !== '' ? $_POST['waist_circumference'] : null;
+                $hip = isset($_POST['hip_circumference']) && $_POST['hip_circumference'] !== '' ? $_POST['hip_circumference'] : null;
 
                 $upd_sql = "UPDATE clients SET weight = ?, height = ?, waist_circumference = ?, hip_circumference = ?, updated_at = NOW() WHERE id = ?";
                 $upd_params = [$weight, $height, $waist, $hip, $client_id_post];

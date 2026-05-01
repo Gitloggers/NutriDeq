@@ -14,8 +14,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $role = $_POST['role'];
     
     // New fields for waist and hip circumference
-    $waist_circumference = isset($_POST['waist_circumference']) ? floatval($_POST['waist_circumference']) : null;
-    $hip_circumference = isset($_POST['hip_circumference']) ? floatval($_POST['hip_circumference']) : null;
+    $waist_circumference = isset($_POST['waist_circumference']) && $_POST['waist_circumference'] !== '' ? floatval($_POST['waist_circumference']) : null;
+    $hip_circumference = isset($_POST['hip_circumference']) && $_POST['hip_circumference'] !== '' ? floatval($_POST['hip_circumference']) : null;
     
     try {
         $database = new Database();
