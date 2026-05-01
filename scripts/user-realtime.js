@@ -181,6 +181,6 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         init();
-        setInterval(updateUserStats, 5000);
+        setInterval(updateUserStats, POLL_INTERVAL);
     });
 })();

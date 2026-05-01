@@ -1,6 +1,6 @@
 // Simple polling + renderer for staff message list
 (function () {
-    const POLL_INTERVAL_MS = 5000; // adjust as needed
+    const POLL_INTERVAL_MS = 60000; // adjust as needed
     const containerId = 'modal-messages-container'; // element where messages will be rendered
     const endpoint = 'get_messages.php?ajax=1'; // relative path — works on any host/subdirectory
 

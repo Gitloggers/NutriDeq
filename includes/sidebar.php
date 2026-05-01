@@ -404,7 +404,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
     if (toast) {
-        setInterval(pollMessages, 10000);
+        setInterval(pollMessages, 60000);
         pollMessages();
         document.getElementById('closeToastBtn')?.addEventListener('click', (e) => { e.stopPropagation(); toast.classList.remove('show'); });
         toast.addEventListener('click', () => { 

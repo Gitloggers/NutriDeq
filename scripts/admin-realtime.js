@@ -3,7 +3,7 @@
 (function() {
     'use strict';
 
-    const POLL_INTERVAL = 5000; // 5 seconds
+    const POLL_INTERVAL = 60000; // 60 seconds
     let efficiencyChart = null;
 
     function init() {

@@ -2,8 +2,7 @@
 (function () {
     'use strict';
 
-    // Poll every 10 seconds
-    const POLL_INTERVAL = 10000;
+    const POLL_INTERVAL = 60000;
 
     function fetchWellnessStats() {
         fetch(BASE_URL + 'api/get_wellness_stats.php')
